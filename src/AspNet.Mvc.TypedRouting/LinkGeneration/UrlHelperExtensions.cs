@@ -27,7 +27,7 @@ namespace Microsoft.AspNet.Mvc
         /// <summary>
         /// Generates a fully qualified or absolute URL for an action method by 
         /// using <see cref="Expression{TDelegate}"/> for an action method,
-        /// from which action name, controller name and route values are resolved 
+        /// from which action name, controller name and route values are resolved ,
         /// and the specified additional route values.
         /// </summary>
         /// <typeparam name="TController">Controller, from which the action is specified.</param>
@@ -45,7 +45,7 @@ namespace Microsoft.AspNet.Mvc
         /// <summary>
         /// Generates a fully qualified or absolute URL for an action method by 
         /// using <see cref="Expression{TDelegate}"/> for an action method,
-        /// from which action name, controller name and route values are resolved
+        /// from which action name, controller name and route values are resolved,
         /// and the specified additional route values and protocol to use.
         /// </summary>
         /// <typeparam name="TController">Controller, from which the action is specified.</param>
@@ -68,7 +68,7 @@ namespace Microsoft.AspNet.Mvc
         /// <summary>
         /// Generates a fully qualified or absolute URL for an action method by 
         /// using <see cref="Expression{TDelegate}"/> for an action method,
-        /// from which action name, controller name and route values are resolved
+        /// from which action name, controller name and route values are resolved,
         /// and the specified additional route values, protocol to use and host name.
         /// </summary>
         /// <typeparam name="TController">Controller, from which the action is specified.</param>
@@ -93,7 +93,7 @@ namespace Microsoft.AspNet.Mvc
         /// <summary>
         /// Generates a fully qualified or absolute URL for an action method by 
         /// using <see cref="Expression{TDelegate}"/> for an action method,
-        /// from which action name, controller name and route values are resolved
+        /// from which action name, controller name and route values are resolved,
         /// and the specified additional route values, protocol to use, host name and fragment.
         /// </summary>
         /// <typeparam name="TController">Controller, from which the action is specified.</param>
