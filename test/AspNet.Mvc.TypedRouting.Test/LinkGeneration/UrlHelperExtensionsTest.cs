@@ -1,4 +1,4 @@
-﻿namespace AspNet.Mvc.TypedRouting.Test.LinkGeneration.Test
+﻿namespace AspNet.Mvc.TypedRouting.Test.LinkGeneration
 {
     using Microsoft.AspNet.Builder;
     using Microsoft.AspNet.Http;

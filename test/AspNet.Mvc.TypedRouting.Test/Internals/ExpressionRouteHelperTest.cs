@@ -1,4 +1,4 @@
-﻿namespace AspNet.Mvc.TypedRouting.Test.Internals.Test
+﻿namespace AspNet.Mvc.TypedRouting.Test.Internals
 {
     using Microsoft.AspNet.Mvc;
     using Microsoft.AspNet.Mvc.ApplicationModels;

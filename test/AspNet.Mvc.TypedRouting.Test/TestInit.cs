@@ -1,7 +1,6 @@
 ﻿namespace AspNet.Mvc.TypedRouting.Test
 {
     using TypedRouting.Internals;
-    using Internals.Test;
     using Microsoft.AspNet.Mvc;
     using Microsoft.AspNet.Mvc.Abstractions;
     using Microsoft.AspNet.Mvc.ApplicationModels;
