@@ -1,13 +1,10 @@
 ﻿namespace AspNet.Mvc.TypedRouting.Test.LinkGeneration.Test
 {
-    using TypedRouting.Internals;
     using Microsoft.AspNet.Builder;
     using Microsoft.AspNet.Http;
     using Microsoft.AspNet.Http.Internal;
     using Microsoft.AspNet.Mvc;
     using Microsoft.AspNet.Mvc.Abstractions;
-    using Microsoft.AspNet.Mvc.ApplicationModels;
-    using Microsoft.AspNet.Mvc.Controllers;
     using Microsoft.AspNet.Mvc.Infrastructure;
     using Microsoft.AspNet.Mvc.Routing;
     using Microsoft.AspNet.Routing;
@@ -15,19 +12,15 @@
     using Microsoft.Extensions.OptionsModel;
     using Moq;
     using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.Design;
-    using System.Linq;
-    using System.Reflection;
     using Xunit;
 
+    [Collection("TypedRoutingTests")]
     public class UrlHelperExtensionsTest
     {
         [Fact]
         public void UrlActionWithExpressionAndAllParameters_ReturnsExpectedResult()
         {
             // Arrange
-            AttachActionDescriptorsCollectionProvider();
             var services = GetServices();
             var urlHelper = CreateUrlHelperWithRouteCollection(services, "/app");
 
@@ -46,7 +39,6 @@
         public void UrlActionWithExpressionActionWithParameters_ReturnsExpectedResult()
         {
             // Arrange
-            AttachActionDescriptorsCollectionProvider();
             var services = GetServices();
             var urlHelper = CreateUrlHelperWithRouteCollection(services, "/app");
 
@@ -61,7 +53,6 @@
         public void UrlActionWithExpressionActionWithParametersAndAdditionalValues_ReturnsExpectedResult()
         {
             // Arrange
-            AttachActionDescriptorsCollectionProvider();
             var services = GetServices();
             var urlHelper = CreateUrlHelperWithRouteCollection(services, "/app");
 
@@ -76,7 +67,6 @@
         public void UrlActionWithExpressionActionWithNoParameterssAndAdditionalValues_ReturnsExpectedResult()
         {
             // Arrange
-            AttachActionDescriptorsCollectionProvider();
             var services = GetServices();
             var urlHelper = CreateUrlHelperWithRouteCollection(services, "/app");
 
@@ -87,38 +77,46 @@
             Assert.Equal("/app/Normal/ActionWithParameters/1?text=othertext", url);
         }
 
-        private static void AttachActionDescriptorsCollectionProvider()
+        [Fact]
+        public void LinkWithAllParameters_ReturnsExpectedResult()
         {
-            // Run the full controller and action model building 
-            // in order to simulate the default MVC behavior.
-            var controllerTypes = typeof(UrlHelperExtensionsTest)
-                .GetNestedTypes()
-                .Where(t => t.Name.EndsWith("Controller"))
-                .Select(t => t.GetTypeInfo())
-                .ToList();
+            // Arrange
+            var services = GetServices();
+            var urlHelper = CreateUrlHelperWithRouteCollection(services, "/app");
 
-            var options = new TestOptionsManager<MvcOptions>();
+            // Act
+            var url = urlHelper.Link<NormalController>("namedroute", c => c.ActionWithParameters(1, "sometext"));
 
-            var controllerTypeProvider = new StaticControllerTypeProvider(controllerTypes);
-            var modelProvider = new DefaultApplicationModelProvider(options);
+            // Assert
+            Assert.Equal("http://localhost/app/named/Normal/ActionWithParameters/1?text=sometext", url);
+        }
 
-            var provider = new ControllerActionDescriptorProvider(
-                controllerTypeProvider,
-                new[] { modelProvider },
-                options);
+        [Fact]
+        public void LinkWithNullRouteName_ReturnsExpectedResult()
+        {
+            // Arrange
+            var services = GetServices();
+            var urlHelper = CreateUrlHelperWithRouteCollection(services, "/app");
 
-            var serviceContainer = new ServiceContainer();
-            var list = new List<IActionDescriptorProvider>()
-            {
-                provider,
-            };
+            // Act
+            var url = urlHelper.Link<NormalController>(null, c => c.ActionWithParameters(1, "sometext"));
 
-            var actionDescriptorCollectionProvider = new DefaultActionDescriptorsCollectionProvider(serviceContainer);
+            // Assert
+            Assert.Equal("http://localhost/app/Normal/ActionWithParameters/1?text=sometext", url);
+        }
+        
+        [Fact]
+        public void LinkWithAdditionalRouteValues_ReturnsExpectedResult()
+        {
+            // Arrange
+            var services = GetServices();
+            var urlHelper = CreateUrlHelperWithRouteCollection(services, "/app");
 
-            serviceContainer.AddService(typeof(IEnumerable<IActionDescriptorProvider>), list);
-            serviceContainer.AddService(typeof(IActionDescriptorsCollectionProvider), actionDescriptorCollectionProvider);
+            // Act
+            var url = urlHelper.Link<NormalController>(null, c => c.ActionWithParameters(1, "sometext"), new { text = "othertext" });
 
-            ExpressionRouteHelper.ServiceProvider = serviceContainer;
+            // Assert
+            Assert.Equal("http://localhost/app/Normal/ActionWithParameters/1?text=othertext", url);
         }
 
         private static HttpContext CreateHttpContext(

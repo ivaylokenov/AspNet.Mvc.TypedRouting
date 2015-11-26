@@ -14,6 +14,7 @@ namespace Microsoft.AspNet.Mvc
         /// using <see cref="Expression{TDelegate}"/> for an action method,
         /// from which action name, controller name and route values are resolved.
         /// </summary>
+        /// <typeparam name="TController">Controller, from which action is specified.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
@@ -30,6 +31,7 @@ namespace Microsoft.AspNet.Mvc
         /// from which action name, controller name and route values are resolved 
         /// and the specified additional route values.
         /// </summary>
+        /// <typeparam name="TController">Controller, from which action is specified.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
@@ -47,6 +49,7 @@ namespace Microsoft.AspNet.Mvc
         /// from which action name, controller name and route values are resolved
         /// and the specified additional route values and protocol to use.
         /// </summary>
+        /// <typeparam name="TController">Controller, from which action is specified.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
@@ -69,6 +72,7 @@ namespace Microsoft.AspNet.Mvc
         /// from which action name, controller name and route values are resolved
         /// and the specified additional route values, protocol to use and host name.
         /// </summary>
+        /// <typeparam name="TController">Controller, from which action is specified.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
@@ -93,6 +97,7 @@ namespace Microsoft.AspNet.Mvc
         /// from which action name, controller name and route values are resolved
         /// and the specified additional route values, protocol to use, host name and fragment.
         /// </summary>
+        /// <typeparam name="TController">Controller, from which action is specified.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
@@ -124,25 +129,60 @@ namespace Microsoft.AspNet.Mvc
             });
         }
 
+        /// <summary>
+        /// Generates an absolute URL using the specified route name and <see cref="Expression{TDelegate}"/> for an action method,
+        /// from which action name, controller name and route values are resolved.
+        /// </summary>
+        /// <typeparam name="TController">Controller, from which action is specified.</param>
+        /// <param name="routeName">The name of the route that is used to generate the URL.</param>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
+        /// <returns>The generated absolute URL.</returns>
+        public static string Link<TController>(
+            this IUrlHelper helper,
+            string routeName,
+            Expression<Action<TController>> action)
+        {
+            return helper.Link(routeName, action, values: null);
+        }
+
+        /// <summary>
+        /// Generates an absolute URL using the specified route name, <see cref="Expression{TDelegate}"/> for an action method,
+        /// from which action name, controller name and route values are resolved, and the specified additional route values.
+        /// </summary>
+        /// <typeparam name="TController">Controller, from which action is specified.</param>
+        /// <param name="routeName">The name of the route that is used to generate the URL.</param>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
+        /// <param name="values">An object that contains additional route values.</param>
+        /// <returns>The generated absolute URL.</returns>
+        public static string Link<TController>(
+            this IUrlHelper helper,
+            string routeName,
+            Expression<Action<TController>> action,
+            object values)
+        {
+            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, values);
+
+            expressionRouteValues.RouteValues["controller"] = expressionRouteValues.Controller;
+            expressionRouteValues.RouteValues["action"] = expressionRouteValues.Action;
+
+            return helper.Link(routeName, expressionRouteValues.RouteValues);
+        }
+
         private static string Action<TController>(
             this IUrlHelper helper,
             Expression<Action<TController>> action,
             UrlActionContext actionContext)
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action);
+            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, actionContext.Values);
+
             actionContext.Controller = expressionRouteValues.Controller;
             actionContext.Action = expressionRouteValues.Action;
-
-            if (actionContext.Values != null)
-            {
-                var additionalRouteValues = new RouteValueDictionary(actionContext.Values);
-
-                foreach (var additionalRouteValue in additionalRouteValues)
-                {
-                    expressionRouteValues.RouteValues[additionalRouteValue.Key] = additionalRouteValue.Value;
-                }
-            }
-
             actionContext.Values = expressionRouteValues.RouteValues;
 
             return helper.Action(actionContext);

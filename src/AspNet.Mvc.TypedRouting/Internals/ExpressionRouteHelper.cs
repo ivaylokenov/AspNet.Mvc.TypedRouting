@@ -3,6 +3,7 @@
     using Microsoft.AspNet.Mvc;
     using Microsoft.AspNet.Mvc.Controllers;
     using Microsoft.AspNet.Mvc.Infrastructure;
+    using Microsoft.AspNet.Routing;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
@@ -15,9 +16,11 @@
         private static readonly ConcurrentDictionary<MethodInfo, ControllerActionDescriptor> controllerActionDescriptorCache =
             new ConcurrentDictionary<MethodInfo, ControllerActionDescriptor>();
 
+        private static IActionDescriptorsCollectionProvider lastUsedActionDescriptorsCollectionProvider = null;
+        
         public static IServiceProvider ServiceProvider { get; set; }
 
-        public static ExpressionRouteValues Resolve<TController>(Expression<Action<TController>> expression)
+        public static ExpressionRouteValues Resolve<TController>(Expression<Action<TController>> expression, object additionalRouteValues = null)
         {
             if (expression == null)
             {
@@ -29,6 +32,12 @@
             if (actionDescriptorsCollectionProvider == null)
             {
                 throw new ArgumentNullException(nameof(actionDescriptorsCollectionProvider));
+            }
+
+            if (lastUsedActionDescriptorsCollectionProvider != actionDescriptorsCollectionProvider)
+            {
+                lastUsedActionDescriptorsCollectionProvider = actionDescriptorsCollectionProvider;
+                controllerActionDescriptorCache.Clear();
             }
 
             var methodCallExpression = expression.Body as MethodCallExpression;
@@ -50,7 +59,7 @@
                 var controllerName = controllerActionDescriptor.ControllerName;
                 var actionName = controllerActionDescriptor.Name;
 
-                var additionalRouteValues = GetAdditionalRouteValues(methodInfo, methodCallExpression, controllerActionDescriptor);
+                var routeValues = GetAdditionalRouteValues(methodInfo, methodCallExpression, controllerActionDescriptor, additionalRouteValues);
 
                 // If there is a route constraint with specific expected value, add it to the result.
                 var routeConstraints = controllerActionDescriptor.RouteConstraints;
@@ -61,7 +70,7 @@
 
                     if (routeValue != string.Empty)
                     {
-                        // Override the 'default' values, if they are found.
+                        // Override the 'default' values.
                         if (string.Equals(routeKey, "controller", StringComparison.OrdinalIgnoreCase))
                         {
                             controllerName = routeValue;
@@ -72,7 +81,7 @@
                         }
                         else
                         {
-                            additionalRouteValues[routeConstraint.RouteKey] = routeValue;
+                            routeValues[routeConstraint.RouteKey] = routeValue;
                         }
                     }
                 }
@@ -81,7 +90,7 @@
                 {
                     Controller = controllerName,
                     Action = actionName,
-                    RouteValues = additionalRouteValues
+                    RouteValues = routeValues
                 };
             }
 
@@ -114,7 +123,8 @@
         private static IDictionary<string, object> GetAdditionalRouteValues(
             MethodInfo methodInfo,
             MethodCallExpression methodCallExpression,
-            ControllerActionDescriptor controllerActionDescriptor)
+            ControllerActionDescriptor controllerActionDescriptor,
+            object routeValues)
         {
             var parameterDescriptors = controllerActionDescriptor
                     .Parameters
@@ -124,7 +134,7 @@
             var arguments = methodCallExpression.Arguments.ToArray();
             var methodParameterNames = methodInfo.GetParameters().Select(p => p.Name).ToArray();
 
-            var additionalRouteValues = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            var result = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
             for (var i = 0; i < arguments.Length; i++)
             {
@@ -163,11 +173,21 @@
                 // We are interested only in not null route values.
                 if (value != null)
                 {
-                    additionalRouteValues[methodParameterName] = value;
+                    result[methodParameterName] = value;
                 }
             }
 
-            return additionalRouteValues;
+            if (routeValues != null)
+            {
+                var additionalRouteValues = new RouteValueDictionary(routeValues);
+
+                foreach (var additionalRouteValue in additionalRouteValues)
+                {
+                    result[additionalRouteValue.Key] = additionalRouteValue.Value;
+                }
+            }
+
+            return result;
         }
     }
 }

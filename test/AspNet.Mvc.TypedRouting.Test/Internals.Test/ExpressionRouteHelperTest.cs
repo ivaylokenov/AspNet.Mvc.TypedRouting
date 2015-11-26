@@ -1,20 +1,16 @@
 ﻿namespace AspNet.Mvc.TypedRouting.Test.Internals.Test
 {
     using Microsoft.AspNet.Mvc;
-    using Microsoft.AspNet.Mvc.Abstractions;
     using Microsoft.AspNet.Mvc.ApplicationModels;
-    using Microsoft.AspNet.Mvc.Controllers;
     using Microsoft.AspNet.Mvc.Infrastructure;
     using Microsoft.AspNet.Mvc.ModelBinding;
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.Design;
-    using System.Linq;
     using System.Linq.Expressions;
-    using System.Reflection;
     using TypedRouting.Internals;
     using Xunit;
 
+    [Collection("TypedRoutingTests")]
     public class ExpressionRouteHelperTest
     {
         [Theory]
@@ -22,9 +18,6 @@
         public void Resolve_ControllerAndActionWithoutParameters_ControllerAndActionNameAreResolved(
             Expression<Action<NormalController>> action, string controllerName, string actionName)
         {
-            // Arrange
-            AttachActionDescriptorsCollectionProvider();
-
             // Act
             var result = ExpressionRouteHelper.Resolve(action);
 
@@ -39,9 +32,6 @@
         public void Resolve_ControllerAndActionWithPrimitiveParameters_ControllerActionNameAndParametersAreResolved(
             Expression<Action<NormalController>> action, string controllerName, string actionName, IDictionary<string, object> routeValues)
         {
-            // Arrange
-            AttachActionDescriptorsCollectionProvider();
-
             // Act
             var result = ExpressionRouteHelper.Resolve(action);
 
@@ -60,9 +50,6 @@
         [Fact]
         public void Resolve_ControllerAndActionWithObjectParameters_ControllerActionNameAndParametersAreResolved()
         {
-            // Arrange
-            AttachActionDescriptorsCollectionProvider();
-
             // Act
             var result = ExpressionRouteHelper.Resolve<NormalController>(c => c.ActionWithMultipleParameters(1, "string", new RequestModel { Integer = 1, String = "Text" }));
 
@@ -82,9 +69,6 @@
         [Fact]
         public void Resolve_PocoController_ControllerActionNameAndParametersAreResolved()
         {
-            // Arrange
-            AttachActionDescriptorsCollectionProvider();
-
             // Act
             var result = ExpressionRouteHelper.Resolve<PocoController>(c => c.Action(1));
 
@@ -99,9 +83,6 @@
         [Fact]
         public void Resolve_InAreaController_ControllerActionNameAndAreaAreResolved()
         {
-            // Arrange
-            AttachActionDescriptorsCollectionProvider();
-
             // Act
             var result = ExpressionRouteHelper.Resolve<InAreaController>(c => c.Action(1));
 
@@ -118,9 +99,6 @@
         [Fact]
         public void Resolve_ActionWithCustomRouteConstraints_RouteConstraintsAreResolved()
         {
-            // Arrange
-            AttachActionDescriptorsCollectionProvider();
-
             // Act
             var result = ExpressionRouteHelper.Resolve<RouteConstraintController>(c => c.Action(1, 2));
 
@@ -139,9 +117,6 @@
         [Fact]
         public void Resolve_CustomConventions_CustomConventionsAreResolved()
         {
-            // Arrange
-            AttachActionDescriptorsCollectionProvider();
-
             // Act
             var result = ExpressionRouteHelper.Resolve<ConventionsController>(c => c.ConventionsAction(1));
 
@@ -156,9 +131,6 @@
         [Fact]
         public void Resolve_StaticMethodCall_ThrowsInvalidOperationException()
         {
-            // Arrange
-            AttachActionDescriptorsCollectionProvider();
-
             // Act
             var exception = Assert.Throws<InvalidOperationException>(() =>
             {
@@ -172,9 +144,6 @@
         [Fact]
         public void Resolve_NonMethodCallException_ThrowsInvalidOperationException()
         {
-            // Arrange
-            AttachActionDescriptorsCollectionProvider();
-
             // Act
             var exception = Assert.Throws<InvalidOperationException>(() =>
             {
@@ -188,9 +157,6 @@
         [Fact]
         public void Resolve_NonControllerAction_ThrowsInvalidOperationException()
         {
-            // Arrange
-            AttachActionDescriptorsCollectionProvider();
-
             // Act
             var exception = Assert.Throws<InvalidOperationException>(() =>
             {
@@ -255,41 +221,7 @@
                 return data;
             }
         }
-
-        private static void AttachActionDescriptorsCollectionProvider()
-        {
-            // Run the full controller and action model building 
-            // in order to simulate the default MVC behavior.
-            var controllerTypes = typeof(ExpressionRouteHelperTest)
-                .GetNestedTypes()
-                .Where(t => t.Name.EndsWith("Controller"))
-                .Select(t => t.GetTypeInfo())
-                .ToList();
-
-            var options = new TestOptionsManager<MvcOptions>();
-
-            var controllerTypeProvider = new StaticControllerTypeProvider(controllerTypes);
-            var modelProvider = new DefaultApplicationModelProvider(options);
-
-            var provider = new ControllerActionDescriptorProvider(
-                controllerTypeProvider,
-                new[] { modelProvider },
-                options);
-
-            var serviceContainer = new ServiceContainer();
-            var list = new List<IActionDescriptorProvider>()
-            {
-                provider,
-            };
-
-            var actionDescriptorCollectionProvider = new DefaultActionDescriptorsCollectionProvider(serviceContainer);
-
-            serviceContainer.AddService(typeof(IEnumerable<IActionDescriptorProvider>), list);
-            serviceContainer.AddService(typeof(IActionDescriptorsCollectionProvider), actionDescriptorCollectionProvider);
-
-            ExpressionRouteHelper.ServiceProvider = serviceContainer;
-        }
-
+        
         private static int GetInt()
         {
             return 1;
