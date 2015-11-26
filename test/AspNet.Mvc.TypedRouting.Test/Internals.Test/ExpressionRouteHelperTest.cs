@@ -23,7 +23,7 @@
             Expression<Action<NormalController>> action, string controllerName, string actionName)
         {
             // Arrange
-            var actionDescriptorsCollectionProvider = CreateActionDescriptorsCollectionProvider();
+            AttachActionDescriptorsCollectionProvider();
 
             // Act
             var result = ExpressionRouteHelper.Resolve(action);
@@ -40,7 +40,7 @@
             Expression<Action<NormalController>> action, string controllerName, string actionName, IDictionary<string, object> routeValues)
         {
             // Arrange
-            var actionDescriptorsCollectionProvider = CreateActionDescriptorsCollectionProvider();
+            AttachActionDescriptorsCollectionProvider();
 
             // Act
             var result = ExpressionRouteHelper.Resolve(action);
@@ -61,7 +61,7 @@
         public void Resolve_ControllerAndActionWithObjectParameters_ControllerActionNameAndParametersAreResolved()
         {
             // Arrange
-            var actionDescriptorsCollectionProvider = CreateActionDescriptorsCollectionProvider();
+            AttachActionDescriptorsCollectionProvider();
 
             // Act
             var result = ExpressionRouteHelper.Resolve<NormalController>(c => c.ActionWithMultipleParameters(1, "string", new RequestModel { Integer = 1, String = "Text" }));
@@ -83,7 +83,7 @@
         public void Resolve_PocoController_ControllerActionNameAndParametersAreResolved()
         {
             // Arrange
-            var actionDescriptorsCollectionProvider = CreateActionDescriptorsCollectionProvider();
+            AttachActionDescriptorsCollectionProvider();
 
             // Act
             var result = ExpressionRouteHelper.Resolve<PocoController>(c => c.Action(1));
@@ -100,7 +100,7 @@
         public void Resolve_InAreaController_ControllerActionNameAndAreaAreResolved()
         {
             // Arrange
-            var actionDescriptorsCollectionProvider = CreateActionDescriptorsCollectionProvider();
+            AttachActionDescriptorsCollectionProvider();
 
             // Act
             var result = ExpressionRouteHelper.Resolve<InAreaController>(c => c.Action(1));
@@ -119,7 +119,7 @@
         public void Resolve_ActionWithCustomRouteConstraints_RouteConstraintsAreResolved()
         {
             // Arrange
-            var actionDescriptorsCollectionProvider = CreateActionDescriptorsCollectionProvider();
+            AttachActionDescriptorsCollectionProvider();
 
             // Act
             var result = ExpressionRouteHelper.Resolve<RouteConstraintController>(c => c.Action(1, 2));
@@ -140,7 +140,7 @@
         public void Resolve_CustomConventions_CustomConventionsAreResolved()
         {
             // Arrange
-            var actionDescriptorsCollectionProvider = CreateActionDescriptorsCollectionProvider();
+            AttachActionDescriptorsCollectionProvider();
 
             // Act
             var result = ExpressionRouteHelper.Resolve<ConventionsController>(c => c.ConventionsAction(1));
@@ -196,7 +196,7 @@
             }
         }
 
-        private IActionDescriptorsCollectionProvider CreateActionDescriptorsCollectionProvider()
+        private void AttachActionDescriptorsCollectionProvider()
         {
             // Run the full controller and action model building 
             // in order to simulate the default MVC behavior.
@@ -221,11 +221,12 @@
                 provider,
             };
 
-            serviceContainer.AddService(typeof(IEnumerable<IActionDescriptorProvider>), list);
-
             var actionDescriptorCollectionProvider = new DefaultActionDescriptorsCollectionProvider(serviceContainer);
 
-            return actionDescriptorCollectionProvider;
+            serviceContainer.AddService(typeof(IEnumerable<IActionDescriptorProvider>), list);
+            serviceContainer.AddService(typeof(IActionDescriptorsCollectionProvider), actionDescriptorCollectionProvider);
+
+            ExpressionRouteHelper.ServiceProvider = serviceContainer;
         }
 
         public class RequestModel
