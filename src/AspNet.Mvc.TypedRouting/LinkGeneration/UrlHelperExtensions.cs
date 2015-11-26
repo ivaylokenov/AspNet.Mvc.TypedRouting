@@ -165,11 +165,7 @@ namespace Microsoft.AspNet.Mvc
             Expression<Action<TController>> action,
             object values)
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, values);
-
-            expressionRouteValues.RouteValues["controller"] = expressionRouteValues.Controller;
-            expressionRouteValues.RouteValues["action"] = expressionRouteValues.Action;
-
+            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, values, addControllerAndActionToRouteValues: true);
             return helper.Link(routeName, expressionRouteValues.RouteValues);
         }
 

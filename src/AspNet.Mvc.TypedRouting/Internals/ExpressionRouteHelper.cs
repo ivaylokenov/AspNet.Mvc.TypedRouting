@@ -20,7 +20,10 @@
         
         public static IServiceProvider ServiceProvider { get; set; }
 
-        public static ExpressionRouteValues Resolve<TController>(Expression<Action<TController>> expression, object additionalRouteValues = null)
+        public static ExpressionRouteValues Resolve<TController>(
+            Expression<Action<TController>> expression,
+            object additionalRouteValues = null,
+            bool addControllerAndActionToRouteValues = false)
         {
             if (expression == null)
             {
@@ -84,6 +87,12 @@
                             routeValues[routeConstraint.RouteKey] = routeValue;
                         }
                     }
+                }
+
+                if (addControllerAndActionToRouteValues)
+                {
+                    routeValues["controller"] = controllerName;
+                    routeValues["action"] = actionName;
                 }
 
                 return new ExpressionRouteValues
