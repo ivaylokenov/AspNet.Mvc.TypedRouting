@@ -13,10 +13,10 @@
 
     public static class ExpressionRouteHelper
     {
-        private static readonly ConcurrentDictionary<MethodInfo, ControllerActionDescriptor> controllerActionDescriptorCache =
+        private static readonly ConcurrentDictionary<MethodInfo, ControllerActionDescriptor> ControllerActionDescriptorCache =
             new ConcurrentDictionary<MethodInfo, ControllerActionDescriptor>();
 
-        private static IActionDescriptorsCollectionProvider lastUsedActionDescriptorsCollectionProvider = null;
+        private static IActionDescriptorsCollectionProvider lastUsedActionDescriptorsCollectionProvider;
         
         public static IServiceProvider ServiceProvider { get; set; }
 
@@ -40,7 +40,7 @@
             if (lastUsedActionDescriptorsCollectionProvider != actionDescriptorsCollectionProvider)
             {
                 lastUsedActionDescriptorsCollectionProvider = actionDescriptorsCollectionProvider;
-                controllerActionDescriptorCache.Clear();
+                ControllerActionDescriptorCache.Clear();
             }
 
             var methodCallExpression = expression.Body as MethodCallExpression;
@@ -111,7 +111,7 @@
             MethodInfo methodInfo,
             IActionDescriptorsCollectionProvider actionDescriptorsCollectionProvider)
         {
-            return controllerActionDescriptorCache.GetOrAdd(methodInfo, _ =>
+            return ControllerActionDescriptorCache.GetOrAdd(methodInfo, _ =>
             {
                 // we are only interested in controller actions
                 var foundControllerActionDescriptor = actionDescriptorsCollectionProvider
@@ -166,7 +166,7 @@
                     }
                 }
 
-                object value = null;
+                object value;
                 if (expressionArgument.NodeType == ExpressionType.Constant)
                 {
                     // Expression of type c => c.Action({const}) - value can be extracted without compiling.

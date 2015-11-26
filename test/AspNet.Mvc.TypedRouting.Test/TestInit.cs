@@ -10,6 +10,7 @@
     using System.ComponentModel.Design;
     using System.Linq;
     using System.Reflection;
+    using Setups;
     using Xunit;
 
     public class TestInit

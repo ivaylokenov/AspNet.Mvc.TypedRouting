@@ -1,7 +1,7 @@
-﻿namespace AspNet.Mvc.TypedRouting.Test
+﻿namespace AspNet.Mvc.TypedRouting.Test.Setups
 {
-    using Microsoft.Extensions.OptionsModel;
     using System.Linq;
+    using Microsoft.Extensions.OptionsModel;
 
     public class TestOptionsManager<T> : OptionsManager<T>
         where T : class, new()
