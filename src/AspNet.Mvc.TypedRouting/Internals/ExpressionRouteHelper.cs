@@ -1,5 +1,6 @@
 ﻿namespace AspNet.Mvc.TypedRouting.Internals
 {
+    using Microsoft.AspNet.Mvc;
     using Microsoft.AspNet.Mvc.Controllers;
     using Microsoft.AspNet.Mvc.Infrastructure;
     using System;
@@ -37,7 +38,7 @@
                 if (controllerType == null)
                 {
                     // Method call is not valid because it is static.
-                    throw new InvalidOperationException(); // TODO: message from resource, unit test exceptions
+                    throw new InvalidOperationException("Expression is not valid - expected instance method call but instead received static method call.");
                 }
 
                 var methodInfo = methodCallExpression.Method;
@@ -85,7 +86,7 @@
             }
 
             // Expression is invalid because it is not a method call.
-            throw new InvalidOperationException(); // TODO: message from resource, test exceptions
+            throw new InvalidOperationException("Expression is not valid - expected instance method call but instead received other type of expression.");
         }
 
         private static ControllerActionDescriptor GetActionDescriptorFromCache(
@@ -94,6 +95,7 @@
         {
             return controllerActionDescriptorCache.GetOrAdd(methodInfo, _ =>
             {
+                // we are only interested in controller actions
                 var foundControllerActionDescriptor = actionDescriptorsCollectionProvider
                     .ActionDescriptors
                     .Items
@@ -102,8 +104,8 @@
 
                 if (foundControllerActionDescriptor == null)
                 {
-                    throw new InvalidOperationException(); // TODO: message from resource, test exceptions
-                    }
+                    throw new InvalidOperationException($"Method {methodInfo.Name} in class {methodInfo.DeclaringType.Name} is not a valid controller action.");
+                }
 
                 return foundControllerActionDescriptor;
             });
@@ -133,6 +135,17 @@
                 }
 
                 var expressionArgument = arguments[i];
+
+                if (expressionArgument.NodeType == ExpressionType.Call)
+                {
+                    // Expression of type c => c.Action(With.No<int>()) - value should be ignored and can be skipped.
+                    var expressionArgumentAsMethodCall = (MethodCallExpression)expressionArgument;
+                    if (expressionArgumentAsMethodCall.Object == null
+                        && expressionArgumentAsMethodCall.Method.DeclaringType == typeof(With))
+                    {
+                        continue;
+                    }
+                }
 
                 object value = null;
                 if (expressionArgument.NodeType == ExpressionType.Constant)

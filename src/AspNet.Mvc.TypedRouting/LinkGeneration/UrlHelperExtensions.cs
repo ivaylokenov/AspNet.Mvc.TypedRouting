@@ -143,7 +143,7 @@ namespace Microsoft.AspNet.Mvc
                 }
             }
 
-            actionContext.Values = expressionRouteValues.RouteValues; // TODO: unit test
+            actionContext.Values = expressionRouteValues.RouteValues;
 
             return helper.Action(actionContext);
         }

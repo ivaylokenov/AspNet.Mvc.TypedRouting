@@ -1,19 +1,19 @@
 ﻿namespace AspNet.Mvc.TypedRouting.Test.Internals.Test
 {
-    using TypedRouting.Internals;
     using Microsoft.AspNet.Mvc;
     using Microsoft.AspNet.Mvc.Abstractions;
     using Microsoft.AspNet.Mvc.ApplicationModels;
     using Microsoft.AspNet.Mvc.Controllers;
     using Microsoft.AspNet.Mvc.Infrastructure;
+    using Microsoft.AspNet.Mvc.ModelBinding;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.Design;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
+    using TypedRouting.Internals;
     using Xunit;
-    using Microsoft.AspNet.Mvc.ModelBinding;
-    using System.ComponentModel.Design;
 
     public class ExpressionRouteHelperTest
     {
@@ -153,6 +153,54 @@
             Assert.Equal(1, result.RouteValues["ChangedParameter"]);
         }
 
+        [Fact]
+        public void Resolve_StaticMethodCall_ThrowsInvalidOperationException()
+        {
+            // Arrange
+            AttachActionDescriptorsCollectionProvider();
+
+            // Act
+            var exception = Assert.Throws<InvalidOperationException>(() =>
+            {
+                ExpressionRouteHelper.Resolve<NormalController>(c => NormalController.StaticCall());
+            });
+
+            // Assert
+            Assert.Equal("Expression is not valid - expected instance method call but instead received static method call.", exception.Message);
+        }
+
+        [Fact]
+        public void Resolve_NonMethodCallException_ThrowsInvalidOperationException()
+        {
+            // Arrange
+            AttachActionDescriptorsCollectionProvider();
+
+            // Act
+            var exception = Assert.Throws<InvalidOperationException>(() =>
+            {
+                ExpressionRouteHelper.Resolve<NormalController>(c => new object());
+            });
+
+            // Assert
+            Assert.Equal("Expression is not valid - expected instance method call but instead received other type of expression.", exception.Message);
+        }
+
+        [Fact]
+        public void Resolve_NonControllerAction_ThrowsInvalidOperationException()
+        {
+            // Arrange
+            AttachActionDescriptorsCollectionProvider();
+
+            // Act
+            var exception = Assert.Throws<InvalidOperationException>(() =>
+            {
+                ExpressionRouteHelper.Resolve<RequestModel>(c => c.SomeMethod());
+            });
+
+            // Assert
+            Assert.Equal("Method SomeMethod in class RequestModel is not a valid controller action.", exception.Message);
+        }
+        
         public static TheoryData<Expression<Action<NormalController>>, string, string> NormalActionsWithNoParametersData
         {
             get
@@ -187,6 +235,18 @@
                     new Dictionary<string, object> {["id"] = 1 });
 
                 data.Add(
+                    c => c.ActionWithOverloads(With.No<int>()),
+                    controllerName,
+                    "ActionWithOverloads",
+                    new Dictionary<string, object>());
+
+                data.Add(
+                    c => c.ActionWithOverloads(GetInt()),
+                    controllerName,
+                    "ActionWithOverloads",
+                    new Dictionary<string, object> {["id"] = 1 });
+
+                data.Add(
                     c => c.ActionWithMultipleParameters(1, "string", null),
                     controllerName,
                     "ActionWithMultipleParameters",
@@ -196,12 +256,13 @@
             }
         }
 
-        private void AttachActionDescriptorsCollectionProvider()
+        private static void AttachActionDescriptorsCollectionProvider()
         {
             // Run the full controller and action model building 
             // in order to simulate the default MVC behavior.
             var controllerTypes = typeof(ExpressionRouteHelperTest)
                 .GetNestedTypes()
+                .Where(t => t.Name.EndsWith("Controller"))
                 .Select(t => t.GetTypeInfo())
                 .ToList();
 
@@ -229,15 +290,28 @@
             ExpressionRouteHelper.ServiceProvider = serviceContainer;
         }
 
+        private static int GetInt()
+        {
+            return 1;
+        }
+
         public class RequestModel
         {
             public int Integer { get; set; }
 
             public string String { get; set; }
+
+            public void SomeMethod()
+            {
+            }
         }
 
         public class NormalController : Controller
         {
+            public static void StaticCall()
+            {
+            }
+            
             public IActionResult ActionWithoutParameters()
             {
                 return null;
