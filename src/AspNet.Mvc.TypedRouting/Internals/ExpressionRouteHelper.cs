@@ -7,7 +7,6 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
 
@@ -15,11 +14,11 @@
     {
         private static readonly ConcurrentDictionary<MethodInfo, ControllerActionDescriptor> ControllerActionDescriptorCache =
             new ConcurrentDictionary<MethodInfo, ControllerActionDescriptor>();
-
+        
         private static IActionDescriptorsCollectionProvider lastUsedActionDescriptorsCollectionProvider;
         
         public static IServiceProvider ServiceProvider { get; set; }
-
+        
         public static ExpressionRouteValues Resolve<TController>(
             Expression<Action<TController>> expression,
             object additionalRouteValues = null,
@@ -29,7 +28,7 @@
             {
                 throw new ArgumentNullException(nameof(expression));
             }
-
+            
             var actionDescriptorsCollectionProvider = ServiceProvider.GetService(typeof(IActionDescriptorsCollectionProvider)) as IActionDescriptorsCollectionProvider;
 
             if (actionDescriptorsCollectionProvider == null)
@@ -62,12 +61,14 @@
                 var controllerName = controllerActionDescriptor.ControllerName;
                 var actionName = controllerActionDescriptor.Name;
 
-                var routeValues = GetAdditionalRouteValues(methodInfo, methodCallExpression, controllerActionDescriptor, additionalRouteValues);
+                bool canBeCached = true;
+                var routeValues = GetRouteValues(methodInfo, methodCallExpression, controllerActionDescriptor, out canBeCached);
 
                 // If there is a route constraint with specific expected value, add it to the result.
                 var routeConstraints = controllerActionDescriptor.RouteConstraints;
-                foreach (var routeConstraint in routeConstraints)
+                for (int i = 0; i < routeConstraints.Count; i++)
                 {
+                    var routeConstraint = routeConstraints[i];
                     var routeKey = routeConstraint.RouteKey;
                     var routeValue = routeConstraint.RouteValue;
 
@@ -88,11 +89,12 @@
                         }
                     }
                 }
+                
+                ApplyAdditionaRouteValues(additionalRouteValues, routeValues);
 
                 if (addControllerAndActionToRouteValues)
                 {
-                    routeValues["controller"] = controllerName;
-                    routeValues["action"] = actionName;
+                    AddControllerAndActionToRouteValues(controllerName, actionName, routeValues);
                 }
 
                 return new ExpressionRouteValues
@@ -114,11 +116,17 @@
             return ControllerActionDescriptorCache.GetOrAdd(methodInfo, _ =>
             {
                 // we are only interested in controller actions
-                var foundControllerActionDescriptor = actionDescriptorsCollectionProvider
-                    .ActionDescriptors
-                    .Items
-                    .OfType<ControllerActionDescriptor>()
-                    .FirstOrDefault(ca => ca.MethodInfo == methodInfo);
+                ControllerActionDescriptor foundControllerActionDescriptor = null;
+                var actionDescriptors = actionDescriptorsCollectionProvider.ActionDescriptors.Items;
+                for (int i = 0; i < actionDescriptors.Count; i++)
+                {
+                    var actionDescriptor = actionDescriptors[i];
+                    if (actionDescriptor is ControllerActionDescriptor && ((ControllerActionDescriptor)actionDescriptor).MethodInfo == methodInfo)
+                    {
+                        foundControllerActionDescriptor = actionDescriptor as ControllerActionDescriptor;
+                        break;
+                    }
+                }
 
                 if (foundControllerActionDescriptor == null)
                 {
@@ -129,25 +137,37 @@
             });
         }
 
-        private static IDictionary<string, object> GetAdditionalRouteValues(
+        private static IDictionary<string, object> GetRouteValues(
             MethodInfo methodInfo,
             MethodCallExpression methodCallExpression,
             ControllerActionDescriptor controllerActionDescriptor,
-            object routeValues)
+            out bool canBeCached)
         {
-            var parameterDescriptors = controllerActionDescriptor
-                    .Parameters
-                    .Where(p => p.BindingInfo != null)
-                    .ToDictionary(p => p.Name, p => p.BindingInfo.BinderModelName);
-
-            var arguments = methodCallExpression.Arguments.ToArray();
-            var methodParameterNames = methodInfo.GetParameters().Select(p => p.Name).ToArray();
-
+            canBeCached = true;
             var result = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
-            for (var i = 0; i < arguments.Length; i++)
+            var arguments = methodCallExpression.Arguments;
+            if (arguments.Count == 0)
             {
-                var methodParameterName = methodParameterNames[i];
+                return result;
+            }
+
+            var methodParameterNames = methodInfo.GetParameters();
+
+            var parameterDescriptors = new Dictionary<string, string>();
+            var parameters = controllerActionDescriptor.Parameters;
+            for (int i = 0; i < parameters.Count; i++)
+            {
+                var parameter = parameters[i];
+                if (parameter.BindingInfo != null)
+                {
+                    parameterDescriptors.Add(parameter.Name, parameter.BindingInfo.BinderModelName);
+                }
+            }
+
+            for (var i = 0; i < arguments.Count; i++)
+            {
+                var methodParameterName = methodParameterNames[i].Name;
                 if (parameterDescriptors.ContainsKey(methodParameterName))
                 {
                     methodParameterName = parameterDescriptors[methodParameterName];
@@ -175,6 +195,7 @@
                 else
                 {
                     // Expresion needs compiling because it is not of constant type.
+                    canBeCached = false;
                     var convertExpression = Expression.Convert(expressionArgument, typeof(object));
                     value = Expression.Lambda<Func<object>>(convertExpression).Compile().Invoke();
                 }
@@ -186,6 +207,11 @@
                 }
             }
 
+            return result;
+        }
+
+        private static void ApplyAdditionaRouteValues(object routeValues, IDictionary<string, object> result)
+        {
             if (routeValues != null)
             {
                 var additionalRouteValues = new RouteValueDictionary(routeValues);
@@ -195,8 +221,12 @@
                     result[additionalRouteValue.Key] = additionalRouteValue.Value;
                 }
             }
+        }
 
-            return result;
+        private static void AddControllerAndActionToRouteValues(string controllerName, string actionName, IDictionary<string, object> routeValues)
+        {
+            routeValues["controller"] = controllerName;
+            routeValues["action"] = actionName;
         }
     }
 }
