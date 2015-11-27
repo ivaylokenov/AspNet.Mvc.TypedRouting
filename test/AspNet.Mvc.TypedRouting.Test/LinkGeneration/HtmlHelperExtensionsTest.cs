@@ -64,6 +64,49 @@
             Assert.Equal("css-class", content.HtmlAttributes["class"]);
         }
 
+        [Fact]
+        public void BeginForm_PassesCorrectValuesToHtmlHelper()
+        {
+            // Arrange
+            var htmlHelper = GetHtmlHelper();
+
+            // Act
+            var content = htmlHelper.BeginForm<MyController>(c => c.Action(1, "test"), new { other = "value" }, FormMethod.Get, new { @class = "css-class" }) as TestMvcForm;
+
+            // Assert
+            Assert.Equal("My", content.ControllerName);
+            Assert.Equal("Action", content.ActionName);
+            Assert.Equal(FormMethod.Get, content.FormMethod);
+            Assert.Equal(3, content.RouteValues.Count);
+            Assert.Equal(1, content.RouteValues["id"]);
+            Assert.Equal("test", content.RouteValues["text"]);
+            Assert.Equal("value", content.RouteValues["other"]);
+            Assert.Equal(1, content.HtmlAttributes.Count);
+            Assert.Equal("css-class", content.HtmlAttributes["class"]);
+        }
+
+        [Fact]
+        public void BeginRouteForm_PassesCorrectValuesToHtmlHelper()
+        {
+            // Arrange
+            var htmlHelper = GetHtmlHelper();
+
+            // Act
+            var content = htmlHelper.BeginRouteForm<MyController>("Route", c => c.Action(1, "test"), new { other = "value" }, FormMethod.Get, new { @class = "css-class" }) as TestMvcForm;
+
+            // Assert
+            Assert.Equal("Route", content.RouteName);
+            Assert.Equal(FormMethod.Get, content.FormMethod);
+            Assert.Equal(5, content.RouteValues.Count);
+            Assert.Equal("My", content.RouteValues["controller"]);
+            Assert.Equal("Action", content.RouteValues["action"]);
+            Assert.Equal(1, content.RouteValues["id"]);
+            Assert.Equal("test", content.RouteValues["text"]);
+            Assert.Equal("value", content.RouteValues["other"]);
+            Assert.Equal(1, content.HtmlAttributes.Count);
+            Assert.Equal("css-class", content.HtmlAttributes["class"]);
+        }
+
         private static IHtmlHelper GetHtmlHelper()
         {
             var htmlHelperMock = new Mock<IHtmlHelper>();
@@ -77,10 +120,8 @@
                 It.IsAny<string>(),
                 It.IsAny<object>(),
                 It.IsAny<object>()))
-                .Returns((string linkText, string actionName, string controllerName, string protocol, string hostname, string fragment, object routeValues, object htmlAttributes) =>
-                {
-                    return new TestHtmlContent(linkText, actionName, controllerName, protocol, hostname, fragment, routeValues, htmlAttributes);
-                });
+                .Returns((string linkText, string actionName, string controllerName, string protocol, string hostname, string fragment, object routeValues, object htmlAttributes)
+                    => new TestHtmlContent(linkText, actionName, controllerName, protocol, hostname, fragment, routeValues, htmlAttributes));
 
             htmlHelperMock.Setup(h => h.RouteLink(
                 It.IsAny<string>(),
@@ -90,10 +131,25 @@
                 It.IsAny<string>(),
                 It.IsAny<object>(),
                 It.IsAny<object>()))
-                .Returns((string linkText, string routeName, string protocol, string hostname, string fragment, object routeValues, object htmlAttributes) =>
-                {
-                    return new TestHtmlContent(linkText, routeName, protocol, hostname, fragment, routeValues, htmlAttributes);
-                });
+                .Returns((string linkText, string routeName, string protocol, string hostname, string fragment, object routeValues, object htmlAttributes)
+                    => new TestHtmlContent(linkText, routeName, protocol, hostname, fragment, routeValues, htmlAttributes));
+
+            htmlHelperMock.Setup(h => h.BeginForm(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<object>(),
+                It.IsAny<FormMethod>(),
+                It.IsAny<object>()))
+                .Returns((string actionName, string controllerName, object routeValues, FormMethod method, object htmlAttribues)
+                    => new TestMvcForm(actionName, controllerName, routeValues, method, htmlAttribues));
+
+            htmlHelperMock.Setup(h => h.BeginRouteForm(
+                It.IsAny<string>(),
+                It.IsAny<object>(),
+                It.IsAny<FormMethod>(),
+                It.IsAny<object>()))
+                .Returns((string routeName, object routeValues, FormMethod method, object htmlAttribues)
+                    => new TestMvcForm(routeName, routeValues, method, htmlAttribues));
 
             return htmlHelperMock.Object;
         }
@@ -144,6 +200,40 @@
             public void WriteTo(TextWriter writer, IHtmlEncoder encoder)
             {
             }
+        }
+
+        private class TestMvcForm : MvcForm
+        {
+            public TestMvcForm(string actionName, string controllerName, object routeValues, FormMethod method, object htmlAttribues)
+                : base(new ViewContext())
+            {
+                this.ActionName = actionName;
+                this.ControllerName = controllerName;
+                this.RouteValues = new RouteValueDictionary(routeValues);
+                this.FormMethod = method;
+                this.HtmlAttributes = new RouteValueDictionary(htmlAttribues);
+            }
+
+            public TestMvcForm(string routeName, object routeValues, FormMethod method, object htmlAttribues)
+                : base(new ViewContext())
+            {
+                this.RouteName = routeName;
+                this.RouteValues = new RouteValueDictionary(routeValues);
+                this.FormMethod = method;
+                this.HtmlAttributes = new RouteValueDictionary(htmlAttribues);
+            }
+
+            public string RouteName { get; private set; }
+
+            public string ActionName { get; private set; }
+
+            public string ControllerName { get; private set; }
+
+            public IDictionary<string, object> RouteValues { get; private set; }
+
+            public FormMethod FormMethod { get; private set; }
+
+            public IDictionary<string, object> HtmlAttributes { get; private set; }
         }
 
         public class MyController : Controller

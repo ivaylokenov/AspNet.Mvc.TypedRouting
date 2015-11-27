@@ -15,7 +15,6 @@ namespace Microsoft.AspNet.Mvc.Rendering
         /// from which action name, controller name and route values are resolved.
         /// </summary>
         /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
-        /// <param name="helper">The <see cref="IHtmlHelper"/> instance this method extends.</param>
         /// <param name="linkText">The inner text of the anchor element. Must not be <c>null</c>.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
@@ -43,7 +42,6 @@ namespace Microsoft.AspNet.Mvc.Rendering
         /// from which action name, controller name and route values are resolved.
         /// </summary>
         /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
-        /// <param name="helper">The <see cref="IHtmlHelper"/> instance this method extends.</param>
         /// <param name="linkText">The inner text of the anchor element. Must not be <c>null</c>.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
@@ -79,7 +77,6 @@ namespace Microsoft.AspNet.Mvc.Rendering
         /// from which action name, controller name and route values are resolved.
         /// </summary>
         /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
-        /// <param name="helper">The <see cref="IHtmlHelper"/> instance this method extends.</param>
         /// <param name="linkText">The inner text of the anchor element. Must not be <c>null</c>.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
@@ -121,7 +118,6 @@ namespace Microsoft.AspNet.Mvc.Rendering
         /// from which action name, controller name and route values are resolved.
         /// </summary>
         /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
-        /// <param name="helper">The <see cref="IHtmlHelper"/> instance this method extends.</param>
         /// <param name="linkText">The inner text of the anchor element. Must not be <c>null</c>.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
@@ -171,7 +167,6 @@ namespace Microsoft.AspNet.Mvc.Rendering
         /// from which action name, controller name and route values are resolved.
         /// </summary>
         /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
-        /// <param name="helper">The <see cref="IHtmlHelper"/> instance this method extends.</param>
         /// <param name="linkText">The inner text of the anchor element. Must not be <c>null</c>.</param>
         /// <param name="routeName">The name of the route.</param>
         /// <param name="action">
@@ -202,7 +197,6 @@ namespace Microsoft.AspNet.Mvc.Rendering
         /// from which action name, controller name and route values are resolved.
         /// </summary>
         /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
-        /// <param name="helper">The <see cref="IHtmlHelper"/> instance this method extends.</param>
         /// <param name="linkText">The inner text of the anchor element. Must not be <c>null</c>.</param>
         /// <param name="routeName">The name of the route.</param>
         /// <param name="action">
@@ -241,7 +235,6 @@ namespace Microsoft.AspNet.Mvc.Rendering
         /// from which action name, controller name and route values are resolved.
         /// </summary>
         /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
-        /// <param name="helper">The <see cref="IHtmlHelper"/> instance this method extends.</param>
         /// <param name="linkText">The inner text of the anchor element. Must not be <c>null</c>.</param>
         /// <param name="routeName">The name of the route.</param>
         /// <param name="action">
@@ -286,7 +279,6 @@ namespace Microsoft.AspNet.Mvc.Rendering
         /// from which action name, controller name and route values are resolved.
         /// </summary>
         /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
-        /// <param name="helper">The <see cref="IHtmlHelper"/> instance this method extends.</param>
         /// <param name="linkText">The inner text of the anchor element. Must not be <c>null</c>.</param>
         /// <param name="routeName">The name of the route.</param>
         /// <param name="action">
@@ -332,44 +324,45 @@ namespace Microsoft.AspNet.Mvc.Rendering
         }
 
         /// <summary>
-        /// Renders a &lt;form&gt; start tag to the response. When the user submits the form, the action with name
-        /// <paramref name="actionName"/> will process the request.
+        /// Renders a &lt;form&gt; start tag to the response. When the user submits the form, the action from the
+        /// <see cref="Expression{TDelegate}"/> will process the request.
         /// </summary>
-        /// <param name="htmlHelper">The <see cref="IHtmlHelper"/> instance this method extends.</param>
-        /// <param name="actionName">The name of the action method.</param>
-        /// <param name="controllerName">The name of the controller.</param>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
         /// <returns>
         /// An <see cref="MvcForm"/> instance which renders the &lt;/form&gt; end tag when disposed.
         /// </returns>
         /// <remarks>
         /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
         /// </remarks>
-        public static MvcForm BeginForm(
-            this IHtmlHelper htmlHelper,
-            string actionName,
-            string controllerName)
+        public static MvcForm BeginForm<TController>(
+            this IHtmlHelper helper,
+            Expression<Action<TController>> action)
         {
-            if (htmlHelper == null)
-            {
-                throw new ArgumentNullException(nameof(htmlHelper));
-            }
-
-            return htmlHelper.BeginForm(actionName, controllerName, routeValues: null,
-                                        method: FormMethod.Post, htmlAttributes: null);
+            return helper.BeginForm(
+                action,
+                routeValues: null,
+                method: FormMethod.Post,
+                htmlAttributes: null);
         }
 
         /// <summary>
-        /// Renders a &lt;form&gt; start tag to the response. When the user submits the form, the action with name
-        /// <paramref name="actionName"/> will process the request.
+        /// Renders a &lt;form&gt; start tag to the response. When the user submits the form, the action from the
+        /// <see cref="Expression{TDelegate}"/> will process the request.
         /// </summary>
-        /// <param name="htmlHelper">The <see cref="IHtmlHelper"/> instance this method extends.</param>
-        /// <param name="actionName">The name of the action method.</param>
-        /// <param name="controllerName">The name of the controller.</param>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
         /// <param name="routeValues">
         /// An <see cref="object"/> that contains the parameters for a route. The parameters are retrieved through
         /// reflection by examining the properties of the <see cref="object"/>. This <see cref="object"/> is typically
         /// created using <see cref="object"/> initializer syntax. Alternatively, an
-        /// <see cref="System.Collections.Generic.IDictionary{string, object}"/> instance containing the route
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the route
         /// parameters.
         /// </param>
         /// <returns>
@@ -378,28 +371,27 @@ namespace Microsoft.AspNet.Mvc.Rendering
         /// <remarks>
         /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
         /// </remarks>
-        public static MvcForm BeginForm(
-            this IHtmlHelper htmlHelper,
-            string actionName,
-            string controllerName,
+        public static MvcForm BeginForm<TController>(
+            this IHtmlHelper helper,
+            Expression<Action<TController>> action,
             object routeValues)
         {
-            if (htmlHelper == null)
-            {
-                throw new ArgumentNullException(nameof(htmlHelper));
-            }
-
-            return htmlHelper.BeginForm(actionName, controllerName, routeValues,
-                                        FormMethod.Post, htmlAttributes: null);
+            return helper.BeginForm(
+                action,
+                routeValues,
+                FormMethod.Post,
+                htmlAttributes: null);
         }
 
         /// <summary>
-        /// Renders a &lt;form&gt; start tag to the response. When the user submits the form, the action with name
-        /// <paramref name="actionName"/> will process the request.
+        /// Renders a &lt;form&gt; start tag to the response. When the user submits the form, the action from the
+        /// <see cref="Expression{TDelegate}"/> will process the request.
         /// </summary>
-        /// <param name="htmlHelper">The <see cref="IHtmlHelper"/> instance this method extends.</param>
-        /// <param name="actionName">The name of the action method.</param>
-        /// <param name="controllerName">The name of the controller.</param>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
         /// <param name="method">The HTTP method for processing the form, either GET or POST.</param>
         /// <returns>
         /// An <see cref="MvcForm"/> instance which renders the &lt;/form&gt; end tag when disposed.
@@ -407,33 +399,31 @@ namespace Microsoft.AspNet.Mvc.Rendering
         /// <remarks>
         /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
         /// </remarks>
-        public static MvcForm BeginForm(
-            this IHtmlHelper htmlHelper,
-            string actionName,
-            string controllerName,
+        public static MvcForm BeginForm<TController>(
+            this IHtmlHelper helper,
+            Expression<Action<TController>> action,
             FormMethod method)
         {
-            if (htmlHelper == null)
-            {
-                throw new ArgumentNullException(nameof(htmlHelper));
-            }
-
-            return htmlHelper.BeginForm(actionName, controllerName, routeValues: null,
-                                        method: method, htmlAttributes: null);
+            return helper.BeginForm(
+                action,
+                routeValues: null,
+                method: method,
+                htmlAttributes: null);
         }
 
         /// <summary>
-        /// Renders a &lt;form&gt; start tag to the response. When the user submits the form, the action with name
-        /// <paramref name="actionName"/> will process the request.
+        /// Renders a &lt;form&gt; start tag to the response. When the user submits the form, the action from the
+        /// <see cref="Expression{TDelegate}"/> will process the request.
         /// </summary>
-        /// <param name="htmlHelper">The <see cref="IHtmlHelper"/> instance this method extends.</param>
-        /// <param name="actionName">The name of the action method.</param>
-        /// <param name="controllerName">The name of the controller.</param>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
         /// <param name="routeValues">
         /// An <see cref="object"/> that contains the parameters for a route. The parameters are retrieved through
         /// reflection by examining the properties of the <see cref="object"/>. This <see cref="object"/> is typically
         /// created using <see cref="object"/> initializer syntax. Alternatively, an
-        /// <see cref="System.Collections.Generic.IDictionary{string, object}"/> instance containing the route
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the route
         /// parameters.
         /// </param>
         /// <param name="method">The HTTP method for processing the form, either GET or POST.</param>
@@ -443,33 +433,32 @@ namespace Microsoft.AspNet.Mvc.Rendering
         /// <remarks>
         /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
         /// </remarks>
-        public static MvcForm BeginForm(
-            this IHtmlHelper htmlHelper,
-            string actionName,
-            string controllerName,
+        public static MvcForm BeginForm<TController>(
+            this IHtmlHelper helper,
+            Expression<Action<TController>> action,
             object routeValues,
             FormMethod method)
         {
-            if (htmlHelper == null)
-            {
-                throw new ArgumentNullException(nameof(htmlHelper));
-            }
-
-            return htmlHelper.BeginForm(actionName, controllerName, routeValues,
-                                        method, htmlAttributes: null);
+            return helper.BeginForm(
+                action,
+                routeValues,
+                method,
+                htmlAttributes: null);
         }
 
         /// <summary>
-        /// Renders a &lt;form&gt; start tag to the response. When the user submits the form, the action with name
-        /// <paramref name="actionName"/> will process the request.
+        /// Renders a &lt;form&gt; start tag to the response. When the user submits the form, the action from the
+        /// <see cref="Expression{TDelegate}"/> will process the request.
         /// </summary>
-        /// <param name="htmlHelper">The <see cref="IHtmlHelper"/> instance this method extends.</param>
-        /// <param name="actionName">The name of the action method.</param>
-        /// <param name="controllerName">The name of the controller.</param>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
         /// <param name="method">The HTTP method for processing the form, either GET or POST.</param>
         /// <param name="htmlAttributes">
         /// An <see cref="object"/> that contains the HTML attributes for the element. Alternatively, an
-        /// <see cref="System.Collections.Generic.IDictionary{string, object}"/> instance containing the HTML
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the HTML
         /// attributes.
         /// </param>
         /// <returns>
@@ -478,33 +467,128 @@ namespace Microsoft.AspNet.Mvc.Rendering
         /// <remarks>
         /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
         /// </remarks>
-        public static MvcForm BeginForm(
-            this IHtmlHelper htmlHelper,
-            string actionName,
-            string controllerName,
+        public static MvcForm BeginForm<TController>(
+            this IHtmlHelper helper,
+            Expression<Action<TController>> action,
             FormMethod method,
             object htmlAttributes)
         {
-            if (htmlHelper == null)
-            {
-                throw new ArgumentNullException(nameof(htmlHelper));
-            }
+            return helper.BeginForm(
+                action,
+                routeValues: null,
+                method: method,
+                htmlAttributes: htmlAttributes);
+        }
 
-            return htmlHelper.BeginForm(actionName, controllerName, routeValues: null,
-                                        method: method, htmlAttributes: htmlAttributes);
+        /// <summary>
+        /// Renders a &lt;form&gt; start tag to the response. When the user submits the form, the action from the
+        /// <see cref="Expression{TDelegate}"/> will process the request.
+        /// </summary>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
+        /// <param name="routeValues">
+        /// An <see cref="object"/> that contains the parameters for a route. The parameters are retrieved through
+        /// reflection by examining the properties of the <see cref="object"/>. This <see cref="object"/> is typically
+        /// created using <see cref="object"/> initializer syntax. Alternatively, an
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the route
+        /// parameters.
+        /// </param>
+        /// <param name="method">The HTTP method for processing the form, either GET or POST.</param>
+        /// <param name="htmlAttributes">
+        /// An <see cref="object"/> that contains the HTML attributes for the element. Alternatively, an
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the HTML
+        /// attributes.
+        /// </param>
+        /// <returns>
+        /// An <see cref="MvcForm"/> instance which renders the &lt;/form&gt; end tag when disposed.
+        /// </returns>
+        /// <remarks>
+        /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
+        /// </remarks>
+        public static MvcForm BeginForm<TController>(
+            this IHtmlHelper helper,
+            Expression<Action<TController>> action,
+            object routeValues,
+            FormMethod method,
+            object htmlAttributes)
+        {
+            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
+            return helper.BeginForm(
+                expressionRouteValues.Action,
+                expressionRouteValues.Controller,
+                routeValues: expressionRouteValues.RouteValues,
+                method: method,
+                htmlAttributes: htmlAttributes);
         }
 
         /// <summary>
         /// Renders a &lt;form&gt; start tag to the response. The route with name <paramref name="routeName"/>
         /// generates the &lt;form&gt;'s <c>action</c> attribute value.
         /// </summary>
-        /// <param name="htmlHelper">The <see cref="IHtmlHelper"/> instance this method extends.</param>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="routeName">The name of the route.</param>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
+        /// <returns>
+        /// An <see cref="MvcForm"/> instance which renders the &lt;/form&gt; end tag when disposed.
+        /// </returns>
+        /// <remarks>
+        /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
+        /// </remarks>
+        public static MvcForm BeginRouteForm<TController>(
+            this IHtmlHelper helper,
+            string routeName,
+            Expression<Action<TController>> action)
+        {
+            return helper.BeginRouteForm(routeName, routeValues: null, method: FormMethod.Post, htmlAttributes: null);
+        }
+
+        /// <summary>
+        /// Renders a &lt;form&gt; start tag to the response. The route with name <paramref name="routeName"/>
+        /// generates the &lt;form&gt;'s <c>action</c> attribute value.
+        /// </summary>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
+        /// <param name="routeName">The name of the route.</param>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
+        /// <param name="method">The HTTP method for processing the form, either GET or POST.</param>
+        /// <returns>
+        /// An <see cref="MvcForm"/> instance which renders the &lt;/form&gt; end tag when disposed.
+        /// </returns>
+        /// <remarks>
+        /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
+        /// </remarks>
+        public static MvcForm BeginRouteForm<TController>(
+            this IHtmlHelper helper,
+            string routeName,
+            Expression<Action<TController>> action,
+            FormMethod method)
+        {
+            return helper.BeginRouteForm(routeName, routeValues: null, method: method, htmlAttributes: null);
+        }
+
+        /// <summary>
+        /// Renders a &lt;form&gt; start tag to the response. The route with name <paramref name="routeName"/>
+        /// generates the &lt;form&gt;'s <c>action</c> attribute value.
+        /// </summary>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
+        /// <param name="routeName">The name of the route.</param>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
         /// <param name="routeValues">
         /// An <see cref="object"/> that contains the parameters for a route. The parameters are retrieved through
         /// reflection by examining the properties of the <see cref="object"/>. This <see cref="object"/> is typically
         /// created using <see cref="object"/> initializer syntax. Alternatively, an
-        /// <see cref="System.Collections.Generic.IDictionary{string, object}"/> instance containing the route
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the route
         /// parameters.
         /// </param>
         /// <returns>
@@ -513,30 +597,30 @@ namespace Microsoft.AspNet.Mvc.Rendering
         /// <remarks>
         /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
         /// </remarks>
-        public static MvcForm BeginRouteForm(
-            this IHtmlHelper htmlHelper,
+        public static MvcForm BeginRouteForm<TController>(
+            this IHtmlHelper helper,
             string routeName,
+            Expression<Action<TController>> action,
             object routeValues)
         {
-            if (htmlHelper == null)
-            {
-                throw new ArgumentNullException(nameof(htmlHelper));
-            }
-
-            return htmlHelper.BeginRouteForm(routeName, routeValues, FormMethod.Post, htmlAttributes: null);
+            return helper.BeginRouteForm(routeName, routeValues, FormMethod.Post, htmlAttributes: null);
         }
 
         /// <summary>
         /// Renders a &lt;form&gt; start tag to the response. The route with name <paramref name="routeName"/>
         /// generates the &lt;form&gt;'s <c>action</c> attribute value.
         /// </summary>
-        /// <param name="htmlHelper">The <see cref="IHtmlHelper"/> instance this method extends.</param>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="routeName">The name of the route.</param>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
         /// <param name="routeValues">
         /// An <see cref="object"/> that contains the parameters for a route. The parameters are retrieved through
         /// reflection by examining the properties of the <see cref="object"/>. This <see cref="object"/> is typically
         /// created using <see cref="object"/> initializer syntax. Alternatively, an
-        /// <see cref="System.Collections.Generic.IDictionary{string, object}"/> instance containing the route
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the route
         /// parameters.
         /// </param>
         /// <param name="method">The HTTP method for processing the form, either GET or POST.</param>
@@ -546,37 +630,76 @@ namespace Microsoft.AspNet.Mvc.Rendering
         /// <remarks>
         /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
         /// </remarks>
-        public static MvcForm BeginRouteForm(
-            this IHtmlHelper htmlHelper,
+        public static MvcForm BeginRouteForm<TController>(
+            this IHtmlHelper helper,
             string routeName,
+            Expression<Action<TController>> action,
             object routeValues,
             FormMethod method)
         {
-            if (htmlHelper == null)
-            {
-                throw new ArgumentNullException(nameof(htmlHelper));
-            }
-
-            return htmlHelper.BeginRouteForm(routeName, routeValues, method, htmlAttributes: null);
+            return helper.BeginRouteForm(routeName, routeValues, method, htmlAttributes: null);
         }
 
         /// <summary>
         /// Renders a &lt;form&gt; start tag to the response. The route with name <paramref name="routeName"/>
         /// generates the &lt;form&gt;'s <c>action</c> attribute value.
         /// </summary>
-        /// <param name="htmlHelper">The <see cref="IHtmlHelper"/> instance this method extends.</param>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="routeName">The name of the route.</param>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
         /// <param name="routeValues">
         /// An <see cref="object"/> that contains the parameters for a route. The parameters are retrieved through
         /// reflection by examining the properties of the <see cref="object"/>. This <see cref="object"/> is typically
         /// created using <see cref="object"/> initializer syntax. Alternatively, an
-        /// <see cref="System.Collections.Generic.IDictionary{string, object}"/> instance containing the route
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the route
+        /// parameters.
+        /// </param>
+        /// <param name="method">The HTTP method for processing the form, either GET or POST.</param>
+        /// <returns>
+        /// An <see cref="MvcForm"/> instance which renders the &lt;/form&gt; end tag when disposed.
+        /// </returns>
+        /// <param name="htmlAttributes">
+        /// An <see cref="object"/> that contains the HTML attributes for the element. Alternatively, an
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the HTML
+        /// attributes.
+        /// </param>
+        /// <remarks>
+        /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
+        /// </remarks>
+        public static MvcForm BeginRouteForm<TController>(
+            this IHtmlHelper helper,
+            string routeName,
+            Expression<Action<TController>> action,
+            FormMethod method,
+            object htmlAttributes)
+        {
+            return helper.BeginRouteForm(routeName, routeValues: null, method: method, htmlAttributes: htmlAttributes);
+        }
+
+        /// <summary>
+        /// Renders a &lt;form&gt; start tag to the response. The route with name <paramref name="routeName"/>
+        /// generates the &lt;form&gt;'s <c>action</c> attribute value.
+        /// </summary>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
+        /// <param name="routeName">The name of the route.</param>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
+        /// <param name="routeValues">
+        /// An <see cref="object"/> that contains the parameters for a route. The parameters are retrieved through
+        /// reflection by examining the properties of the <see cref="object"/>. This <see cref="object"/> is typically
+        /// created using <see cref="object"/> initializer syntax. Alternatively, an
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the route
         /// parameters.
         /// </param>
         /// <param name="method">The HTTP method for processing the form, either GET or POST.</param> 
         /// <param name="htmlAttributes">
         /// An <see cref="object"/> that contains the HTML attributes for the element. Alternatively, an
-        /// <see cref="System.Collections.Generic.IDictionary{string, object}"/> instance containing the HTML
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the HTML
         /// attributes.
         /// </param>
         /// <returns>
@@ -585,19 +708,20 @@ namespace Microsoft.AspNet.Mvc.Rendering
         /// <remarks>
         /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
         /// </remarks>
-        public static MvcForm BeginRouteForm(
-            this IHtmlHelper htmlHelper,
+        public static MvcForm BeginRouteForm<TController>(
+            this IHtmlHelper helper,
             string routeName,
+            Expression<Action<TController>> action,
             object routeValues,
             FormMethod method,
             object htmlAttributes)
         {
-            if (htmlHelper == null)
-            {
-                throw new ArgumentNullException(nameof(htmlHelper));
-            }
+            var expressionRouteValues = ExpressionRouteHelper.Resolve(
+                action,
+                routeValues,
+                addControllerAndActionToRouteValues: true);
 
-            return htmlHelper.BeginRouteForm(routeName, routeValues, method, htmlAttributes: null);
+            return helper.BeginRouteForm(routeName, expressionRouteValues.RouteValues, method, htmlAttributes);
         }
     }
 }
