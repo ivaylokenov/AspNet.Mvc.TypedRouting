@@ -12,6 +12,9 @@
 
     public static class ExpressionRouteHelper
     {
+        // This key should be ignored as it used internally for route attribute matching.
+        private static readonly string RouteGroupKey = "!__route_group";
+
         private static readonly ConcurrentDictionary<MethodInfo, ControllerActionDescriptor> ControllerActionDescriptorCache =
             new ConcurrentDictionary<MethodInfo, ControllerActionDescriptor>();
         
@@ -60,9 +63,8 @@
 
                 var controllerName = controllerActionDescriptor.ControllerName;
                 var actionName = controllerActionDescriptor.Name;
-
-                bool canBeCached = true;
-                var routeValues = GetRouteValues(methodInfo, methodCallExpression, controllerActionDescriptor, out canBeCached);
+                
+                var routeValues = GetRouteValues(methodInfo, methodCallExpression, controllerActionDescriptor);
 
                 // If there is a route constraint with specific expected value, add it to the result.
                 var routeConstraints = controllerActionDescriptor.RouteConstraints;
@@ -71,6 +73,11 @@
                     var routeConstraint = routeConstraints[i];
                     var routeKey = routeConstraint.RouteKey;
                     var routeValue = routeConstraint.RouteValue;
+                    
+                    if (string.Equals(routeKey, RouteGroupKey))
+                    {
+                        continue;
+                    }
 
                     if (routeValue != string.Empty)
                     {
@@ -140,10 +147,8 @@
         private static IDictionary<string, object> GetRouteValues(
             MethodInfo methodInfo,
             MethodCallExpression methodCallExpression,
-            ControllerActionDescriptor controllerActionDescriptor,
-            out bool canBeCached)
+            ControllerActionDescriptor controllerActionDescriptor)
         {
-            canBeCached = true;
             var result = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
             var arguments = methodCallExpression.Arguments;
@@ -195,7 +200,6 @@
                 else
                 {
                     // Expresion needs compiling because it is not of constant type.
-                    canBeCached = false;
                     var convertExpression = Expression.Convert(expressionArgument, typeof(object));
                     value = Expression.Lambda<Func<object>>(convertExpression).Compile().Invoke();
                 }

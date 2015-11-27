@@ -14,6 +14,8 @@
     using System;
     using Xunit;
 
+    using With = Microsoft.AspNet.Mvc.With;
+
     [Collection("TypedRoutingTests")]
     public class UrlHelperExtensionsTest
     {
