@@ -12,7 +12,7 @@
 
     public static class ExpressionRouteHelper
     {
-        // This key should be ignored as it used internally for route attribute matching.
+        // This key should be ignored as it is used internally for route attribute matching.
         private static readonly string RouteGroupKey = "!__route_group";
 
         private static readonly ConcurrentDictionary<MethodInfo, ControllerActionDescriptor> ControllerActionDescriptorCache =

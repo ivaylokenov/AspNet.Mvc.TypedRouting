@@ -42,7 +42,7 @@
             Console.WriteLine(new string('-', 40));
 
             RunAndMeasure("(\"action\", \"controller\")",
-                () => urlHelper.Action("Action", "MyController")); // ~7 ms
+                () => urlHelper.Action("Action", "My")); // ~7 ms
 
             RunAndMeasure("(c => c.Action())",
                 () => urlHelper.Action<MyController>(c => c.Action())); // ~20 ms
@@ -54,7 +54,7 @@
             Console.WriteLine(new string('-', 40));
 
             RunAndMeasure("(\"action\", \"controller\", new { id = 1, text = \"text\" })",
-                () => urlHelper.Action("Action", "MyController", new { id = 1, text = "text" })); // ~8 ms
+                () => urlHelper.Action("Action", "My", new { id = 1, text = "text" })); // ~8 ms
 
             RunAndMeasure("(c => c.Action(1, \"text\"))",
                 () => urlHelper.Action<MyController>(c => c.Action(1, "text"))); // ~25 ms
@@ -66,7 +66,7 @@
             Console.WriteLine(new string('-', 40));
 
             RunAndMeasure("(\"action\", \"controller\", new { id, text })",
-                () => urlHelper.Action("Action", "MyController", new { id, text })); // ~8 ms
+                () => urlHelper.Action("Action", "My", new { id, text })); // ~8 ms
 
             RunAndMeasure("(c => c.Action(id, text))",
                 () => urlHelper.Action<MyController>(c => c.Action(id, text))); // ~499 ms
@@ -78,7 +78,7 @@
             Console.WriteLine(new string('-', 40));
 
             RunAndMeasure("(\"action\", \"controller\", new { id, text })",
-                () => urlHelper.Action("Action", "MyController", new { id, text })); // ~7 ms
+                () => urlHelper.Action("Action", "My", new { id, text })); // ~7 ms
 
             RunAndMeasure("(c => c.Action(id, text))",
                 () => urlHelper.Action<MyController>(c => c.Action(With.No<int>(), With.No<string>()), new { id, text })); // ~70 ms
@@ -90,7 +90,7 @@
             Console.WriteLine(new string('-', 40));
 
             RunAndMeasure("(\"action\", \"controller\", new { id, model })",
-                () => urlHelper.Action("Action", "MyController", new { id, model })); // ~7 ms
+                () => urlHelper.Action("Action", "My", new { id, model })); // ~7 ms
 
             RunAndMeasure("(c => c.Action(id, model))",
                 () => urlHelper.Action<MyController>(c => c.Action(id, model))); // ~692 ms
@@ -102,7 +102,7 @@
             Console.WriteLine(new string('-', 40));
 
             RunAndMeasure("(\"action\", \"controller\", new { id, model })",
-                () => urlHelper.Action("Action", "MyController", new { id, model })); // ~8 ms
+                () => urlHelper.Action("Action", "My", new { id, model })); // ~8 ms
 
             RunAndMeasure("(c => c.Action(With.No<int>(), With.No<RequestModel>()))",
                 () => urlHelper.Action<MyController>(c => c.Action(With.No<int>(), With.No<RequestModel>()), new { id, model })); // ~67 ms

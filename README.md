@@ -1,1 +1,319 @@
 # AspNet.Mvc.TypedRouting
+
+This package gives you typed expression based routing and link generation in [ASP.NET MVC 6](https://github.com/aspnet/Mvc) web application. Currently working with version 6.0.0-rc1-final.
+
+For example:
+
+```c#
+// adding route to specific action
+routes.Add("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index()))
+
+// generating action link
+Html.ActionLink<HomeController>("Index", c => c.Index())
+```
+
+## Installation
+
+You can install this library using NuGet into your web project. There is no need to add any namespace usings since the package uses the default ones to add extension methods.
+
+    Install-Package AspNet.Mvc.TypedRouting -Pre
+
+For other interesting packages check out:
+
+ - [MyTested.WebApi](https://github.com/ivaylokenov/MyTested.WebApi) - fluent testing framework for ASP.NET Web API 2
+ - [ASP.NET MVC 5 Lambda Expression Helpers](https://github.com/ivaylokenov/ASP.NET-MVC-Lambda-Expression-Helpers) - typed expression based link generation for ASP.NET MVC 5
+	
+## How to use
+
+To register typed route into your application, you need to do the following into your `Startup` class:
+
+```c#
+public void ConfigureServices(IServiceCollection services)
+{
+	services.AddMvc().AddTypedRouting(routes =>
+	{
+		routes.Get("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index(With.Any<int>())));
+	});
+}
+```
+
+This will register route http://mysite.com/MyRoute/{id} to match 'HomeController', 'Index' action with any integer as 'id'. Full list of available methods:
+
+```c#
+// adding route to specific controller and any action name
+routes.Add("MyRoute/{action}", route => route.ToController<HomeController>());
+
+// adding route to specific action without parameters
+routes.Add("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index()));
+
+// adding route to specific action with any parameters 
+// * With.Any<TParameter>() is just expressive sugar, you can pass any value
+routes.Add("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index(With.Any<int>())));
+
+// adding route with specific name
+routes.Add("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index())).WithName("RouteName");
+
+// adding route to specific HTTP methods
+routes.Add("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index())).ForHttpMethods("GET", "POST");
+
+// you can also specify methods without magic strings
+routes.Get("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index()));
+routes.Post("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index()));
+routes.Put("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index()));
+routes.Delete("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index()));
+```
+
+To use expression based link generation, you need to do the following into your `Startup` class:
+
+```c#
+public void Configure(IApplicationBuilder app)
+{
+   // other configuration code
+   
+   app.UseMvc(routes =>
+   {
+   	    routes.UseTypedRouting();
+   });
+}
+```
+
+Basically, you can do the following:
+
+```c#
+// generating link without parameters - /Home/Index
+urlHelper.Action<HomeController>(c => c.Index());
+
+// generating link with parameters - /Home/Index/1
+urlHelper.Action<HomeController>(c => c.Index(1));
+
+// generating link with additional route values - /Home/Index/1?key=value
+urlHelper.Action<HomeController>(c => c.Index(1), new { key = "value" });
+
+// generating link where action needs parameters to be compiled, but you do not want to pass them - /Home/Index
+// * With.No<TParameter>() is just expressive sugar, you can pass 'null' for reference types but it looks ugly
+urlHelper.Action<HomeController>(c => c.Index(With.No<int>()));
+```
+
+### Controller extension methods:
+
+```c#
+// uses the same controller in the expression and created object
+controller.CreatedAtAction(c => c.Index(), someObject);
+
+// uses the same controller in the expression, additional route values and created object
+controller.CreatedAtAction(c => c.Index(), new { key = "value" }, someObject);
+
+// uses another controller in the expression and created object
+controller.CreatedAtAction<HomeController>(c => c.Index(), someObject);
+
+// uses another controller in the expression, additional route values and created object
+controller.CreatedAtAction<HomeController>(c => c.Index(), new { key = "value" }, someObject);
+
+// uses route name, the same controller in the expression and created object
+controller.CreatedAtRoute("RouteName", c => c.Index(), someObject);
+
+// uses route name, the same controller in the expression, additional route values and created object
+controller.CreatedAtRoute("RouteName", c => c.Index(), new { key = "value" }, someObject);
+
+// uses route name, another controller in the expression and created object
+controller.CreatedAtRoute<HomeController>("RouteName", c => c.Index(), someObject);
+
+// uses route name, another controller in the expression, additional route values and created object
+controller.CreatedAtRoute<HomeController>("RouteName", c => c.Index(), new { key = "value" }, someObject);
+
+// uses the same controller in the expression to return redirect result
+controller.RedirectToAction(c => c.Index());
+
+// uses the same controller in the expression and additional route values to return redirect result
+controller.RedirectToAction(c => c.Index(), new { key = "value" });
+
+// uses another controller in the expression to return redirect result
+controller.RedirectToAction<HomeController>(c => c.Index());
+
+// uses another controller in the expression and additional route values to return redirect result
+controller.RedirectToAction<HomeController>(c => c.Index(), new { key = "value" });
+
+// uses the same controller in the expression to return permanent redirect result
+controller.RedirectToActionPermanent(c => c.Index());
+
+// uses the same controller in the expression and additional route values to return permanent redirect result
+controller.RedirectToActionPermanent(c => c.Index(), new { key = "value" });
+
+// uses another controller in the expression to return permanent redirect result
+controller.RedirectToActionPermanent<HomeController>(c => c.Index());
+
+// uses another controller in the expression and additional route values to return permanent redirect result
+controller.RedirectToActionPermanent<HomeController>(c => c.Index(), new { key = "value" });
+
+// uses route name, the same controller in the expression to return redirect result
+controller.RedirectToRoute(c => c.Index());
+
+// uses route name, the same controller in the expression and additional route values to return redirect result
+controller.RedirectToRoute(c => c.Index(), new { key = "value" });
+
+// uses route name, another controller in the expression to return redirect result
+controller.RedirectToRoute<HomeController>(c => c.Index());
+
+// uses route name, another controller in the expression and additional route values to return redirect result
+controller.RedirectToRoute<HomeController>(c => c.Index(), new { key = "value" });
+
+// uses route name, the same controller in the expression to return permanent redirect result
+controller.RedirectToRoutePermanent(c => c.Index());
+
+// uses route name, the same controller in the expression and additional route values to return permanent redirect result
+controller.RedirectToRoutePermanent(c => c.Index(), new { key = "value" });
+
+// uses route name, another controller in the expression to return permanent redirect result
+controller.RedirectToRoutePermanent<HomeController>(c => c.Index());
+
+// uses route name, another controller in the expression and additional route values to return permanent redirect result
+controller.RedirectToRoutePermanent<HomeController>(c => c.Index(), new { key = "value" });
+```
+
+### IHtmlHelper extension methods:
+
+```c#
+// generates action link with the link text and the expression
+Html.ActionLink<HomeController>("Link text", c => c.Index());
+
+// generates action link with the link text, the expression and additional route values
+Html.ActionLink<HomeController>("Link text", c => c.Index(), new { key = "value" });
+
+// generates action link with the link text, the expression, additional route values and HTML attributes
+Html.ActionLink<HomeController>("Link text", c => c.Index(), new { key = "value" }, new { @class = "my-class" });
+
+// generates action link with the link text, the expression, protocol, host name, fragment, additional route values and HTML attributes
+Html.ActionLink<HomeController>("Link text", c => c.Index(), "protocol", "hostname", "fragment", new { key = "value" }, new { @class = "my-class" });
+
+// generates action link with route name, the link text and the expression
+Html.RouteLink<HomeController>("Route name", "Link text", c => c.Index());
+
+// generates action link with route name, the link text, the expression and additional route values
+Html.RouteLink<HomeController>("Route name", "Link text", c => c.Index(), new { key = "value" });
+
+// generates action link with route name, the link text, the expression, additional route values and HTML attributes
+Html.RouteLink<HomeController>("Route name", "Link text", c => c.Index(), new { key = "value" }, new { @class = "my-class" });
+
+// generates action link with route name, the link text, the expression, protocol, host name, fragment, additional route values and HTML attributes
+Html.RouteLink<HomeController>("Route name", "Link text", c => c.Index(), "protocol", "hostname", "fragment", new { key = "value" }, new { @class = "my-class" });
+
+// begins form to the action from the expression
+Html.BeginForm<HomeController>(c => c.Index());
+
+// begins form to the action from the expression and additional route values
+Html.BeginForm<HomeController>(c => c.Index(), new { key = "value" });
+
+// begins form to the action from the expression and form method
+Html.BeginForm<HomeController>(c => c.Index(), FormMethod.Post);
+
+// begins form to the action from the expression, additional route values and form method
+Html.BeginForm<HomeController>(c => c.Index(), new { key = "value" },  FormMethod.Post);
+
+// begins form to the action from the expression, form method and HTML attributes
+Html.BeginForm<HomeController>(c => c.Index(), FormMethod.Post, new { @class = "my-class" });
+
+// begins form to the action from the expression, form method and HTML attributes
+Html.BeginForm<HomeController>(c => c.Index(), new { key = "value" }, FormMethod.Post, new { @class = "my-class" });
+
+// begins form to the action from the expression by specifying route name
+Html.BeginRouteForm<HomeController>("Route name", c => c.Index());
+
+// begins form to the action from the expression and additional route values by specifying route name
+Html.BeginRouteForm<HomeController>("Route name", c => c.Index(), new { key = "value" });
+
+// begins form to the action from the expression and form method by specifying route name
+Html.BeginRouteForm<HomeController>("Route name", c => c.Index(), FormMethod.Post);
+
+// begins form to the action from the expression, additional route values and form method by specifying route name
+Html.BeginRouteForm<HomeController>("Route name", c => c.Index(), new { key = "value" },  FormMethod.Post);
+
+// begins form to the action from the expression, form method and HTML attributes by specifying route name
+Html.BeginRouteForm<HomeController>("Route name", c => c.Index(), FormMethod.Post, new { @class = "my-class" });
+
+// begins form to the action from the expression, form method and HTML attributes by specifying route name
+Html.BeginRouteForm<HomeController>("Route name", c => c.Index(), new { key = "value" }, FormMethod.Post, new { @class = "my-class" });
+```
+
+### IUrlHelper extension methods:
+
+```c#
+// generates link to the action from the expression
+urlHelper.Action<HomeController>(c => c.Index());
+
+// generates link to the action from the expression with additional route values
+urlHelper.Action<HomeController>(c => c.Index(), new { key = "value" });
+
+// generates link to the action from the expression with additional route values and protocol
+urlHelper.Action<HomeController>(c => c.Index(), new { key = "value" }, "protocol");
+
+// generates link to the action from the expression with additional route values, protocol and host name
+urlHelper.Action<HomeController>(c => c.Index(), new { key = "value" }, "protocol", "hostname");
+
+// generates link to the action from the expression with additional route values, protocol, host name and fragment
+urlHelper.Action<HomeController>(c => c.Index(), new { key = "value" }, "protocol", "hostname", "fragment");
+
+// generates link to the action from the expression by specifying route name
+urlHelper.Link<HomeController>("Route name", c => c.Index());
+
+// generates link to the action from the expression with additional route values and by specifying route name
+urlHelper.Link<HomeController>("Route name", c => c.Index(), new { key = "value" });
+```
+
+All these methods are well documented and tested. They resolve all kinds of route constraints like `ActionNameAttribute`, `AreaAttribute`, `RouteConstraintAttribute`, `IControllerModelConvention`, `IActionModelConvention` and `IParameterModelConvention`. The expressions use the internally created by the MVC framework ControllerActionDescriptor objects, which contain all route specific information.
+
+### Performance consideration
+
+The expression parsing gives small overhead when generating links but the overall performance is quite good. However, keep in mind the following measurements (you can see the [PerformanceTest sample project](https://github.com/ivaylokenov/AspNet.Mvc.TypedRouting/tree/master/samples/PerformanceTest))
+
+```c#
+// * all these measurements are collected using System.Diagnostics.Stopwatch. It is not the best way
+// * to measure execution time but it gives enough information to compare how much slower is one method to another
+
+// * all measurements are for exactly 5000 generated URLs
+
+// when using expressions without parameters, the results are fine
+urlHelper.Action("Action", "My"); // ~7ms
+urlHelper.Action<MyController>(c => c.Action()); // ~20ms
+
+// when using expressions with constant parameters, the results are also fine
+urlHelper.Action("Action", "My", new { id = 1, text = "text" }); // ~8 ms
+urlHelper.Action<MyController>(c => c.Action(1, "text")); // ~25 ms
+
+// when using expression with variables as parameters, the results
+// get quite slower compared to the magic string based method
+// half a second for 5000 links is still OK for an average
+// web application (thank you, C#) but this can be improved quite easily 
+// * this is because expressions have to be compiled to examine the actual value behind the parameters,
+// * while the anonymous objects are cached internally by the MVC
+urlHelper.Action("Action", "My", new { id, text }); // ~8 ms
+urlHelper.Action<MyController>(c => c.Action(id, text)); // ~499 ms
+
+// first lets see that with model objects as values, the results are quite slower too
+urlHelper.Action("Action", "My", new { id, model = new Model { Integer = 2, String = "text" } }); // ~7 ms
+urlHelper.Action<MyController>(c => c.Action(id, new Model { Integer = 2, String = "text" })); // ~692 ms
+
+// now lets see how we can improve this to become up to ten times faster
+// you can use With.No<TParameter>() in the expression and pass the values as anonymous object
+// * the expression parser recognises the With.No<TParameter>() method call and skips it without compiling the expression
+// * and the MVC framework caches the anonymous object results
+urlHelper.Action("Action", "My", new { id, text }); // ~7 ms
+urlHelper.Action<MyController>(c => c.Action(With.No<int>(), With.No<string>()), new { id, text }); // ~70 ms
+
+// and with model objects
+urlHelper.Action("Action", "My", new { id, model = new Model { Integer = 2, String = "text" } })); // ~7 ms
+urlHelper.Action<MyController>(c => c.Action(With.No<int>(), With.No<Model>()), new { id, model new Model { Integer = 2, String = "text" }); // ~67 ms
+
+// the code is a bit uglier this way, but if you care about performance, it should be fine
+// you still get typed link generation with all the intellisense and refactoring goodies from your IDE
+// and no magic values at all for specifying controllers and actions
+``` 
+
+## Licence
+
+Code by Ivaylo Kenov. Copyright 2015 Ivaylo Kenov.
+
+This package has MIT license. Refer to the [LICENSE](https://github.com/ivaylokenov/AspNet.Mvc.TypedRouting/blob/master/LICENSE) for detailed information.
+
+## Any questions, comments or additions?
+
+If you have a feature request or bug report, leave an issue on the [issues page](https://github.com/ivaylokenov/AspNet.Mvc.TypedRouting/issues) or send a [pull request](https://github.com/ivaylokenov/AspNet.Mvc.TypedRouting/pulls). For general questions and comments, use the [StackOverflow](http://stackoverflow.com/) forum.

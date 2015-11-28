@@ -3,7 +3,7 @@
   "version": 2,
   "targets": {
     "DNX,Version=v4.5.1": {
-      "AspNet.Mvc.TypedRouting/1.0.0": {
+      "AspNet.Mvc.TypedRouting/1.0.0-rc1-final": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5.1",
         "dependencies": {
@@ -1471,7 +1471,7 @@
       }
     },
     "DNX,Version=v4.5.1/win7-x86": {
-      "AspNet.Mvc.TypedRouting/1.0.0": {
+      "AspNet.Mvc.TypedRouting/1.0.0-rc1-final": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5.1",
         "dependencies": {
@@ -2939,7 +2939,7 @@
       }
     },
     "DNX,Version=v4.5.1/win7-x64": {
-      "AspNet.Mvc.TypedRouting/1.0.0": {
+      "AspNet.Mvc.TypedRouting/1.0.0-rc1-final": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5.1",
         "dependencies": {
@@ -4408,7 +4408,7 @@
     }
   },
   "libraries": {
-    "AspNet.Mvc.TypedRouting/1.0.0": {
+    "AspNet.Mvc.TypedRouting/1.0.0-rc1-final": {
       "type": "project",
       "path": "../../src/AspNet.Mvc.TypedRouting/project.json"
     },

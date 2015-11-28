@@ -1,10 +1,13 @@
 ﻿{
-  "version": "1.0.0-*",
-  "description": "AspNet.Mvc.TypedRouting Class Library",
-  "authors": [ "Admin" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
+  "version": "1.0.1-rc1-final",
+  "title": "ASP.NET MVC 6 Typed Routing",
+  "copyright": "2015 Ivaylo Kenov",
+  "description": "AspNet.Mvc.TypedRouting is a class library allowing typed expression based route registration and link generation for ASP.NET MVC 6. See the project repository for more information and available features.",
+  "summary": "Typed expression based routing and link generation for ASP.NET MVC 6.",
+  "authors": [ "Ivaylo Kenov" ],
+  "tags": [ "asp.net mvc typed routing routes links expressions lambda" ],
+  "projectUrl": "https://github.com/ivaylokenov/AspNet.Mvc.TypedRouting",
+  "licenseUrl": "https://github.com/ivaylokenov/AspNet.Mvc.TypedRouting/blob/master/LICENSE",
 
   "dependencies": {
     "Microsoft.AspNet.Mvc": "6.0.0-rc1-final"
@@ -12,14 +15,6 @@
 
   "frameworks": {
     "net451": { },
-    "dotnet5.4": {
-      "dependencies": {
-        "Microsoft.CSharp": "4.0.1-beta-23516",
-        "System.Collections": "4.0.11-beta-23516",
-        "System.Linq": "4.0.1-beta-23516",
-        "System.Runtime": "4.0.21-beta-23516",
-        "System.Threading": "4.0.11-beta-23516"
-      }
-    }
+    "dotnet5.4": { }
   }
 }

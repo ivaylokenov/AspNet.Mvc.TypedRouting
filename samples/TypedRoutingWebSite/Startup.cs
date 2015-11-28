@@ -26,7 +26,7 @@ namespace TypedRoutingWebSite
             // Add framework services.
             services.AddMvc().AddTypedRouting(routes =>
             {
-                routes.Get("CustomController/{action}", c => c.ToController<ExpressionsController>());
+                routes.Get("CustomController/{action}", route => route.ToController<ExpressionsController>());
                 routes.Get("CustomContact", route => route.ToAction<HomeController>(a => a.Contact()));
                 routes.Get("WithParameter/{id}", route => route.ToAction<HomeController>(a => a.Index(With.Any<int>())));
             });

@@ -32,6 +32,7 @@
 
         private TypedRoute AddRoute(string template, Action<TypedRoute> configuration)
         {
+            // Action template should be replaced because we are actually using attribute route models.
             var route = new TypedRoute(template.Replace("{action}", "[action]"));
             configuration(route);
 
