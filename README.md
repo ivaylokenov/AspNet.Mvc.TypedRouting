@@ -1,6 +1,6 @@
 # AspNet.Mvc.TypedRouting
 
-This package gives you typed expression based routing and link generation in [ASP.NET MVC 6](https://github.com/aspnet/Mvc) web application. Currently working with version 6.0.0-rc1-final.
+This package gives you typed expression based routing and link generation in a [ASP.NET MVC 6](https://github.com/aspnet/Mvc) web application. Currently working with version 6.0.0-rc1-final.
 
 For example:
 
@@ -25,7 +25,7 @@ For other interesting packages check out:
 	
 ## How to use
 
-You can see the provided [sample](https://github.com/ivaylokenov/AspNet.Mvc.TypedRouting/tree/master/samples/TypedRoutingWebSite) to see a working web application with this library. 
+You can check the provided [sample](https://github.com/ivaylokenov/AspNet.Mvc.TypedRouting/tree/master/samples/TypedRoutingWebSite) to see a working web application with this library. 
 
 To register typed route into your application, you need to do the following into your `Startup` class:
 
@@ -95,6 +95,8 @@ urlHelper.Action<HomeController>(c => c.Index(1), new { key = "value" });
 // * With.No<TParameter>() is just expressive sugar, you can pass 'null' for reference types but it looks ugly
 urlHelper.Action<HomeController>(c => c.Index(With.No<int>()));
 ```
+
+All methods resolve all kinds of route constraints like `ActionNameAttribute`, `AreaAttribute`, `RouteConstraintAttribute`, `IControllerModelConvention`, `IActionModelConvention` and `IParameterModelConvention`. The expressions use the internally created by the MVC framework `ControllerActionDescriptor` objects, which contain all route specific information.
 
 ### Controller extension methods:
 
@@ -261,7 +263,7 @@ urlHelper.Link<HomeController>("Route name", c => c.Index());
 urlHelper.Link<HomeController>("Route name", c => c.Index(), new { key = "value" });
 ```
 
-All these methods are well documented, tested and resolve route values successfully. They resolve all kinds of route constraints like `ActionNameAttribute`, `AreaAttribute`, `RouteConstraintAttribute`, `IControllerModelConvention`, `IActionModelConvention` and `IParameterModelConvention`. The expressions use the internally created by the MVC framework ControllerActionDescriptor objects, which contain all route specific information.
+All these methods are well documented, tested and resolve route values successfully.
 
 ### Performance consideration
 
