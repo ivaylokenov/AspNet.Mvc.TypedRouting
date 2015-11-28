@@ -25,6 +25,8 @@ For other interesting packages check out:
 	
 ## How to use
 
+You can see the provided [sample](https://github.com/ivaylokenov/AspNet.Mvc.TypedRouting/tree/master/samples/TypedRoutingWebSite) to see a working web application with this library. 
+
 To register typed route into your application, you need to do the following into your `Startup` class:
 
 ```c#
@@ -51,10 +53,10 @@ routes.Add("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index(
 routes.Add("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index(With.Any<int>())));
 
 // adding route with specific name
-routes.Add("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index())).WithName("RouteName");
+routes.Add("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index()).WithName("RouteName"));
 
 // adding route to specific HTTP methods
-routes.Add("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index())).ForHttpMethods("GET", "POST");
+routes.Add("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index()).ForHttpMethods("GET", "POST"));
 
 // you can also specify methods without magic strings
 routes.Get("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index()));
@@ -259,53 +261,53 @@ urlHelper.Link<HomeController>("Route name", c => c.Index());
 urlHelper.Link<HomeController>("Route name", c => c.Index(), new { key = "value" });
 ```
 
-All these methods are well documented and tested. They resolve all kinds of route constraints like `ActionNameAttribute`, `AreaAttribute`, `RouteConstraintAttribute`, `IControllerModelConvention`, `IActionModelConvention` and `IParameterModelConvention`. The expressions use the internally created by the MVC framework ControllerActionDescriptor objects, which contain all route specific information.
+All these methods are well documented, tested and resolve route values successfully. They resolve all kinds of route constraints like `ActionNameAttribute`, `AreaAttribute`, `RouteConstraintAttribute`, `IControllerModelConvention`, `IActionModelConvention` and `IParameterModelConvention`. The expressions use the internally created by the MVC framework ControllerActionDescriptor objects, which contain all route specific information.
 
 ### Performance consideration
 
 The expression parsing gives small overhead when generating links but the overall performance is quite good. However, keep in mind the following measurements (you can see the [PerformanceTest sample project](https://github.com/ivaylokenov/AspNet.Mvc.TypedRouting/tree/master/samples/PerformanceTest))
 
 ```c#
-// * all these measurements are collected using System.Diagnostics.Stopwatch. It is not the best way
-// * to measure execution time but it gives enough information to compare how much slower is one method to another
+// * All these measurements are collected using System.Diagnostics.Stopwatch. It is not the best way
+// * to measure execution time but it gives enough information to compare how much slower is one method to another.
 
-// * all measurements are for exactly 5000 generated URLs
+// * All measurements are for exactly 5000 generated URLs.
 
-// when using expressions without parameters, the results are fine
+// When using expressions without parameters, the results are fine.
 urlHelper.Action("Action", "My"); // ~7ms
 urlHelper.Action<MyController>(c => c.Action()); // ~20ms
 
-// when using expressions with constant parameters, the results are also fine
+// When using expressions with constant parameters, the results are also fine.
 urlHelper.Action("Action", "My", new { id = 1, text = "text" }); // ~8 ms
 urlHelper.Action<MyController>(c => c.Action(1, "text")); // ~25 ms
 
-// when using expression with variables as parameters, the results
-// get quite slower compared to the magic string based method
-// half a second for 5000 links is still OK for an average
-// web application (thank you, C#) but this can be improved quite easily 
-// * this is because expressions have to be compiled to examine the actual value behind the parameters,
-// * while the anonymous objects are cached internally by the MVC
+// When using expression with variables as parameters, the results
+// get quite slower compared to the magic string based method.
+// Half a second for 5000 links is still OK for an average
+// web application (thank you, C#) but this can be improved quite easily.
+// * This is because expressions have to be compiled to examine the actual values behind the parameters,
+// * while the anonymous objects are cached internally by the MVC.
 urlHelper.Action("Action", "My", new { id, text }); // ~8 ms
 urlHelper.Action<MyController>(c => c.Action(id, text)); // ~499 ms
 
-// first lets see that with model objects as values, the results are quite slower too
+// With model objects as values, the results are quite slower too.
 urlHelper.Action("Action", "My", new { id, model = new Model { Integer = 2, String = "text" } }); // ~7 ms
 urlHelper.Action<MyController>(c => c.Action(id, new Model { Integer = 2, String = "text" })); // ~692 ms
 
-// now lets see how we can improve this to become up to ten times faster
-// you can use With.No<TParameter>() in the expression and pass the values as anonymous object
-// * the expression parser recognises the With.No<TParameter>() method call and skips it without compiling the expression
+// Now lets see how we can improve this to become up to ten times faster.
+// You can use With.No<TParameter>() in the expression and pass the values as anonymous object.
+// * The expression parser recognises the With.No<TParameter>() method call and skips it without compiling the expression
 // * and the MVC framework caches the anonymous object results
 urlHelper.Action("Action", "My", new { id, text }); // ~7 ms
 urlHelper.Action<MyController>(c => c.Action(With.No<int>(), With.No<string>()), new { id, text }); // ~70 ms
 
-// and with model objects
+// And with model objects.
 urlHelper.Action("Action", "My", new { id, model = new Model { Integer = 2, String = "text" } })); // ~7 ms
 urlHelper.Action<MyController>(c => c.Action(With.No<int>(), With.No<Model>()), new { id, model new Model { Integer = 2, String = "text" }); // ~67 ms
 
-// the code is a bit uglier this way, but if you care about performance, it should be fine
-// you still get typed link generation with all the intellisense and refactoring goodies from your IDE
-// and no magic values at all for specifying controllers and actions
+// The code is a bit uglier this way, but if you care about performance, it should be fine.
+// You still get typed link generation with all the intellisense and refactoring goodies from your IDE
+// and no magic values at all for specifying controllers and actions.
 ``` 
 
 ## Licence
