@@ -1,6 +1,6 @@
 # AspNet.Mvc.TypedRouting
 
-Resolving controller and action names for various purposes in ASP.NET MVC was always unreliable because the framework uses magic strings in its methods (for example `Url.Action("Action", "Controller")`). With the C# 6.0 `nameof` operator, the problem was partially solved. However, it cannot be used with various MVC 6 features like `ActionNameAttribute`, `AreaAttribute`, `RouteConstraintAttribute`, `IControllerModelConvention`, `IActionModelConvention`, `IParameterModelConvention` and more. Here comes `AspNet.Mvc.TypedRouting` to the rescue!
+Resolving controller and action names for various purposes in ASP.NET MVC was always unreliable because the framework uses magic strings in its methods (for example `Url.Action("Action", "Controller")`). With the C# 6.0 `nameof` operator, the problem was partially solved. However, `nameof` cannot be used with various MVC 6 features like `ActionNameAttribute`, `AreaAttribute`, `RouteConstraintAttribute`, `IControllerModelConvention`, `IActionModelConvention`, `IParameterModelConvention` and more. Here comes `AspNet.Mvc.TypedRouting` to the rescue!
 
 This package gives you typed expression based routing and link generation in a [ASP.NET MVC 6](https://github.com/aspnet/Mvc) web application. Currently working with version 6.0.0-rc1-final.
 
@@ -305,7 +305,7 @@ urlHelper.Action<MyController>(c => c.Action(1, "text")); // ~25 ms
 // Half a second for 5000 links is still OK for an average
 // web application (thank you, C#) but this can be improved quite easily.
 // * This is because expressions have to be compiled to examine the actual values behind the parameters,
-// * while the anonymous objects are cached internally by the MVC.
+// * while the anonymous objects are cached internally by the MVC framework.
 urlHelper.Action("Action", "My", new { id, text }); // ~8 ms
 urlHelper.Action<MyController>(c => c.Action(id, text)); // ~499 ms
 
