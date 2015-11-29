@@ -299,7 +299,7 @@ urlHelper.Action<MyController>(c => c.Action(id, new Model { Integer = 2, String
 // Now lets see how we can improve this to become up to ten times faster.
 // You can use With.No<TParameter>() in the expression and pass the values as anonymous object.
 // * The expression parser recognises the With.No<TParameter>() method call and skips it without compiling the expression
-// * and the MVC framework caches the anonymous object results
+// * and the MVC framework caches the anonymous object results.
 urlHelper.Action("Action", "My", new { id, text }); // ~7 ms
 urlHelper.Action<MyController>(c => c.Action(With.No<int>(), With.No<string>()), new { id, text }); // ~70 ms
 

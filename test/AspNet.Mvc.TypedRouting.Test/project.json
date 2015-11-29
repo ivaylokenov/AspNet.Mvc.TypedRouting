@@ -7,7 +7,7 @@
   "licenseUrl": "",
 
   "dependencies": {
-    "AspNet.Mvc.TypedRouting": "1.0.0-*",
+    "AspNet.Mvc.TypedRouting": "1.0.2-*",
     "Microsoft.AspNet.Http": "1.0.0-rc1-final",
     "Moq": "4.2.1510.2205",
     "xunit": "2.1.0",

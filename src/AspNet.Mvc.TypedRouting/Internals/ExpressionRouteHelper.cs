@@ -14,14 +14,29 @@
     {
         // This key should be ignored as it is used internally for route attribute matching.
         private static readonly string RouteGroupKey = "!__route_group";
-
+        
         private static readonly ConcurrentDictionary<MethodInfo, ControllerActionDescriptor> ControllerActionDescriptorCache =
             new ConcurrentDictionary<MethodInfo, ControllerActionDescriptor>();
         
-        private static IActionDescriptorsCollectionProvider lastUsedActionDescriptorsCollectionProvider;
+        private static IActionDescriptorsCollectionProvider actionDescriptorsCollectionProvider;
         
-        public static IServiceProvider ServiceProvider { get; set; }
-        
+        public static void Initialize(IServiceProvider serviceProvider)
+        {
+            ClearActionCache();
+
+            actionDescriptorsCollectionProvider = serviceProvider.GetService(typeof(IActionDescriptorsCollectionProvider)) as IActionDescriptorsCollectionProvider;
+
+            if (actionDescriptorsCollectionProvider == null)
+            {
+                throw new ArgumentNullException(nameof(actionDescriptorsCollectionProvider));
+            }
+        }
+
+        public static void ClearActionCache()
+        {
+            ControllerActionDescriptorCache.Clear();
+        }
+                
         public static ExpressionRouteValues Resolve<TController>(
             Expression<Action<TController>> expression,
             object additionalRouteValues = null,
@@ -32,19 +47,6 @@
                 throw new ArgumentNullException(nameof(expression));
             }
             
-            var actionDescriptorsCollectionProvider = ServiceProvider.GetService(typeof(IActionDescriptorsCollectionProvider)) as IActionDescriptorsCollectionProvider;
-
-            if (actionDescriptorsCollectionProvider == null)
-            {
-                throw new ArgumentNullException(nameof(actionDescriptorsCollectionProvider));
-            }
-
-            if (lastUsedActionDescriptorsCollectionProvider != actionDescriptorsCollectionProvider)
-            {
-                lastUsedActionDescriptorsCollectionProvider = actionDescriptorsCollectionProvider;
-                ControllerActionDescriptorCache.Clear();
-            }
-
             var methodCallExpression = expression.Body as MethodCallExpression;
             if (methodCallExpression != null)
             {
@@ -59,7 +61,7 @@
 
                 // Find controller action descriptor from the provider with the same extracted method info.
                 // This search is potentially slow, so it is cached after the first lookup.
-                var controllerActionDescriptor = GetActionDescriptorFromCache(methodInfo, actionDescriptorsCollectionProvider);
+                var controllerActionDescriptor = GetActionDescriptorFromCache(methodInfo);
 
                 var controllerName = controllerActionDescriptor.ControllerName;
                 var actionName = controllerActionDescriptor.Name;
@@ -116,9 +118,7 @@
             throw new InvalidOperationException("Expression is not valid - expected instance method call but instead received other type of expression.");
         }
 
-        private static ControllerActionDescriptor GetActionDescriptorFromCache(
-            MethodInfo methodInfo,
-            IActionDescriptorsCollectionProvider actionDescriptorsCollectionProvider)
+        private static ControllerActionDescriptor GetActionDescriptorFromCache(MethodInfo methodInfo)
         {
             return ControllerActionDescriptorCache.GetOrAdd(methodInfo, _ =>
             {

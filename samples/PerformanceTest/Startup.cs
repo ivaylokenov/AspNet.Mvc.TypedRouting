@@ -210,7 +210,7 @@
             serviceContainer.AddService(typeof(IEnumerable<IActionDescriptorProvider>), list);
             serviceContainer.AddService(typeof(IActionDescriptorsCollectionProvider), actionDescriptorCollectionProvider);
 
-            ExpressionRouteHelper.ServiceProvider = serviceContainer;
+            ExpressionRouteHelper.Initialize(serviceContainer);
         }
 
         #endregion

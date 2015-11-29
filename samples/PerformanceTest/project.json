@@ -11,7 +11,7 @@
   },
 
   "dependencies": {
-    "AspNet.Mvc.TypedRouting": "1.0.0-*",
+    "AspNet.Mvc.TypedRouting": "1.0.2-*",
     "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
     "Microsoft.AspNet.Http": "1.0.0-rc1-final",
     "Moq": "4.2.1312.1622"

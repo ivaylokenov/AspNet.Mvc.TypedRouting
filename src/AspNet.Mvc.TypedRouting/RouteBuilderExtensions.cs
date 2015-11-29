@@ -11,7 +11,7 @@ namespace Microsoft.AspNet.Builder
         /// </summary>
         public static void UseTypedRouting(this IRouteBuilder routeBuilder)
         {
-            ExpressionRouteHelper.ServiceProvider = routeBuilder.ServiceProvider;
+            ExpressionRouteHelper.Initialize(routeBuilder.ServiceProvider);
         }
     }
 }
