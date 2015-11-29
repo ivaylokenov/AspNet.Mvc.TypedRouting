@@ -1,5 +1,7 @@
 # AspNet.Mvc.TypedRouting
 
+Resolving controller and action names for various purposes in ASP.NET MVC was always unreliable because the framework uses magic strings in its methods (for example `Url.Action("Action", "Controller")`). With the C# 6.0 `nameof` operator, the problem was partially solved. However, it cannot be used with various MVC 6 features like `ActionNameAttribute`, `AreaAttribute`, `RouteConstraintAttribute`, `IControllerModelConvention`, `IActionModelConvention`, `IParameterModelConvention` and more. Here comes `AspNet.Mvc.TypedRouting` to the rescue!
+
 This package gives you typed expression based routing and link generation in a [ASP.NET MVC 6](https://github.com/aspnet/Mvc) web application. Currently working with version 6.0.0-rc1-final.
 
 For example:
@@ -96,7 +98,9 @@ urlHelper.Action<HomeController>(c => c.Index(1), new { key = "value" });
 urlHelper.Action<HomeController>(c => c.Index(With.No<int>()));
 ```
 
-All methods resolve all kinds of route constraints like `ActionNameAttribute`, `AreaAttribute`, `RouteConstraintAttribute`, `IControllerModelConvention`, `IActionModelConvention` and `IParameterModelConvention`. The expressions use the internally created by the MVC framework `ControllerActionDescriptor` objects, which contain all route specific information.
+All methods resolve all kinds of route changing features like `ActionNameAttribute`, `AreaAttribute`, `RouteConstraintAttribute`, `IControllerModelConvention`, `IActionModelConvention`, `IParameterModelConvention` and potentially others. The expressions use the internally created by the MVC framework `ControllerActionDescriptor` objects, which contain all route specific information.
+
+**Make sure you read carefully the [Internal caching](#internal-caching) and [Performance consideration](#performance-consideration) sections of this documentation, before you start using the link generation features of the library!**
 
 ### Controller extension methods:
 
@@ -264,6 +268,19 @@ urlHelper.Link<HomeController>("Route name", c => c.Index(), new { key = "value"
 ```
 
 All these methods are well documented, tested and resolve route values successfully.
+
+### Internal caching
+
+The expression parser uses an internal cache to improve the performance of the route resolving. The important for this package objects from the MVC framework are `IActionDescriptorsCollectionProvider` and the collection of `ControllerActionDescriptor` it provides. These are created at application start up and cached by the MVC framework afterwards for later usage. It is really highly unlikely for a developer to change these objects run-time, but if you do for some reason and see unexpected results from the link generation, you need to clear the expression parser's internal cache or reinitialize it so that it continues to function properly. Here is how it can be done:
+
+```c#
+// clears the internal cache without changing the IActionDescriptorsCollectionProvider
+ExpressionRouteHelper.ClearActionCache();
+
+// reinitializes the link generation with the provided IServiceProvider
+// from which the IActionDescriptorsCollectionProvider will be resolved again
+ExpressionRouteHelper.Initialize(serviceProvider);
+```
 
 ### Performance consideration
 
