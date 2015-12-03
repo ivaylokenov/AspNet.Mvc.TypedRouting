@@ -44,27 +44,27 @@ public void ConfigureServices(IServiceCollection services)
 This will register route http://mysite.com/MyRoute/{id} to match 'HomeController', 'Index' action with any integer as 'id'. Full list of available methods:
 
 ```c#
-// adding route to specific controller and any action name
+// adding route to specific controller and action name taken from name of method
 routes.Add("MyRoute/{action}", route => route.ToController<HomeController>());
 
 // adding route to specific action without parameters
-routes.Add("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index()));
+routes.Add("MyRoute/MyAction", route => route.ToAction<HomeController>(a => a.Index()));
 
 // adding route to specific action with any parameters 
 // * With.Any<TParameter>() is just expressive sugar, you can pass any value
-routes.Add("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index(With.Any<int>())));
+routes.Add("MyRoute/MyAction/{id}", route => route.ToAction<HomeController>(a => a.Index(With.Any<int>())));
 
 // adding route with specific name
-routes.Add("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index()).WithName("RouteName"));
+routes.Add("MyRoute/MyAction", route => route.ToAction<HomeController>(a => a.Index()).WithName("RouteName"));
 
 // adding route to specific HTTP methods
-routes.Add("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index()).ForHttpMethods("GET", "POST"));
+routes.Add("MyRoute/MyAction", route => route.ToAction<HomeController>(a => a.Index()).ForHttpMethods("GET", "POST"));
 
 // you can also specify methods without magic strings
-routes.Get("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index()));
-routes.Post("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index()));
-routes.Put("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index()));
-routes.Delete("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index()));
+routes.Get("MyRoute/MyAction", route => route.ToAction<HomeController>(a => a.Index()));
+routes.Post("MyRoute/MyAction", route => route.ToAction<HomeController>(a => a.Index()));
+routes.Put("MyRoute/MyAction", route => route.ToAction<HomeController>(a => a.Index()));
+routes.Delete("MyRoute/MyAction", route => route.ToAction<HomeController>(a => a.Index()));
 ```
 
 To use expression based link generation, you need to do the following into your `Startup` class:
