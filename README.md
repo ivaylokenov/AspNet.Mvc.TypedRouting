@@ -152,28 +152,28 @@ controller.RedirectToActionPermanent<HomeController>(c => c.Index());
 controller.RedirectToActionPermanent<HomeController>(c => c.Index(), new { key = "value" });
 
 // uses route name, the same controller in the expression to return redirect result
-controller.RedirectToRoute(c => c.Index());
+controller.RedirectToRoute("RouteName", c => c.Index());
 
 // uses route name, the same controller in the expression and additional route values to return redirect result
-controller.RedirectToRoute(c => c.Index(), new { key = "value" });
+controller.RedirectToRoute("RouteName", c => c.Index(), new { key = "value" });
 
 // uses route name, another controller in the expression to return redirect result
-controller.RedirectToRoute<HomeController>(c => c.Index());
+controller.RedirectToRoute<HomeController>("RouteName", c => c.Index());
 
 // uses route name, another controller in the expression and additional route values to return redirect result
-controller.RedirectToRoute<HomeController>(c => c.Index(), new { key = "value" });
+controller.RedirectToRoute<HomeController>("RouteName", c => c.Index(), new { key = "value" });
 
 // uses route name, the same controller in the expression to return permanent redirect result
-controller.RedirectToRoutePermanent(c => c.Index());
+controller.RedirectToRoutePermanent("RouteName", c => c.Index());
 
 // uses route name, the same controller in the expression and additional route values to return permanent redirect result
-controller.RedirectToRoutePermanent(c => c.Index(), new { key = "value" });
+controller.RedirectToRoutePermanent("RouteName", c => c.Index(), new { key = "value" });
 
 // uses route name, another controller in the expression to return permanent redirect result
-controller.RedirectToRoutePermanent<HomeController>(c => c.Index());
+controller.RedirectToRoutePermanent<HomeController>("RouteName", c => c.Index());
 
 // uses route name, another controller in the expression and additional route values to return permanent redirect result
-controller.RedirectToRoutePermanent<HomeController>(c => c.Index(), new { key = "value" });
+controller.RedirectToRoutePermanent<HomeController>("RouteName", c => c.Index(), new { key = "value" });
 ```
 
 ### IHtmlHelper extension methods:
