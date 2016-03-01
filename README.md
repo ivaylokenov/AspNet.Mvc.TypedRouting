@@ -100,8 +100,6 @@ urlHelper.Action<HomeController>(c => c.Index(With.No<int>()));
 
 All methods resolve all kinds of route changing features like `ActionNameAttribute`, `AreaAttribute`, `RouteConstraintAttribute`, `IControllerModelConvention`, `IActionModelConvention`, `IParameterModelConvention` and potentially others. The expressions use the internally created by the MVC framework `ControllerActionDescriptor` objects, which contain all route specific information.
 
-**Make sure you read carefully the [Internal caching](#internal-caching) and [Performance consideration](#performance-consideration) sections of this documentation, before you start using the link generation features of the library!**
-
 ### Controller extension methods:
 
 ```c#
@@ -268,66 +266,6 @@ urlHelper.Link<HomeController>("Route name", c => c.Index(), new { key = "value"
 ```
 
 All these methods are well documented, tested and resolve route values successfully.
-
-### Internal caching
-
-The expression parser uses an internal cache to improve the performance of the route resolving. The important for this package objects from the MVC framework are `IActionDescriptorsCollectionProvider` and the collection of `ControllerActionDescriptor` it provides. These are created at application start up and cached by the MVC framework afterwards for later usage. It is really highly unlikely for a developer to change these objects run-time, but if you do for some reason and see unexpected results from the link generation, you need to clear the expression parser's internal cache or reinitialize it so that it continues to function properly. Here is how it can be done:
-
-```c#
-// clears the internal cache without changing the IActionDescriptorsCollectionProvider
-ExpressionRouteHelper.ClearActionCache();
-
-// reinitializes the link generation with the provided IServiceProvider
-// from which the IActionDescriptorsCollectionProvider will be resolved again
-ExpressionRouteHelper.Initialize(serviceProvider);
-```
-
-### Performance consideration
-
-The expression parsing gives small overhead when generating links but the overall performance is quite good. However, keep in mind the following measurements (you can see the [PerformanceTest sample project](https://github.com/ivaylokenov/AspNet.Mvc.TypedRouting/tree/master/samples/PerformanceTest))
-
-```c#
-// * All these measurements are collected using System.Diagnostics.Stopwatch. It is not the best way
-// * to measure execution time but it gives enough information to compare how much slower is one method to another.
-
-// * All measurements are for exactly 5000 generated URLs.
-
-// When using expressions without parameters, the results are fine.
-urlHelper.Action("Action", "My"); // ~7ms
-urlHelper.Action<MyController>(c => c.Action()); // ~20ms
-
-// When using expressions with constant parameters, the results are also fine.
-urlHelper.Action("Action", "My", new { id = 1, text = "text" }); // ~8 ms
-urlHelper.Action<MyController>(c => c.Action(1, "text")); // ~25 ms
-
-// When using expression with variables as parameters, the results
-// get quite slower compared to the magic string based method.
-// Half a second for 5000 links is still OK for an average
-// web application (thank you, C#) but this can be improved quite easily.
-// * This is because expressions have to be compiled to examine the actual values behind the parameters,
-// * while the anonymous objects are cached internally by the MVC framework.
-urlHelper.Action("Action", "My", new { id, text }); // ~8 ms
-urlHelper.Action<MyController>(c => c.Action(id, text)); // ~499 ms
-
-// With model objects as values, the results are quite slower too.
-urlHelper.Action("Action", "My", new { id, model = new Model { Integer = 2, String = "text" } }); // ~7 ms
-urlHelper.Action<MyController>(c => c.Action(id, new Model { Integer = 2, String = "text" })); // ~692 ms
-
-// Now lets see how we can improve this to become up to ten times faster.
-// You can use With.No<TParameter>() in the expression and pass the values as anonymous object.
-// * The expression parser recognises the With.No<TParameter>() method call and skips it without compiling the expression
-// * and the MVC framework caches the anonymous object results.
-urlHelper.Action("Action", "My", new { id, text }); // ~7 ms
-urlHelper.Action<MyController>(c => c.Action(With.No<int>(), With.No<string>()), new { id, text }); // ~70 ms
-
-// And with model objects.
-urlHelper.Action("Action", "My", new { id, model = new Model { Integer = 2, String = "text" } })); // ~7 ms
-urlHelper.Action<MyController>(c => c.Action(With.No<int>(), With.No<Model>()), new { id, model new Model { Integer = 2, String = "text" }); // ~67 ms
-
-// The code is a bit uglier this way, but if you care about performance, it should be fine.
-// You still get typed link generation with all the intellisense and refactoring goodies from your IDE
-// and no magic values at all for specifying controllers and actions.
-``` 
 
 ## Licence
 
