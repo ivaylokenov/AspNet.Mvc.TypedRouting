@@ -182,6 +182,13 @@
 
                 var expressionArgument = arguments[i];
 
+                if (expressionArgument.NodeType == ExpressionType.Convert)
+                {
+                    // Expression which contains converting from type to type
+                    var expressionArgumentAsUnary = (UnaryExpression)expressionArgument;
+                    expressionArgument = expressionArgumentAsUnary.Operand;
+                }
+
                 if (expressionArgument.NodeType == ExpressionType.Call)
                 {
                     // Expression of type c => c.Action(With.No<int>()) - value should be ignored and can be skipped.
