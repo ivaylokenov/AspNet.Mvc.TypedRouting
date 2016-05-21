@@ -1,15 +1,15 @@
 ﻿using AspNet.Mvc.TypedRouting.Routing;
 
-namespace Microsoft.AspNet.Builder
+namespace Microsoft.AspNetCore.Builder
 {
     using Mvc;
-    using Microsoft.Extensions.DependencyInjection;
     using System;
+    using Microsoft.Extensions.DependencyInjection;
 
     public static class MvcBuilderExtensions
     {
         /// <summary>
-        /// Adds typed expression based routes in ASP.NET MVC 6 application.
+        /// Adds typed expression based routes in ASP.NET Core MVC application.
         /// </summary>
         /// <param name="routesConfiguration">Typed routes configuration.</param>
         public static void AddTypedRouting(this IMvcBuilder mvcBuilder, Action<ITypedRouteBuilder> routesConfiguration)

@@ -1,9 +1,9 @@
 ﻿namespace AspNet.Mvc.TypedRouting.Test.Internals
 {
-    using Microsoft.AspNet.Mvc;
-    using Microsoft.AspNet.Mvc.ApplicationModels;
-    using Microsoft.AspNet.Mvc.Infrastructure;
-    using Microsoft.AspNet.Mvc.ModelBinding;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.ApplicationModels;
+    using Microsoft.AspNetCore.Mvc.ModelBinding;
+    using Microsoft.AspNetCore.Mvc.Routing;
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
@@ -226,125 +226,125 @@
         {
             return 1;
         }
+    }
 
-        public class RequestModel
+    public class RequestModel
+    {
+        public int Integer { get; set; }
+
+        public string String { get; set; }
+
+        public void SomeMethod()
         {
-            public int Integer { get; set; }
+        }
+    }
 
-            public string String { get; set; }
-
-            public void SomeMethod()
-            {
-            }
+    public class NormalController : Controller
+    {
+        public static void StaticCall()
+        {
         }
 
-        public class NormalController : Controller
+        public IActionResult ActionWithoutParameters()
         {
-            public static void StaticCall()
-            {
-            }
-            
-            public IActionResult ActionWithoutParameters()
-            {
-                return null;
-            }
-
-            public IActionResult ActionWithMultipleParameters(int id, string text, RequestModel model)
-            {
-                return null;
-            }
-
-            public IActionResult ActionWithOverloads()
-            {
-                return null;
-            }
-
-            public IActionResult ActionWithOverloads(int id)
-            {
-                return null;
-            }
-
-            [ActionName("AnotherName")]
-            public IActionResult ActionWithChangedName()
-            {
-                return null;
-            }
-
-            public void VoidAction()
-            {
-            }
+            return null;
         }
 
-        public class PocoController
+        public IActionResult ActionWithMultipleParameters(int id, string text, RequestModel model)
         {
-            public IActionResult Action(int id)
-            {
-                return null;
-            }
+            return null;
         }
 
-        [Area("MyArea")]
-        public class InAreaController
+        public IActionResult ActionWithOverloads()
         {
-            public IActionResult Action(int id)
-            {
-                return null;
-            }
+            return null;
         }
 
-        [MyRouteConstraint("controller", "CustomController")]
-        public class RouteConstraintController
+        public IActionResult ActionWithOverloads(int id)
         {
-            [MyRouteConstraint("action", "CustomAction")]
-            [MyRouteConstraint("id", "5")]
-            [MyRouteConstraint("key", "value")]
-            public IActionResult Action(int id, int anotherId)
-            {
-                return null;
-            }
+            return null;
         }
 
-        [CustomControllerConvention]
-        public class ConventionsController
+        [ActionName("AnotherName")]
+        public IActionResult ActionWithChangedName()
         {
-            [CustomActionConvention]
-            public IActionResult ConventionsAction([CustomParameterConvention]int id)
-            {
-                return null;
-            }
+            return null;
         }
 
-        public class CustomControllerConventionAttribute : Attribute, IControllerModelConvention
+        public void VoidAction()
         {
-            public void Apply(ControllerModel controller)
-            {
-                controller.ControllerName = "ChangedController";
-            }
         }
+    }
 
-        public class CustomActionConventionAttribute : Attribute, IActionModelConvention
+    public class PocoController
+    {
+        public IActionResult Action(int id)
         {
-            public void Apply(ActionModel action)
-            {
-                action.ActionName = "ChangedAction";
-            }
+            return null;
         }
+    }
 
-        public class CustomParameterConventionAttribute : Attribute, IParameterModelConvention
+    [Area("MyArea")]
+    public class InAreaController
+    {
+        public IActionResult Action(int id)
         {
-            public void Apply(ParameterModel parameter)
-            {
-                parameter.BindingInfo = parameter.BindingInfo ?? new BindingInfo();
-                parameter.BindingInfo.BinderModelName = "ChangedParameter";
-            }
+            return null;
         }
+    }
 
-        public class MyRouteConstraintAttribute : RouteConstraintAttribute
+    [MyRouteConstraint("controller", "CustomController")]
+    public class RouteConstraintController
+    {
+        [MyRouteConstraint("action", "CustomAction")]
+        [MyRouteConstraint("id", "5")]
+        [MyRouteConstraint("key", "value")]
+        public IActionResult Action(int id, int anotherId)
         {
-            public MyRouteConstraintAttribute(string routeKey, string routeValue)
-                : base(routeKey, routeValue, true)
-            {
-            }
+            return null;
+        }
+    }
+
+    [CustomControllerConvention]
+    public class ConventionsController
+    {
+        [CustomActionConvention]
+        public IActionResult ConventionsAction([CustomParameterConvention]int id)
+        {
+            return null;
+        }
+    }
+
+    public class CustomControllerConventionAttribute : Attribute, IControllerModelConvention
+    {
+        public void Apply(ControllerModel controller)
+        {
+            controller.ControllerName = "ChangedController";
+        }
+    }
+
+    public class CustomActionConventionAttribute : Attribute, IActionModelConvention
+    {
+        public void Apply(ActionModel action)
+        {
+            action.ActionName = "ChangedAction";
+        }
+    }
+
+    public class CustomParameterConventionAttribute : Attribute, IParameterModelConvention
+    {
+        public void Apply(ParameterModel parameter)
+        {
+            parameter.BindingInfo = parameter.BindingInfo ?? new BindingInfo();
+            parameter.BindingInfo.BinderModelName = "ChangedParameter";
+        }
+    }
+
+    public class MyRouteConstraintAttribute : RouteConstraintAttribute
+    {
+        public MyRouteConstraintAttribute(string routeKey, string routeValue)
+            : base(routeKey, routeValue, true)
+        {
         }
     }
 }

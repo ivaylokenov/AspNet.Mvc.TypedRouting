@@ -1,25 +1,25 @@
 ﻿namespace PerformanceTest
-{
+{ 
     using AspNet.Mvc.TypedRouting.Internals;
-    using Microsoft.AspNet.Http;
-    using Microsoft.AspNet.Http.Internal;
-    using Microsoft.AspNet.Mvc;
-    using Microsoft.AspNet.Mvc.Abstractions;
-    using Microsoft.AspNet.Mvc.ApplicationModels;
-    using Microsoft.AspNet.Mvc.Controllers;
-    using Microsoft.AspNet.Mvc.Infrastructure;
-    using Microsoft.AspNet.Mvc.Routing;
-    using Microsoft.AspNet.Routing;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Abstractions;
+    using Microsoft.AspNetCore.Mvc.Controllers;
+    using Microsoft.AspNetCore.Mvc.Infrastructure;
+    using Microsoft.AspNetCore.Mvc.Routing;
+    using Microsoft.AspNetCore.Routing;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.OptionsModel;
-    using Moq;
+    using Microsoft.Extensions.Options;
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.Design;
     using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
     using System.Threading;
+    using Microsoft.AspNetCore.Mvc.ApplicationParts;
+    using Microsoft.AspNetCore.Mvc.Internal;
+    using Microsoft.Extensions.DependencyInjection;
+    using Moq;
 
     public class Startup
     {
@@ -110,31 +110,6 @@
             Console.WriteLine(new string('-', 40));
         }
         
-        public class MyController : Controller
-        {
-            public IActionResult Action()
-            {
-                return null;
-            }
-
-            public IActionResult Action(int id, string text)
-            {
-                return null;
-            }
-
-            public IActionResult Action(int id, RequestModel model)
-            {
-                return null;
-            }
-        }
-
-        public class RequestModel
-        {
-            public int Integer { get; set; }
-
-            public string String { get; set; }
-        }
-
         private static void RunAndMeasure(string text, Action action)
         {
             var stopwatch = new Stopwatch();
@@ -169,48 +144,32 @@
 
         private static void PrepareTypedRouting()
         {
-            var assemblyTestClasses = Assembly
-                .GetExecutingAssembly()
-                .DefinedTypes
-                .ToList();
-
             // Run the full controller and action model building 
             // in order to simulate the default MVC behavior.
-            var controllerTypes = new List<TypeInfo>();
 
-            foreach (var testClass in assemblyTestClasses)
-            {
-                var controllers = testClass
-                    .GetNestedTypes()
-                    .Where(t => t.Name.EndsWith("Controller"))
-                    .Select(t => t.GetTypeInfo())
-                    .ToList();
-
-                controllerTypes.AddRange(controllers);
-            }
-
+            var applicationPartManager = new ApplicationPartManager();
+            applicationPartManager.ApplicationParts.Add(new AssemblyPart(Assembly.GetExecutingAssembly()));
+            applicationPartManager.FeatureProviders.Add(new ControllerFeatureProvider());
+            
             var options = new TestOptionsManager<MvcOptions>();
 
-            var controllerTypeProvider = new StaticControllerTypeProvider(controllerTypes);
             var modelProvider = new DefaultApplicationModelProvider(options);
 
             var provider = new ControllerActionDescriptorProvider(
-                controllerTypeProvider,
+                applicationPartManager,
                 new[] { modelProvider },
                 options);
 
-            var serviceContainer = new ServiceContainer();
+            var serviceCollection = new ServiceCollection();
             var list = new List<IActionDescriptorProvider>()
             {
                 provider,
             };
 
-            var actionDescriptorCollectionProvider = new DefaultActionDescriptorsCollectionProvider(serviceContainer);
+            serviceCollection.AddSingleton(typeof(IEnumerable<IActionDescriptorProvider>), list);
+            serviceCollection.AddSingleton(typeof(IActionDescriptorCollectionProvider), typeof(ActionDescriptorCollectionProvider));
 
-            serviceContainer.AddService(typeof(IEnumerable<IActionDescriptorProvider>), list);
-            serviceContainer.AddService(typeof(IActionDescriptorsCollectionProvider), actionDescriptorCollectionProvider);
-
-            ExpressionRouteHelper.Initialize(serviceContainer);
+            ExpressionRouteHelper.Initialize(serviceCollection.BuildServiceProvider());
         }
 
         #endregion
@@ -253,18 +212,17 @@
             return services.Object;
         }
 
-        private static IActionContextAccessor CreateActionContext(HttpContext context)
+        private static ActionContext CreateActionContext(HttpContext context)
         {
             return CreateActionContext(context, (new Mock<IRouter>()).Object);
         }
         
-        private static IActionContextAccessor CreateActionContext(HttpContext context, IRouter router)
+        private static ActionContext CreateActionContext(HttpContext context, IRouter router)
         {
             var routeData = new RouteData();
             routeData.Routers.Add(router);
 
-            var actionContext = new ActionContext(context, routeData, new ActionDescriptor());
-            return new ActionContextAccessor() { ActionContext = actionContext };
+            return new ActionContext(context, routeData, new ActionDescriptor());
         }
         
         private static HttpContext CreateHttpContext(
@@ -287,7 +245,7 @@
             var actionContext = CreateActionContext(context);
 
             var actionSelector = new Mock<IActionSelector>();
-            return new UrlHelper(actionContext, actionSelector.Object);
+            return new UrlHelper(actionContext);
         }
 
         public class TestOptionsManager<T> : OptionsManager<T>
@@ -299,5 +257,30 @@
             }
         }
         #endregion
+    }
+
+    public class MyController : Controller
+    {
+        public IActionResult Action()
+        {
+            return null;
+        }
+
+        public IActionResult Action(int id, string text)
+        {
+            return null;
+        }
+
+        public IActionResult Action(int id, RequestModel model)
+        {
+            return null;
+        }
+    }
+
+    public class RequestModel
+    {
+        public int Integer { get; set; }
+
+        public string String { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace AspNet.Mvc.TypedRouting.Routing
 {
-    using Microsoft.AspNet.Mvc.ApplicationModels;
+    using Microsoft.AspNetCore.Mvc.ApplicationModels;
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;

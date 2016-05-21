@@ -1,14 +1,17 @@
-﻿namespace AspNet.Mvc.TypedRouting.Test.LinkGeneration
+﻿#if NET451
+
+namespace AspNet.Mvc.TypedRouting.Test.LinkGeneration
 {
     using System.IO;
-    using Microsoft.AspNet.Html.Abstractions;
-    using Microsoft.AspNet.Mvc;
-    using Microsoft.AspNet.Mvc.Rendering;
-    using Microsoft.Extensions.WebEncoders;
+    using System.Collections.Generic;
+    using System.Text.Encodings.Web;
+    using Microsoft.AspNetCore.Html;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Rendering;
+    using Microsoft.AspNetCore.Routing;
+    using Microsoft.Extensions.WebEncoders.Testing;
     using Moq;
     using Xunit;
-    using System.Collections.Generic;
-    using Microsoft.AspNet.Routing;
 
     // Since the original MVC helper is living hell to test, these unit tests just test whether
     // the typed extensions pass correct values.
@@ -139,17 +142,19 @@
                 It.IsAny<string>(),
                 It.IsAny<object>(),
                 It.IsAny<FormMethod>(),
+                It.IsAny<bool?>(),
                 It.IsAny<object>()))
-                .Returns((string actionName, string controllerName, object routeValues, FormMethod method, object htmlAttribues)
-                    => new TestMvcForm(actionName, controllerName, routeValues, method, htmlAttribues));
+                .Returns((string actionName, string controllerName, object routeValues, FormMethod method, bool? antiforgery, object htmlAttribues)
+                    => new TestMvcForm(actionName, controllerName, routeValues, method, antiforgery, htmlAttribues));
 
             htmlHelperMock.Setup(h => h.BeginRouteForm(
                 It.IsAny<string>(),
                 It.IsAny<object>(),
                 It.IsAny<FormMethod>(),
+                It.IsAny<bool?>(),
                 It.IsAny<object>()))
-                .Returns((string routeName, object routeValues, FormMethod method, object htmlAttribues)
-                    => new TestMvcForm(routeName, routeValues, method, htmlAttribues));
+                .Returns((string routeName, object routeValues, FormMethod method, bool? antiforgery, object htmlAttribues)
+                    => new TestMvcForm(routeName, routeValues, method, antiforgery, htmlAttribues));
 
             return htmlHelperMock.Object;
         }
@@ -197,29 +202,31 @@
 
             public IDictionary<string, object> HtmlAttributes { get; private set; }
 
-            public void WriteTo(TextWriter writer, IHtmlEncoder encoder)
+            public void WriteTo(TextWriter writer, HtmlEncoder encoder)
             {
             }
         }
 
         private class TestMvcForm : MvcForm
         {
-            public TestMvcForm(string actionName, string controllerName, object routeValues, FormMethod method, object htmlAttribues)
-                : base(new ViewContext())
+            public TestMvcForm(string actionName, string controllerName, object routeValues, FormMethod method, bool? antiforgery, object htmlAttribues)
+                : base(new ViewContext(), new HtmlTestEncoder())
             {
                 this.ActionName = actionName;
                 this.ControllerName = controllerName;
                 this.RouteValues = new RouteValueDictionary(routeValues);
                 this.FormMethod = method;
+                this.Antiforgery = antiforgery;
                 this.HtmlAttributes = new RouteValueDictionary(htmlAttribues);
             }
 
-            public TestMvcForm(string routeName, object routeValues, FormMethod method, object htmlAttribues)
-                : base(new ViewContext())
+            public TestMvcForm(string routeName, object routeValues, FormMethod method, bool? antiforgery, object htmlAttribues)
+                : base(new ViewContext(), new HtmlTestEncoder())
             {
                 this.RouteName = routeName;
                 this.RouteValues = new RouteValueDictionary(routeValues);
                 this.FormMethod = method;
+                this.Antiforgery = antiforgery;
                 this.HtmlAttributes = new RouteValueDictionary(htmlAttribues);
             }
 
@@ -233,15 +240,19 @@
 
             public FormMethod FormMethod { get; private set; }
 
+            public bool? Antiforgery { get; private set; }
+
             public IDictionary<string, object> HtmlAttributes { get; private set; }
         }
+    }
 
-        public class MyController : Controller
+    public class MyController : Controller
+    {
+        public IActionResult Action(int id, string text)
         {
-            public IActionResult Action(int id, string text)
-            {
-                return null;
-            }
+            return null;
         }
     }
 }
+
+#endif

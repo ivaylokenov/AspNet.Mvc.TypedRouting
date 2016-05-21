@@ -1,14 +1,15 @@
 ﻿namespace AspNet.Mvc.TypedRouting.Internals
 {
-    using Microsoft.AspNet.Mvc;
-    using Microsoft.AspNet.Mvc.Controllers;
-    using Microsoft.AspNet.Mvc.Infrastructure;
-    using Microsoft.AspNet.Routing;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Reflection;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Controllers;
+    using Microsoft.AspNetCore.Mvc.Infrastructure;
+    using Microsoft.AspNetCore.Routing;
+    using Microsoft.Extensions.DependencyInjection;
 
     public static class ExpressionRouteHelper
     {
@@ -18,13 +19,13 @@
         private static readonly ConcurrentDictionary<MethodInfo, ControllerActionDescriptor> ControllerActionDescriptorCache =
             new ConcurrentDictionary<MethodInfo, ControllerActionDescriptor>();
         
-        private static IActionDescriptorsCollectionProvider actionDescriptorsCollectionProvider;
+        private static IActionDescriptorCollectionProvider actionDescriptorsCollectionProvider;
         
         public static void Initialize(IServiceProvider serviceProvider)
         {
             ClearActionCache();
 
-            actionDescriptorsCollectionProvider = serviceProvider.GetService(typeof(IActionDescriptorsCollectionProvider)) as IActionDescriptorsCollectionProvider;
+            actionDescriptorsCollectionProvider = serviceProvider.GetService<IActionDescriptorCollectionProvider>();
 
             if (actionDescriptorsCollectionProvider == null)
             {
@@ -128,9 +129,10 @@
                 for (int i = 0; i < actionDescriptors.Count; i++)
                 {
                     var actionDescriptor = actionDescriptors[i];
-                    if (actionDescriptor is ControllerActionDescriptor && ((ControllerActionDescriptor)actionDescriptor).MethodInfo == methodInfo)
+                    var descriptor = actionDescriptor as ControllerActionDescriptor;
+                    if (descriptor != null && descriptor.MethodInfo == methodInfo)
                     {
-                        foundControllerActionDescriptor = actionDescriptor as ControllerActionDescriptor;
+                        foundControllerActionDescriptor = descriptor;
                         break;
                     }
                 }

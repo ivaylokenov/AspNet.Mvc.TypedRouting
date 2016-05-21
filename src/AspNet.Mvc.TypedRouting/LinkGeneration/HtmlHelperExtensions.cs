@@ -1,11 +1,12 @@
 ﻿using AspNet.Mvc.TypedRouting.Internals;
 
-namespace Microsoft.AspNet.Mvc.Rendering
+namespace Microsoft.AspNetCore.Mvc.Rendering
 {
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
-    using Html.Abstractions;
+    using Html;
+    using Rendering;
 
     public static class HtmlHelperExtensions
     {
@@ -346,6 +347,40 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 action,
                 routeValues: null,
                 method: FormMethod.Post,
+                antiforgery: null,
+                htmlAttributes: null);
+        }
+
+        /// <summary>
+        /// Renders a &lt;form&gt; start tag to the response. When the user submits the form, the action from the
+        /// <see cref="Expression{TDelegate}"/> will process the request.
+        /// </summary>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
+        /// <param name="antiforgery">
+        /// If <c>true</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// If <c>false</c>, suppresses the generation an &lt;input&gt; of type "hidden" with an antiforgery token.
+        /// If <c>null</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// </param>
+        /// <returns>
+        /// An <see cref="MvcForm"/> instance which renders the &lt;/form&gt; end tag when disposed.
+        /// </returns>
+        /// <remarks>
+        /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
+        /// </remarks>
+        public static MvcForm BeginForm<TController>(
+            this IHtmlHelper helper,
+            Expression<Action<TController>> action,
+            bool? antiforgery)
+        {
+            return helper.BeginForm(
+                action,
+                routeValues: null,
+                method: FormMethod.Post,
+                antiforgery: antiforgery,
                 htmlAttributes: null);
         }
 
@@ -380,6 +415,48 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 action,
                 routeValues,
                 FormMethod.Post,
+                antiforgery: null,
+                htmlAttributes: null);
+        }
+
+        /// <summary>
+        /// Renders a &lt;form&gt; start tag to the response. When the user submits the form, the action from the
+        /// <see cref="Expression{TDelegate}"/> will process the request.
+        /// </summary>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
+        /// <param name="routeValues">
+        /// An <see cref="object"/> that contains the parameters for a route. The parameters are retrieved through
+        /// reflection by examining the properties of the <see cref="object"/>. This <see cref="object"/> is typically
+        /// created using <see cref="object"/> initializer syntax. Alternatively, an
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the route
+        /// parameters.
+        /// </param>
+        /// <param name="antiforgery">
+        /// If <c>true</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// If <c>false</c>, suppresses the generation an &lt;input&gt; of type "hidden" with an antiforgery token.
+        /// If <c>null</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// </param>
+        /// <returns>
+        /// An <see cref="MvcForm"/> instance which renders the &lt;/form&gt; end tag when disposed.
+        /// </returns>
+        /// <remarks>
+        /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
+        /// </remarks>
+        public static MvcForm BeginForm<TController>(
+            this IHtmlHelper helper,
+            Expression<Action<TController>> action,
+            object routeValues,
+            bool? antiforgery)
+        {
+            return helper.BeginForm(
+                action,
+                routeValues,
+                FormMethod.Post,
+                antiforgery: antiforgery,
                 htmlAttributes: null);
         }
 
@@ -408,6 +485,42 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 action,
                 routeValues: null,
                 method: method,
+                antiforgery: null,
+                htmlAttributes: null);
+        }
+
+        /// <summary>
+        /// Renders a &lt;form&gt; start tag to the response. When the user submits the form, the action from the
+        /// <see cref="Expression{TDelegate}"/> will process the request.
+        /// </summary>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
+        /// <param name="method">The HTTP method for processing the form, either GET or POST.</param>
+        /// <param name="antiforgery">
+        /// If <c>true</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// If <c>false</c>, suppresses the generation an &lt;input&gt; of type "hidden" with an antiforgery token.
+        /// If <c>null</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// </param>
+        /// <returns>
+        /// An <see cref="MvcForm"/> instance which renders the &lt;/form&gt; end tag when disposed.
+        /// </returns>
+        /// <remarks>
+        /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
+        /// </remarks>
+        public static MvcForm BeginForm<TController>(
+            this IHtmlHelper helper,
+            Expression<Action<TController>> action,
+            FormMethod method,
+            bool? antiforgery)
+        {
+            return helper.BeginForm(
+                action,
+                routeValues: null,
+                method: method,
+                antiforgery: antiforgery,
                 htmlAttributes: null);
         }
 
@@ -443,6 +556,49 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 action,
                 routeValues,
                 method,
+                antiforgery: null,
+                htmlAttributes: null);
+        }
+
+        /// <summary>
+        /// Renders a &lt;form&gt; start tag to the response. When the user submits the form, the action from the
+        /// <see cref="Expression{TDelegate}"/> will process the request.
+        /// </summary>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
+        /// <param name="routeValues">
+        /// An <see cref="object"/> that contains the parameters for a route. The parameters are retrieved through
+        /// reflection by examining the properties of the <see cref="object"/>. This <see cref="object"/> is typically
+        /// created using <see cref="object"/> initializer syntax. Alternatively, an
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the route
+        /// parameters.
+        /// </param>
+        /// <param name="method">The HTTP method for processing the form, either GET or POST.</param>
+        /// <param name="antiforgery">
+        /// If <c>true</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// If <c>false</c>, suppresses the generation an &lt;input&gt; of type "hidden" with an antiforgery token.
+        /// If <c>null</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// </param>
+        /// <returns>
+        /// An <see cref="MvcForm"/> instance which renders the &lt;/form&gt; end tag when disposed.
+        /// </returns>
+        /// <remarks>
+        /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
+        /// </remarks>
+        public static MvcForm BeginForm<TController>(
+            this IHtmlHelper helper,
+            Expression<Action<TController>> action,
+            object routeValues,
+            FormMethod method,
+            bool? antiforgery)
+        {
+            return helper.BeginForm(
+                action,
+                routeValues,
+                method,
+                antiforgery: antiforgery,
                 htmlAttributes: null);
         }
 
@@ -477,6 +633,48 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 action,
                 routeValues: null,
                 method: method,
+                antiforgery: null,
+                htmlAttributes: htmlAttributes);
+        }
+
+        /// <summary>
+        /// Renders a &lt;form&gt; start tag to the response. When the user submits the form, the action from the
+        /// <see cref="Expression{TDelegate}"/> will process the request.
+        /// </summary>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
+        /// <param name="method">The HTTP method for processing the form, either GET or POST.</param>
+        /// <param name="antiforgery">
+        /// If <c>true</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// If <c>false</c>, suppresses the generation an &lt;input&gt; of type "hidden" with an antiforgery token.
+        /// If <c>null</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// </param>
+        /// <param name="htmlAttributes">
+        /// An <see cref="object"/> that contains the HTML attributes for the element. Alternatively, an
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the HTML
+        /// attributes.
+        /// </param>
+        /// <returns>
+        /// An <see cref="MvcForm"/> instance which renders the &lt;/form&gt; end tag when disposed.
+        /// </returns>
+        /// <remarks>
+        /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
+        /// </remarks>
+        public static MvcForm BeginForm<TController>(
+            this IHtmlHelper helper,
+            Expression<Action<TController>> action,
+            FormMethod method,
+            bool? antiforgery,
+            object htmlAttributes)
+        {
+            return helper.BeginForm(
+                action,
+                routeValues: null,
+                method: method,
+                antiforgery: antiforgery,
                 htmlAttributes: htmlAttributes);
         }
 
@@ -521,6 +719,59 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 expressionRouteValues.Controller,
                 routeValues: expressionRouteValues.RouteValues,
                 method: method,
+                antiforgery: null,
+                htmlAttributes: htmlAttributes);
+        }
+
+
+        /// <summary>
+        /// Renders a &lt;form&gt; start tag to the response. When the user submits the form, the action from the
+        /// <see cref="Expression{TDelegate}"/> will process the request.
+        /// </summary>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
+        /// <param name="routeValues">
+        /// An <see cref="object"/> that contains the parameters for a route. The parameters are retrieved through
+        /// reflection by examining the properties of the <see cref="object"/>. This <see cref="object"/> is typically
+        /// created using <see cref="object"/> initializer syntax. Alternatively, an
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the route
+        /// parameters.
+        /// </param>
+        /// <param name="method">The HTTP method for processing the form, either GET or POST.</param>
+        /// <param name="antiforgery">
+        /// If <c>true</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// If <c>false</c>, suppresses the generation an &lt;input&gt; of type "hidden" with an antiforgery token.
+        /// If <c>null</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// </param>
+        /// <param name="htmlAttributes">
+        /// An <see cref="object"/> that contains the HTML attributes for the element. Alternatively, an
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the HTML
+        /// attributes.
+        /// </param>
+        /// <returns>
+        /// An <see cref="MvcForm"/> instance which renders the &lt;/form&gt; end tag when disposed.
+        /// </returns>
+        /// <remarks>
+        /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
+        /// </remarks>
+        public static MvcForm BeginForm<TController>(
+            this IHtmlHelper helper,
+            Expression<Action<TController>> action,
+            object routeValues,
+            FormMethod method,
+            bool? antiforgery,
+            object htmlAttributes)
+        {
+            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
+            return helper.BeginForm(
+                expressionRouteValues.Action,
+                expressionRouteValues.Controller,
+                routeValues: expressionRouteValues.RouteValues,
+                method: method,
+                antiforgery: antiforgery,
                 htmlAttributes: htmlAttributes);
         }
 
@@ -545,7 +796,47 @@ namespace Microsoft.AspNet.Mvc.Rendering
             string routeName,
             Expression<Action<TController>> action)
         {
-            return helper.BeginRouteForm(routeName, routeValues: null, method: FormMethod.Post, htmlAttributes: null);
+            return helper.BeginRouteForm(
+                routeName,
+                routeValues: null,
+                method: FormMethod.Post,
+                antiforgery: null,
+                htmlAttributes: null);
+        }
+
+        /// <summary>
+        /// Renders a &lt;form&gt; start tag to the response. The route with name <paramref name="routeName"/>
+        /// generates the &lt;form&gt;'s <c>action</c> attribute value.
+        /// </summary>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
+        /// <param name="routeName">The name of the route.</param>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
+        /// <param name="antiforgery">
+        /// If <c>true</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// If <c>false</c>, suppresses the generation an &lt;input&gt; of type "hidden" with an antiforgery token.
+        /// If <c>null</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// </param>
+        /// <returns>
+        /// An <see cref="MvcForm"/> instance which renders the &lt;/form&gt; end tag when disposed.
+        /// </returns>
+        /// <remarks>
+        /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
+        /// </remarks>
+        public static MvcForm BeginRouteForm<TController>(
+            this IHtmlHelper helper,
+            string routeName,
+            Expression<Action<TController>> action,
+            bool? antiforgery)
+        {
+            return helper.BeginRouteForm(
+                routeName,
+                routeValues: null,
+                method: FormMethod.Post,
+                antiforgery: antiforgery,
+                htmlAttributes: null);
         }
 
         /// <summary>
@@ -571,7 +862,49 @@ namespace Microsoft.AspNet.Mvc.Rendering
             Expression<Action<TController>> action,
             FormMethod method)
         {
-            return helper.BeginRouteForm(routeName, routeValues: null, method: method, htmlAttributes: null);
+            return helper.BeginRouteForm(
+                routeName,
+                routeValues: null,
+                method: method,
+                antiforgery: null,
+                htmlAttributes: null);
+        }
+
+        /// <summary>
+        /// Renders a &lt;form&gt; start tag to the response. The route with name <paramref name="routeName"/>
+        /// generates the &lt;form&gt;'s <c>action</c> attribute value.
+        /// </summary>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
+        /// <param name="routeName">The name of the route.</param>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
+        /// <param name="method">The HTTP method for processing the form, either GET or POST.</param>
+        /// <param name="antiforgery">
+        /// If <c>true</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// If <c>false</c>, suppresses the generation an &lt;input&gt; of type "hidden" with an antiforgery token.
+        /// If <c>null</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// </param>
+        /// <returns>
+        /// An <see cref="MvcForm"/> instance which renders the &lt;/form&gt; end tag when disposed.
+        /// </returns>
+        /// <remarks>
+        /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
+        /// </remarks>
+        public static MvcForm BeginRouteForm<TController>(
+            this IHtmlHelper helper,
+            string routeName,
+            Expression<Action<TController>> action,
+            FormMethod method,
+            bool? antiforgery)
+        {
+            return helper.BeginRouteForm(
+                routeName,
+                routeValues: null,
+                method: method,
+                antiforgery: antiforgery,
+                htmlAttributes: null);
         }
 
         /// <summary>
@@ -588,7 +921,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
         /// An <see cref="object"/> that contains the parameters for a route. The parameters are retrieved through
         /// reflection by examining the properties of the <see cref="object"/>. This <see cref="object"/> is typically
         /// created using <see cref="object"/> initializer syntax. Alternatively, an
-        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the route
+        /// <see cref="IDictionary{TKey,TValue}"/> instance containing the route
         /// parameters.
         /// </param>
         /// <returns>
@@ -603,7 +936,45 @@ namespace Microsoft.AspNet.Mvc.Rendering
             Expression<Action<TController>> action,
             object routeValues)
         {
-            return helper.BeginRouteForm(routeName, routeValues, FormMethod.Post, htmlAttributes: null);
+            return helper.BeginRouteForm(routeName, routeValues, FormMethod.Post, antiforgery: null, htmlAttributes: null);
+        }
+
+        /// <summary>
+        /// Renders a &lt;form&gt; start tag to the response. The route with name <paramref name="routeName"/>
+        /// generates the &lt;form&gt;'s <c>action</c> attribute value.
+        /// </summary>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
+        /// <param name="routeName">The name of the route.</param>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
+        /// <param name="routeValues">
+        /// An <see cref="object"/> that contains the parameters for a route. The parameters are retrieved through
+        /// reflection by examining the properties of the <see cref="object"/>. This <see cref="object"/> is typically
+        /// created using <see cref="object"/> initializer syntax. Alternatively, an
+        /// <see cref="IDictionary{TKey,TValue}"/> instance containing the route
+        /// parameters.
+        /// </param>
+        /// <param name="antiforgery">
+        /// If <c>true</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// If <c>false</c>, suppresses the generation an &lt;input&gt; of type "hidden" with an antiforgery token.
+        /// If <c>null</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// </param>
+        /// <returns>
+        /// An <see cref="MvcForm"/> instance which renders the &lt;/form&gt; end tag when disposed.
+        /// </returns>
+        /// <remarks>
+        /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
+        /// </remarks>
+        public static MvcForm BeginRouteForm<TController>(
+            this IHtmlHelper helper,
+            string routeName,
+            Expression<Action<TController>> action,
+            object routeValues,
+            bool? antiforgery)
+        {
+            return helper.BeginRouteForm(routeName, routeValues, FormMethod.Post, antiforgery: antiforgery, htmlAttributes: null);
         }
 
         /// <summary>
@@ -637,7 +1008,49 @@ namespace Microsoft.AspNet.Mvc.Rendering
             object routeValues,
             FormMethod method)
         {
-            return helper.BeginRouteForm(routeName, routeValues, method, htmlAttributes: null);
+            return helper.BeginRouteForm(routeName, routeValues, method, antiforgery: null, htmlAttributes: null);
+        }
+
+
+
+        /// <summary>
+        /// Renders a &lt;form&gt; start tag to the response. The route with name <paramref name="routeName"/>
+        /// generates the &lt;form&gt;'s <c>action</c> attribute value.
+        /// </summary>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
+        /// <param name="routeName">The name of the route.</param>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
+        /// <param name="routeValues">
+        /// An <see cref="object"/> that contains the parameters for a route. The parameters are retrieved through
+        /// reflection by examining the properties of the <see cref="object"/>. This <see cref="object"/> is typically
+        /// created using <see cref="object"/> initializer syntax. Alternatively, an
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the route
+        /// parameters.
+        /// </param>
+        /// <param name="method">The HTTP method for processing the form, either GET or POST.</param>
+        /// <param name="antiforgery">
+        /// If <c>true</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// If <c>false</c>, suppresses the generation an &lt;input&gt; of type "hidden" with an antiforgery token.
+        /// If <c>null</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// </param>
+        /// <returns>
+        /// An <see cref="MvcForm"/> instance which renders the &lt;/form&gt; end tag when disposed.
+        /// </returns>
+        /// <remarks>
+        /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
+        /// </remarks>
+        public static MvcForm BeginRouteForm<TController>(
+            this IHtmlHelper helper,
+            string routeName,
+            Expression<Action<TController>> action,
+            object routeValues,
+            FormMethod method,
+            bool? antiforgery)
+        {
+            return helper.BeginRouteForm(routeName, routeValues, method, antiforgery: antiforgery, htmlAttributes: null);
         }
 
         /// <summary>
@@ -676,7 +1089,54 @@ namespace Microsoft.AspNet.Mvc.Rendering
             FormMethod method,
             object htmlAttributes)
         {
-            return helper.BeginRouteForm(routeName, routeValues: null, method: method, htmlAttributes: htmlAttributes);
+            return helper.BeginRouteForm(routeName, routeValues: null, method: method, antiforgery: null, htmlAttributes: htmlAttributes);
+        }
+
+
+
+        /// <summary>
+        /// Renders a &lt;form&gt; start tag to the response. The route with name <paramref name="routeName"/>
+        /// generates the &lt;form&gt;'s <c>action</c> attribute value.
+        /// </summary>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
+        /// <param name="routeName">The name of the route.</param>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
+        /// <param name="routeValues">
+        /// An <see cref="object"/> that contains the parameters for a route. The parameters are retrieved through
+        /// reflection by examining the properties of the <see cref="object"/>. This <see cref="object"/> is typically
+        /// created using <see cref="object"/> initializer syntax. Alternatively, an
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the route
+        /// parameters.
+        /// </param>
+        /// <param name="method">The HTTP method for processing the form, either GET or POST.</param>
+        /// <returns>
+        /// An <see cref="MvcForm"/> instance which renders the &lt;/form&gt; end tag when disposed.
+        /// </returns>
+        /// <param name="htmlAttributes">
+        /// An <see cref="object"/> that contains the HTML attributes for the element. Alternatively, an
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the HTML
+        /// attributes.
+        /// </param>
+        /// <param name="antiforgery">
+        /// If <c>true</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// If <c>false</c>, suppresses the generation an &lt;input&gt; of type "hidden" with an antiforgery token.
+        /// If <c>null</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// </param>
+        /// <remarks>
+        /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
+        /// </remarks>
+        public static MvcForm BeginRouteForm<TController>(
+            this IHtmlHelper helper,
+            string routeName,
+            Expression<Action<TController>> action,
+            FormMethod method,
+            bool? antiforgery,
+            object htmlAttributes)
+        {
+            return helper.BeginRouteForm(routeName, routeValues: null, method: method, antiforgery: antiforgery, htmlAttributes: htmlAttributes);
         }
 
         /// <summary>
@@ -721,7 +1181,58 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 routeValues,
                 addControllerAndActionToRouteValues: true);
 
-            return helper.BeginRouteForm(routeName, expressionRouteValues.RouteValues, method, htmlAttributes);
+            return helper.BeginRouteForm(routeName, expressionRouteValues.RouteValues, method, antiforgery: null, htmlAttributes: htmlAttributes);
+        }
+
+        /// <summary>
+        /// Renders a &lt;form&gt; start tag to the response. The route with name <paramref name="routeName"/>
+        /// generates the &lt;form&gt;'s <c>action</c> attribute value.
+        /// </summary>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
+        /// <param name="routeName">The name of the route.</param>
+        /// <param name="action">
+        /// The <see cref="Expression{TDelegate}"/>, from which action name, 
+        /// controller name and route values are resolved.
+        /// </param>
+        /// <param name="routeValues">
+        /// An <see cref="object"/> that contains the parameters for a route. The parameters are retrieved through
+        /// reflection by examining the properties of the <see cref="object"/>. This <see cref="object"/> is typically
+        /// created using <see cref="object"/> initializer syntax. Alternatively, an
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the route
+        /// parameters.
+        /// </param>
+        /// <param name="method">The HTTP method for processing the form, either GET or POST.</param> 
+        /// <param name="htmlAttributes">
+        /// An <see cref="object"/> that contains the HTML attributes for the element. Alternatively, an
+        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the HTML
+        /// attributes.
+        /// </param>
+        /// <param name="antiforgery">
+        /// If <c>true</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// If <c>false</c>, suppresses the generation an &lt;input&gt; of type "hidden" with an antiforgery token.
+        /// If <c>null</c>, &lt;form&gt; elements will include an antiforgery token.
+        /// </param>
+        /// <returns>
+        /// An <see cref="MvcForm"/> instance which renders the &lt;/form&gt; end tag when disposed.
+        /// </returns>
+        /// <remarks>
+        /// In this context, "renders" means the method writes its output using <see cref="ViewContext.Writer"/>.
+        /// </remarks>
+        public static MvcForm BeginRouteForm<TController>(
+            this IHtmlHelper helper,
+            string routeName,
+            Expression<Action<TController>> action,
+            object routeValues,
+            FormMethod method,
+            bool? antiforgery,
+            object htmlAttributes)
+        {
+            var expressionRouteValues = ExpressionRouteHelper.Resolve(
+                action,
+                routeValues,
+                addControllerAndActionToRouteValues: true);
+
+            return helper.BeginRouteForm(routeName, expressionRouteValues.RouteValues, method, antiforgery: antiforgery, htmlAttributes: htmlAttributes);
         }
     }
 }

@@ -1,20 +1,22 @@
-﻿namespace AspNet.Mvc.TypedRouting.Test.LinkGeneration
+﻿#if NET451
+
+namespace AspNet.Mvc.TypedRouting.Test.LinkGeneration
 {
-    using Microsoft.AspNet.Builder;
-    using Microsoft.AspNet.Http;
-    using Microsoft.AspNet.Http.Internal;
-    using Microsoft.AspNet.Mvc;
-    using Microsoft.AspNet.Mvc.Abstractions;
-    using Microsoft.AspNet.Mvc.Infrastructure;
-    using Microsoft.AspNet.Mvc.Routing;
-    using Microsoft.AspNet.Routing;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Abstractions;
+    using Microsoft.AspNetCore.Mvc.Infrastructure;
+    using Microsoft.AspNetCore.Mvc.Routing;
+    using Microsoft.AspNetCore.Routing;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.OptionsModel;
+    using Microsoft.Extensions.Options;
     using Moq;
     using System;
+    using Microsoft.AspNetCore.Builder.Internal;
     using Xunit;
 
-    using With = Microsoft.AspNet.Mvc.With;
+    using With = Microsoft.AspNetCore.Mvc.With;
 
     [Collection("TypedRoutingTests")]
     public class UrlHelperExtensionsTest
@@ -32,7 +34,7 @@
                 protocol: "https",
                 host: "remotelyhost",
                 fragment: "somefragment");
-            
+
             // Assert
             Assert.Equal("https://remotelyhost/app/Normal/ActionWithoutParameters#somefragment", url);
         }
@@ -106,7 +108,7 @@
             // Assert
             Assert.Equal("http://localhost/app/Normal/ActionWithParameters/1?text=sometext", url);
         }
-        
+
         [Fact]
         public void LinkWithAdditionalRouteValues_ReturnsExpectedResult()
         {
@@ -134,18 +136,17 @@
             return context;
         }
 
-        private static IActionContextAccessor CreateActionContext(HttpContext context)
+        private static ActionContext CreateActionContext(HttpContext context)
         {
             return CreateActionContext(context, (new Mock<IRouter>()).Object);
         }
 
-        private static IActionContextAccessor CreateActionContext(HttpContext context, IRouter router)
+        private static ActionContext CreateActionContext(HttpContext context, IRouter router)
         {
             var routeData = new RouteData();
             routeData.Routers.Add(router);
 
-            var actionContext = new ActionContext(context, routeData, new ActionDescriptor());
-            return new ActionContextAccessor() { ActionContext = actionContext };
+            return new ActionContext(context, routeData, new ActionDescriptor());
         }
 
         private static IServiceProvider GetServices()
@@ -190,7 +191,7 @@
             var routeCollection = GetRouter(services);
             return CreateUrlHelper(appPrefix, routeCollection);
         }
-        
+
         private static IRouter GetRouter(IServiceProvider services)
         {
             return GetRouter(services, "mockRoute", "/mockTemplate");
@@ -201,13 +202,12 @@
             string mockRouteName,
             string mockTemplateValue)
         {
-            var routeBuilder = new RouteBuilder();
-            routeBuilder.ServiceProvider = services;
+            var applicationBuilder = new ApplicationBuilder(services);
+            var routeBuilder = new RouteBuilder(applicationBuilder);
 
             var target = new Mock<IRouter>(MockBehavior.Strict);
             target
                 .Setup(router => router.GetVirtualPath(It.IsAny<VirtualPathContext>()))
-                .Callback<VirtualPathContext>(context => context.IsBound = true)
                 .Returns<VirtualPathContext>(context => null);
             routeBuilder.DefaultHandler = target.Object;
 
@@ -222,7 +222,6 @@
             var mockHttpRoute = new Mock<IRouter>();
             mockHttpRoute
                 .Setup(mock => mock.GetVirtualPath(It.Is<VirtualPathContext>(c => string.Equals(c.RouteName, mockRouteName))))
-                .Callback<VirtualPathContext>(c => c.IsBound = true)
                 .Returns(new VirtualPathData(mockHttpRoute.Object, mockTemplateValue));
 
             routeBuilder.Routes.Add(mockHttpRoute.Object);
@@ -234,9 +233,8 @@
             var services = GetServices();
             var context = CreateHttpContext(services, appBase);
             var actionContext = CreateActionContext(context, router);
-
-            var actionSelector = new Mock<IActionSelector>();
-            return new UrlHelper(actionContext, actionSelector.Object);
+            
+            return new UrlHelper(actionContext);
         }
 
         private static IUrlHelper CreateUrlHelper()
@@ -244,22 +242,63 @@
             var services = GetServices();
             var context = CreateHttpContext(services, string.Empty);
             var actionContext = CreateActionContext(context);
-
-            var actionSelector = new Mock<IActionSelector>();
-            return new UrlHelper(actionContext, actionSelector.Object);
+            
+            return new UrlHelper(actionContext);
+        }
+    }
+    
+    public class NormalController : Controller
+    {
+        public IActionResult ActionWithoutParameters()
+        {
+            return null;
         }
 
-        public class NormalController : Controller
+        public IActionResult ActionWithParameters(int id, string text)
         {
-            public IActionResult ActionWithoutParameters()
-            {
-                return null;
-            }
-            
-            public IActionResult ActionWithParameters(int id, string text)
-            {
-                return null;
-            }
+            return null;
+        }
+    }
+
+    internal class LoggerFactory : ILoggerFactory
+    {
+        public void Dispose()
+        {
+        }
+
+        public ILogger CreateLogger(string categoryName)
+        {
+            return new Logger();
+        }
+
+        public void AddProvider(ILoggerProvider provider)
+        {
+        }
+    }
+
+    internal class Logger : ILogger
+    {
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        {
+        }
+
+        public bool IsEnabled(LogLevel logLevel)
+        {
+            return false;
+        }
+
+        public IDisposable BeginScope<TState>(TState state)
+        {
+            return new Disposable();
+        }
+    }
+
+    internal class Disposable : IDisposable
+    {
+        public void Dispose()
+        {
         }
     }
 }
+
+#endif

@@ -1,6 +1,6 @@
 ﻿using AspNet.Mvc.TypedRouting.Internals;
 
-namespace Microsoft.AspNet.Mvc
+namespace Microsoft.AspNetCore.Mvc
 {
     using System;
     using System.Linq.Expressions;

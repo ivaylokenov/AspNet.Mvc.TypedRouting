@@ -1,27 +1,20 @@
 ﻿{
   "version": "1.0.0-*",
   "description": "PerformanceTest Console Application",
-  "authors": [ "Admin" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
+  "authors": [ "Ivaylo Kenov" ],
 
-  "compilationOptions": {
+  "buildOptions": {
     "emitEntryPoint": true
   },
 
   "dependencies": {
-    "AspNet.Mvc.TypedRouting": "1.0.2-*",
-    "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
-    "Microsoft.AspNet.Http": "1.0.0-rc1-final",
-    "Moq": "4.2.1312.1622"
-  },
-
-  "commands": {
-    "PerformanceTest": "PerformanceTest"
+    "AspNet.Mvc.TypedRouting": "1.1.0-rc2-final",
+    "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Http": "1.0.0-rc2-final",
+    "Moq":  "4.2.1510.2205" 
   },
 
   "frameworks": {
-    "dnx451": { }
+    "net451": { }
   }
 }
