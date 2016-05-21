@@ -1,8 +1,8 @@
 # AspNet.Mvc.TypedRouting
 
-Resolving controller and action names for various purposes in ASP.NET MVC was always unreliable because the framework uses magic strings in its methods (for example `Url.Action("Action", "Controller")`). With the C# 6.0 `nameof` operator, the problem was partially solved. However, `nameof` cannot be used with various MVC 6 features like `ActionNameAttribute`, `AreaAttribute`, `RouteConstraintAttribute`, `IControllerModelConvention`, `IActionModelConvention`, `IParameterModelConvention` and more. Here comes `AspNet.Mvc.TypedRouting` to the rescue!
+Resolving controller and action names for various purposes in ASP.NET MVC was always unreliable because the framework uses magic strings in its methods (for example `Url.Action("Action", "Controller")`). With the C# 6.0 `nameof` operator, the problem was partially solved. However, `nameof` cannot be used with various MVC Core features like `ActionNameAttribute`, `AreaAttribute`, `RouteConstraintAttribute`, `IControllerModelConvention`, `IActionModelConvention`, `IParameterModelConvention` and more. Here comes `AspNet.Mvc.TypedRouting` to the rescue!
 
-This package gives you typed expression based routing and link generation in a [ASP.NET MVC 6](https://github.com/aspnet/Mvc) web application. Currently working with version 6.0.0-rc1-final.
+This package gives you typed expression based routing and link generation in a [ASP.NET Core MVC](https://github.com/aspnet/Mvc) web application. Currently working with version 1.0.0-rc2-final.
 
 For example:
 
@@ -213,7 +213,7 @@ Html.BeginForm<HomeController>(c => c.Index(), new { key = "value" });
 Html.BeginForm<HomeController>(c => c.Index(), FormMethod.Post);
 
 // begins form to the action from the expression, additional route values and form method
-Html.BeginForm<HomeController>(c => c.Index(), new { key = "value" },  FormMethod.Post);
+Html.BeginForm<HomeController>(c => c.Index(), new { key = "value" }, FormMethod.Post);
 
 // begins form to the action from the expression, form method and HTML attributes
 Html.BeginForm<HomeController>(c => c.Index(), FormMethod.Post, new { @class = "my-class" });
@@ -239,6 +239,8 @@ Html.BeginRouteForm<HomeController>("Route name", c => c.Index(), FormMethod.Pos
 // begins form to the action from the expression, form method and HTML attributes by specifying route name
 Html.BeginRouteForm<HomeController>("Route name", c => c.Index(), new { key = "value" }, FormMethod.Post, new { @class = "my-class" });
 ```
+
+* Note: All form generation methods have additional overloads which allow adding an anti-forgery token.
 
 ### IUrlHelper extension methods:
 
@@ -269,7 +271,7 @@ All these methods are well documented, tested and resolve route values successfu
 
 ## Licence
 
-Code by Ivaylo Kenov. Copyright 2015 Ivaylo Kenov.
+Code by Ivaylo Kenov. Copyright 2015-2016 Ivaylo Kenov.
 
 This package has MIT license. Refer to the [LICENSE](https://github.com/ivaylokenov/AspNet.Mvc.TypedRouting/blob/master/LICENSE) for detailed information.
 
