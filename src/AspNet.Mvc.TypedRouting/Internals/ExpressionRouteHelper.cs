@@ -177,7 +177,7 @@
                 var methodParameterName = methodParameterNames[i].Name;
                 if (parameterDescriptors.ContainsKey(methodParameterName))
                 {
-                    methodParameterName = parameterDescriptors[methodParameterName];
+                    methodParameterName = parameterDescriptors[methodParameterName] ?? methodParameterName;
                 }
 
                 var expressionArgument = arguments[i];
