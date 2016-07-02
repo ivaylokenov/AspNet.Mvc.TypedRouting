@@ -65,18 +65,16 @@
                 var controllerActionDescriptor = GetActionDescriptorFromCache(methodInfo);
 
                 var controllerName = controllerActionDescriptor.ControllerName;
-                var actionName = controllerActionDescriptor.Name;
+                var actionName = controllerActionDescriptor.ActionName;
                 
                 var routeValues = GetRouteValues(methodInfo, methodCallExpression, controllerActionDescriptor);
 
-                // If there is a route constraint with specific expected value, add it to the result.
-                var routeConstraints = controllerActionDescriptor.RouteConstraints;
-                for (int i = 0; i < routeConstraints.Count; i++)
+                // If there is a required route value, add it to the result.
+                foreach (var requiredRouteValue in controllerActionDescriptor.RouteValues)
                 {
-                    var routeConstraint = routeConstraints[i];
-                    var routeKey = routeConstraint.RouteKey;
-                    var routeValue = routeConstraint.RouteValue;
-                    
+                    var routeKey = requiredRouteValue.Key;
+                    var routeValue = requiredRouteValue.Value;
+
                     if (string.Equals(routeKey, RouteGroupKey))
                     {
                         continue;
@@ -95,7 +93,7 @@
                         }
                         else
                         {
-                            routeValues[routeConstraint.RouteKey] = routeValue;
+                            routeValues[routeKey] = routeValue;
                         }
                     }
                 }
@@ -200,11 +198,25 @@
                     }
                 }
 
-                object value;
+                object value = null;
                 if (expressionArgument.NodeType == ExpressionType.Constant)
                 {
                     // Expression of type c => c.Action({const}) - value can be extracted without compiling.
                     value = ((ConstantExpression)expressionArgument).Value;
+                }
+                else if (expressionArgument.NodeType == ExpressionType.MemberAccess
+                    && ((MemberExpression)expressionArgument).Member is FieldInfo)
+                {
+                    // Expression of type c => c.Action(id)
+                    // Value can be extracted without compiling.
+                    var memberAccessExpr = (MemberExpression)expressionArgument;
+                    var constantExpression = (ConstantExpression)memberAccessExpr.Expression;
+                    if (constantExpression != null)
+                    {
+                        var innerMemberName = memberAccessExpr.Member.Name;
+                        var compiledLambdaScopeField = constantExpression.Value.GetType().GetField(innerMemberName);
+                        value = compiledLambdaScopeField.GetValue(constantExpression.Value);
+                    }
                 }
                 else
                 {

@@ -1,31 +1,40 @@
 ﻿{
-  "version": "1.1.0-rc2-final",
+  "version": "1.0.0",
   "title": "ASP.NET Core MVC Typed Routing",
   "copyright": "2015-2016 Ivaylo Kenov",
   "description": "AspNet.Mvc.TypedRouting is a class library allowing typed expression based route registration and link generation for ASP.NET Core MVC. See the project repository for more information and available features.",
   "authors": [ "Ivaylo Kenov" ],
 
   "buildOptions": {
-    "warningsAsErrors": true
+    "warningsAsErrors": true,
+    "xmlDoc": true,
+    "optimize": true,
+    "nowarn": [
+      "CS1591",
+      "CS1573"
+    ],
+    "keyFile": "../../tools/Key.snk"
   },
 
   "packOptions": {
+    "owners": [ "Ivaylo Kenov" ],
     "summary": "Typed expression based routing and link generation for ASP.NET Core MVC.",
     "tags": [ "asp.net core mvc typed routing routes links expressions lambda" ],
     "projectUrl": "https://github.com/ivaylokenov/AspNet.Mvc.TypedRouting",
-    "licenseUrl": "https://github.com/ivaylokenov/AspNet.Mvc.TypedRouting/blob/master/LICENSE"
+    "licenseUrl": "https://github.com/ivaylokenov/AspNet.Mvc.TypedRouting/blob/master/LICENSE",
+    "iconUrl": "https://raw.githubusercontent.com/ivaylokenov/AspNet.Mvc.TypedRouting/master/tools/nuget-logo.png",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/ivaylokenov/AspNet.Mvc.TypedRouting"
+    }
   },
 
   "dependencies": {
-    "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final"
+    "Microsoft.AspNetCore.Mvc": "1.0.0-*"
   },
 
   "frameworks": {
-    "net451": { },
-    "netstandard1.5": {
-      "imports": [
-        "portable-net451+win8"
-      ]
-    }
+    "net451": {},
+    "netstandard1.6": {}
   }
 }

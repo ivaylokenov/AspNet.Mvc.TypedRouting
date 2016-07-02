@@ -1063,13 +1063,6 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
         /// </param>
-        /// <param name="routeValues">
-        /// An <see cref="object"/> that contains the parameters for a route. The parameters are retrieved through
-        /// reflection by examining the properties of the <see cref="object"/>. This <see cref="object"/> is typically
-        /// created using <see cref="object"/> initializer syntax. Alternatively, an
-        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the route
-        /// parameters.
-        /// </param>
         /// <param name="method">The HTTP method for processing the form, either GET or POST.</param>
         /// <returns>
         /// An <see cref="MvcForm"/> instance which renders the &lt;/form&gt; end tag when disposed.
@@ -1103,13 +1096,6 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
-        /// </param>
-        /// <param name="routeValues">
-        /// An <see cref="object"/> that contains the parameters for a route. The parameters are retrieved through
-        /// reflection by examining the properties of the <see cref="object"/>. This <see cref="object"/> is typically
-        /// created using <see cref="object"/> initializer syntax. Alternatively, an
-        /// <see cref="IDictionary{TKey, TValue}"/> instance containing the route
-        /// parameters.
         /// </param>
         /// <param name="method">The HTTP method for processing the form, either GET or POST.</param>
         /// <returns>

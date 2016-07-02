@@ -1,8 +1,9 @@
-# AspNet.Mvc.TypedRouting
+<h1><img src="https://raw.githubusercontent.com/ivaylokenov/AspNet.Mvc.TypedRouting/master/tools/logo.png" align="left" alt="AspNet.Mvc.TypedRouting" width="100">&nbsp; AspNet.Mvc.TypedRouting - Typed routing and<br />&nbsp; link generation for ASP.NET Core MVC</h1>
+====================================
 
-Resolving controller and action names for various purposes in ASP.NET MVC was always unreliable because the framework uses magic strings in its methods (for example `Url.Action("Action", "Controller")`). With the C# 6.0 `nameof` operator, the problem was partially solved. However, `nameof` cannot be used with various MVC Core features like `ActionNameAttribute`, `AreaAttribute`, `RouteConstraintAttribute`, `IControllerModelConvention`, `IActionModelConvention`, `IParameterModelConvention` and more. Here comes `AspNet.Mvc.TypedRouting` to the rescue!
+Resolving controller and action names for various purposes in ASP.NET MVC was always unreliable because the framework uses magic strings in its methods (for example `Url.Action("Action", "Controller")`). With the C# 6.0 `nameof` operator, the problem was partially solved. However, `nameof` cannot be used with various MVC Core features like `ActionNameAttribute`, `AreaAttribute`, `RouteValueAttribute`, `IControllerModelConvention`, `IActionModelConvention`, `IParameterModelConvention` and more. Here comes `AspNet.Mvc.TypedRouting` to the rescue!
 
-This package gives you typed expression based routing and link generation in a [ASP.NET Core MVC](https://github.com/aspnet/Mvc) web application. Currently working with version 1.0.0-rc2-final.
+This package gives you typed expression based routing and link generation in a [ASP.NET Core MVC](https://github.com/aspnet/Mvc) web application. Currently working with version 1.0.0.
 
 For example:
 
