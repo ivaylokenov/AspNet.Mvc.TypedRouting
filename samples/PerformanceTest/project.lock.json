@@ -1163,7 +1163,7 @@
           "lib/net45/_._": {}
         }
       },
-      "AspNet.Mvc.TypedRouting/1.0.0": {
+      "AspNet.Mvc.TypedRouting/1.1.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5.1",
         "dependencies": {
@@ -3540,7 +3540,7 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "AspNet.Mvc.TypedRouting/1.0.0": {
+    "AspNet.Mvc.TypedRouting/1.1.0": {
       "type": "project",
       "path": "../../src/AspNet.Mvc.TypedRouting/project.json",
       "msbuildProject": "../../src/AspNet.Mvc.TypedRouting/AspNet.Mvc.TypedRouting.xproj"
@@ -3548,7 +3548,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "AspNet.Mvc.TypedRouting >= 1.0.0-*",
+      "AspNet.Mvc.TypedRouting >= 1.1.0-*",
       "Microsoft.AspNetCore.Mvc >= 1.0.0-*",
       "Moq >= 4.2.1510.2205"
     ],

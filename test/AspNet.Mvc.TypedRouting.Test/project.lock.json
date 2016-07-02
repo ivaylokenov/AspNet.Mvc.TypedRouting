@@ -3559,7 +3559,7 @@
           "lib/dotnet/xunit.runner.utility.dotnet.dll": {}
         }
       },
-      "AspNet.Mvc.TypedRouting/1.0.0": {
+      "AspNet.Mvc.TypedRouting/1.1.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.6",
         "dependencies": {
@@ -5010,7 +5010,7 @@
           "lib/net35/xunit.runner.utility.desktop.dll": {}
         }
       },
-      "AspNet.Mvc.TypedRouting/1.0.0": {
+      "AspNet.Mvc.TypedRouting/1.1.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5.1",
         "dependencies": {
@@ -11007,7 +11007,7 @@
         "xunit.runner.utility.nuspec"
       ]
     },
-    "AspNet.Mvc.TypedRouting/1.0.0": {
+    "AspNet.Mvc.TypedRouting/1.1.0": {
       "type": "project",
       "path": "../../src/AspNet.Mvc.TypedRouting/project.json",
       "msbuildProject": "../../src/AspNet.Mvc.TypedRouting/AspNet.Mvc.TypedRouting.xproj"
@@ -11015,7 +11015,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "AspNet.Mvc.TypedRouting >= 1.0.0-*",
+      "AspNet.Mvc.TypedRouting >= 1.1.0-*",
       "Microsoft.AspNetCore.Mvc >= 1.0.0-*",
       "dotnet-test-xunit >= 1.0.0-*",
       "xunit >= 2.1.0"

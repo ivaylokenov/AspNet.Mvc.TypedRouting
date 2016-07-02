@@ -1,5 +1,5 @@
 ﻿{
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "ASP.NET Core MVC Typed Routing",
   "copyright": "2015-2016 Ivaylo Kenov",
   "description": "AspNet.Mvc.TypedRouting is a class library allowing typed expression based route registration and link generation for ASP.NET Core MVC. See the project repository for more information and available features.",

@@ -4108,7 +4108,7 @@
           "lib/netstandard1.3/System.Xml.XPath.XDocument.dll": {}
         }
       },
-      "AspNet.Mvc.TypedRouting/1.0.0": {
+      "AspNet.Mvc.TypedRouting/1.1.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.6",
         "dependencies": {
@@ -10495,7 +10495,7 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "AspNet.Mvc.TypedRouting/1.0.0": {
+    "AspNet.Mvc.TypedRouting/1.1.0": {
       "type": "project",
       "path": "../../src/AspNet.Mvc.TypedRouting/project.json",
       "msbuildProject": "../../src/AspNet.Mvc.TypedRouting/AspNet.Mvc.TypedRouting.xproj"
@@ -10503,7 +10503,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "AspNet.Mvc.TypedRouting >= 1.0.0-*",
+      "AspNet.Mvc.TypedRouting >= 1.1.0-*",
       "Microsoft.AspNetCore.Authentication.Cookies >= 1.0.0-*",
       "Microsoft.AspNetCore.Diagnostics >= 1.0.0-*",
       "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore >= 1.0.0-*",
