@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Reflection;
+    using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Controllers;
     using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -40,11 +41,33 @@
         {
             ControllerActionDescriptorCache.Clear();
         }
-                
+
         public static ExpressionRouteValues Resolve<TController>(
             Expression<Action<TController>> expression,
             object additionalRouteValues = null,
             bool addControllerAndActionToRouteValues = false)
+        {
+            return ResolveLambdaExpression(
+                expression,
+                additionalRouteValues,
+                addControllerAndActionToRouteValues);
+        }
+
+        public static ExpressionRouteValues Resolve<TController>(
+            Expression<Func<TController, Task>> expression,
+            object additionalRouteValues = null,
+            bool addControllerAndActionToRouteValues = false)
+        {
+            return ResolveLambdaExpression(
+                expression,
+                additionalRouteValues,
+                addControllerAndActionToRouteValues);
+        }
+
+        private static ExpressionRouteValues ResolveLambdaExpression(
+            LambdaExpression expression,
+            object additionalRouteValues,
+            bool addControllerAndActionToRouteValues)
         {
             if (expression == null)
             {

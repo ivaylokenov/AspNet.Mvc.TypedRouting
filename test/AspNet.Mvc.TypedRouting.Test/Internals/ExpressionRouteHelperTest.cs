@@ -7,6 +7,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
+    using System.Threading.Tasks;
     using TypedRouting.Internals;
     using Xunit;
 
@@ -75,6 +76,20 @@
             // Assert
             Assert.Equal("Poco", result.Controller);
             Assert.Equal("Action", result.Action);
+            Assert.Equal(1, result.RouteValues.Count);
+            Assert.True(result.RouteValues.ContainsKey("id"));
+            Assert.Equal(1, result.RouteValues["id"]);
+        }
+
+        [Fact]
+        public void Resolve_PocoController_ControllerAsyncActionNameAndParametersAreResolved()
+        {
+            // Act
+            var result = ExpressionRouteHelper.Resolve<PocoController>(c => c.ActionAsync(1));
+
+            // Assert
+            Assert.Equal("Poco", result.Controller);
+            Assert.Equal("ActionAsync", result.Action);
             Assert.Equal(1, result.RouteValues.Count);
             Assert.True(result.RouteValues.ContainsKey("id"));
             Assert.Equal(1, result.RouteValues["id"]);
@@ -281,6 +296,11 @@
         public IActionResult Action(int id)
         {
             return null;
+        }
+
+        public async Task<IActionResult> ActionAsync(int id)
+        {
+            return await Task.FromResult(new EmptyResult());
         }
     }
 
