@@ -1,6 +1,4 @@
-﻿#if NET451
-
-namespace AspNet.Mvc.TypedRouting.Test.LinkGeneration
+﻿namespace AspNet.Mvc.TypedRouting.Test.LinkGeneration
 {
     using System.IO;
     using System.Collections.Generic;
@@ -254,5 +252,3 @@ namespace AspNet.Mvc.TypedRouting.Test.LinkGeneration
         }
     }
 }
-
-#endif

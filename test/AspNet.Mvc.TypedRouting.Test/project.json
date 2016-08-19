@@ -9,6 +9,7 @@
     "AspNet.Mvc.TypedRouting": "1.1.0-*",
     "Microsoft.AspNetCore.Mvc": "1.0.0-*",
     "dotnet-test-xunit": "1.0.0-*",
+    "Moq": "4.6.36-*",
     "xunit": "2.1.0"
   },
 
@@ -25,10 +26,6 @@
         }
       }
     },
-    "net451": {
-      "dependencies": {
-        "Moq": "4.2.1312.1622"
-      }
-    }
+    "net451": {}
   }
 }

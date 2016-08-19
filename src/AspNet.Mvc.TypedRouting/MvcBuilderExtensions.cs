@@ -12,7 +12,7 @@ namespace Microsoft.AspNetCore.Builder
         /// Adds typed expression based routes in ASP.NET Core MVC application.
         /// </summary>
         /// <param name="routesConfiguration">Typed routes configuration.</param>
-        public static void AddTypedRouting(this IMvcBuilder mvcBuilder, Action<ITypedRouteBuilder> routesConfiguration)
+        public static IMvcBuilder AddTypedRouting(this IMvcBuilder mvcBuilder, Action<ITypedRouteBuilder> routesConfiguration)
         {
             mvcBuilder.Services.Configure<MvcOptions>(opts =>
             {
@@ -20,6 +20,8 @@ namespace Microsoft.AspNetCore.Builder
             });
 
             routesConfiguration(new TypedRouteBuilder());
+
+            return mvcBuilder;
         }
     }
 }

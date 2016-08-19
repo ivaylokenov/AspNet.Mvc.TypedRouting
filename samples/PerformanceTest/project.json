@@ -1,4 +1,4 @@
-﻿{
+{
   "buildOptions": {
     "emitEntryPoint": true
   },
@@ -6,7 +6,7 @@
   "dependencies": {
     "AspNet.Mvc.TypedRouting": "1.1.0-*",
     "Microsoft.AspNetCore.Mvc": "1.0.0-*",
-    "Moq":  "4.2.1510.2205" 
+    "Moq": "4.5.21" 
   },
 
   "frameworks": {

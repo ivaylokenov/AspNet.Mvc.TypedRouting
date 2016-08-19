@@ -86,11 +86,11 @@ namespace TypedRoutingWebSite
 
             app.UseMvc(routes =>
             {
-                routes.UseTypedRouting();
-
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                routes
+                    .UseTypedRouting()
+                    .MapRoute(
+                        name: "default",
+                        template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

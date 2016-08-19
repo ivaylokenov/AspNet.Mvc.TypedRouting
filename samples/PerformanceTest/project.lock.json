@@ -3,6 +3,15 @@
   "version": 2,
   "targets": {
     ".NETFramework,Version=v4.5.1": {
+      "Castle.Core/3.3.3": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Castle.Core.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Castle.Core.dll": {}
+        }
+      },
       "Microsoft.AspNetCore.Antiforgery/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -834,13 +843,16 @@
           "lib/netstandard1.1/Microsoft.Net.Http.Headers.dll": {}
         }
       },
-      "Moq/4.2.1510.2205": {
+      "Moq/4.5.21": {
         "type": "package",
+        "dependencies": {
+          "Castle.Core": "3.3.3"
+        },
         "compile": {
-          "lib/net40/Moq.dll": {}
+          "lib/net45/Moq.dll": {}
         },
         "runtime": {
-          "lib/net40/Moq.dll": {}
+          "lib/net45/Moq.dll": {}
         }
       },
       "Newtonsoft.Json/9.0.1": {
@@ -1179,6 +1191,30 @@
     }
   },
   "libraries": {
+    "Castle.Core/3.3.3": {
+      "sha512": "tvVrLbHhtAGubUUDbEkH9JlivdlJOTI25u3hlyHpPxuJdTVi/yVQKWCYvGpafGPm7G1ibdWj4brqhtSQkAmN+g==",
+      "type": "package",
+      "path": "Castle.Core/3.3.3",
+      "files": [
+        "ASL - Apache Software Foundation License.txt",
+        "BreakingChanges.txt",
+        "Castle.Core.3.3.3.nupkg.sha512",
+        "Castle.Core.nuspec",
+        "Changes.txt",
+        "License.txt",
+        "lib/net35/Castle.Core.dll",
+        "lib/net35/Castle.Core.xml",
+        "lib/net40-client/Castle.Core.dll",
+        "lib/net40-client/Castle.Core.xml",
+        "lib/net45/Castle.Core.dll",
+        "lib/net45/Castle.Core.xml",
+        "lib/sl4/Castle.Core.dll",
+        "lib/sl4/Castle.Core.xml",
+        "lib/sl5/Castle.Core.dll",
+        "lib/sl5/Castle.Core.xml",
+        "readme.txt"
+      ]
+    },
     "Microsoft.AspNetCore.Antiforgery/1.0.0": {
       "sha512": "oJnrSvL6S7jM2eD/TR/Kyp/7O6pKvN+8FcnYvUaxaHbKlISwl98o44uidzePBjGxTf4fh9NFEx/q3OuuxAvBzw==",
       "type": "package",
@@ -1949,18 +1985,15 @@
         "lib/netstandard1.1/Microsoft.Net.Http.Headers.xml"
       ]
     },
-    "Moq/4.2.1510.2205": {
-      "sha512": "nqMoHSP5f04/kyKbRUjGgzqtIb5LUUs0H6llHOkQJ5Takx4Ezr2H+59pkIgxkmpbHAcGmc/KsyRZUs1ehnPYag==",
+    "Moq/4.5.21": {
+      "sha512": "fs7WZs0w3NIunxMRN3Qv3Bp2Zkw6F0p0+376/9fqmgEpDcA6aU4zP0bco/JNLG6mDEIpKAPmWXavBMviJYPw+g==",
       "type": "package",
+      "path": "Moq/4.5.21",
       "files": [
-        "Moq.4.2.1510.2205.nupkg.sha512",
+        "Moq.4.5.21.nupkg.sha512",
         "Moq.nuspec",
-        "lib/net35/Moq.dll",
-        "lib/net35/Moq.xml",
-        "lib/net40/Moq.dll",
-        "lib/net40/Moq.xml",
-        "lib/sl5/Moq.Silverlight.dll",
-        "lib/sl5/Moq.Silverlight.xml"
+        "lib/net45/Moq.dll",
+        "lib/net45/Moq.xml"
       ]
     },
     "Newtonsoft.Json/9.0.1": {
@@ -3550,7 +3583,7 @@
     "": [
       "AspNet.Mvc.TypedRouting >= 1.1.0-*",
       "Microsoft.AspNetCore.Mvc >= 1.0.0-*",
-      "Moq >= 4.2.1510.2205"
+      "Moq >= 4.5.21"
     ],
     ".NETFramework,Version=v4.5.1": []
   },

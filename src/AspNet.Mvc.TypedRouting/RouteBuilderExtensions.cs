@@ -9,9 +9,10 @@ namespace Microsoft.AspNetCore.Builder
         /// <summary>
         /// Allows using typed expression based link generation in ASP.NET Core MVC application.
         /// </summary>
-        public static void UseTypedRouting(this IRouteBuilder routeBuilder)
+        public static IRouteBuilder UseTypedRouting(this IRouteBuilder routeBuilder)
         {
             ExpressionRouteHelper.Initialize(routeBuilder.ServiceProvider);
+            return routeBuilder;
         }
     }
 }

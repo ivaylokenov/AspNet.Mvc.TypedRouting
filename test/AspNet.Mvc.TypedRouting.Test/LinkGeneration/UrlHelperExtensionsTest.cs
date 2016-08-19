@@ -1,22 +1,24 @@
-﻿#if NET451
-
-namespace AspNet.Mvc.TypedRouting.Test.LinkGeneration
+﻿namespace AspNet.Mvc.TypedRouting.Test.LinkGeneration
 {
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Builder.Internal;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Abstractions;
     using Microsoft.AspNetCore.Mvc.Infrastructure;
     using Microsoft.AspNetCore.Mvc.Routing;
+    using Microsoft.AspNetCore.Routing.Internal;
     using Microsoft.AspNetCore.Routing;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
+    using Microsoft.Extensions.WebEncoders.Testing;
     using Moq;
     using System;
-    using Microsoft.AspNetCore.Builder.Internal;
+    using System.Text.Encodings.Web;
     using Xunit;
 
     using With = Microsoft.AspNetCore.Mvc.With;
+    using Microsoft.Extensions.ObjectPool;
 
     [Collection("TypedRoutingTests")]
     public class UrlHelperExtensionsTest
@@ -183,6 +185,22 @@ namespace AspNet.Mvc.TypedRouting.Test.LinkGeneration
                     },
                 });
 
+            services
+                .Setup(s => s.GetService(typeof(RoutingMarkerService)))
+                .Returns(new RoutingMarkerService());
+
+            services
+                .Setup(s => s.GetService(typeof(UrlEncoder)))
+                .Returns(UrlEncoder.Default);
+
+            var objectPoolProvider = new DefaultObjectPoolProvider();
+            var objectPolicy = new UriBuilderContextPooledObjectPolicy(UrlEncoder.Default);
+            var objectPool = objectPoolProvider.Create(objectPolicy);
+
+            services
+                .Setup(s => s.GetService(typeof(ObjectPool<UriBuildingContext>)))
+                .Returns(objectPool);
+
             return services.Object;
         }
 
@@ -300,5 +318,3 @@ namespace AspNet.Mvc.TypedRouting.Test.LinkGeneration
         }
     }
 }
-
-#endif

@@ -20,7 +20,8 @@
             new ConcurrentDictionary<MethodInfo, ControllerActionDescriptor>();
         
         private static IActionDescriptorCollectionProvider actionDescriptorsCollectionProvider;
-        
+        private static bool initialized = false;
+
         public static void Initialize(IServiceProvider serviceProvider)
         {
             ClearActionCache();
@@ -31,6 +32,8 @@
             {
                 throw new ArgumentNullException(nameof(actionDescriptorsCollectionProvider));
             }
+
+            initialized = true;
         }
 
         public static void ClearActionCache()
@@ -121,6 +124,11 @@
         {
             return ControllerActionDescriptorCache.GetOrAdd(methodInfo, _ =>
             {
+                if (!initialized)
+                {
+                    throw new InvalidOperationException("Before using typed link generation, 'UseTypedRouting' must be called in the 'UseMvc' routes configuration.");
+                }
+
                 // we are only interested in controller actions
                 ControllerActionDescriptor foundControllerActionDescriptor = null;
                 var actionDescriptors = actionDescriptorsCollectionProvider.ActionDescriptors.Items;

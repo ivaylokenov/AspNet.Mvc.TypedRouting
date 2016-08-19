@@ -10,8 +10,10 @@
     using Microsoft.AspNetCore.Mvc.Infrastructure;
     using Microsoft.AspNetCore.Mvc.Internal;
     using Microsoft.Extensions.DependencyInjection;
+    using LinkGeneration;
     using Setups;
     using Xunit;
+    using System;
 
     public class TestInit
     {
@@ -42,6 +44,14 @@
 
             serviceCollection.AddSingleton(typeof(IEnumerable<IActionDescriptorProvider>), list);
             serviceCollection.AddSingleton(typeof(IActionDescriptorCollectionProvider), typeof(ActionDescriptorCollectionProvider));
+
+            // test exception, if ExpressionRouteHelper is not initialized
+            var exceptionMessage = Assert.Throws<InvalidOperationException>(() =>
+            {
+                new MyTestController().CreatedAtActionSameController();
+            });
+
+            Assert.Equal("Before using typed link generation, 'UseTypedRouting' must be called in the 'UseMvc' routes configuration.", exceptionMessage.Message);
 
             ExpressionRouteHelper.Initialize(serviceCollection.BuildServiceProvider());
         }
