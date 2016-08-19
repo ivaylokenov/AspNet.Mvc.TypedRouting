@@ -32,5 +32,15 @@
         {
             return View();
         }
+
+        public IActionResult NamedRedirect()
+        {
+            return Content(Url.Link("CustomName", new { returnUrl = "Test" }));
+        }
+
+        public IActionResult LinkGeneration()
+        {
+            return Content(Url.Action<HomeController>(c => c.Contact()));
+        }
     }
 }

@@ -33,7 +33,7 @@
         private ITypedRouteBuilder AddRoute(string template, Action<ITypedRoute> configuration, params string[] httpMethods)
         {
             // Action template should be replaced because we are actually using attribute route models.
-            var route = new TypedRoute(template.Replace("{action}", "[action]"), httpMethods);
+            var route = new TypedRoute(template.Trim('/').Replace("{action}", "[action]"), httpMethods);
             configuration(route);
 
             if (TypedRoutingApplicationModelConvention.Routes.ContainsKey(route.ControllerType))

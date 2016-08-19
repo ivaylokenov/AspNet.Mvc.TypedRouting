@@ -15,16 +15,18 @@
         internal TypedRoute(string template, string[] httpMethods)
         {
             Template = template;
-            HttpMethods = httpMethods ?? new string[0];
             Constraints = new List<IActionConstraintMetadata>();
+
+            if (httpMethods != null && httpMethods.Length > 0)
+            {
+                Constraints.Add(new HttpMethodActionConstraint(httpMethods));
+            }
         }
 
         internal TypeInfo ControllerType { get; private set; }
 
         internal MethodInfo ActionMember { get; private set; }
-
-        internal IEnumerable<string> HttpMethods { get; private set; }
-
+        
         internal List<IActionConstraintMetadata> Constraints { get; private set; }
 
         public ITypedRouteDetails ToController<TController>()

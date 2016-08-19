@@ -16,6 +16,7 @@ using TypedRoutingWebSite.Services;
 namespace TypedRoutingWebSite
 {
     using Controllers;
+    using Microsoft.AspNetCore.Mvc.Internal;
 
     public class Startup
     {
@@ -54,7 +55,17 @@ namespace TypedRoutingWebSite
                 routes
                     .Get("CustomController/{action}", route => route.ToController<ExpressionsController>())
                     .Get("CustomContact", route => route.ToAction<HomeController>(a => a.Contact()))
-                    .Get("WithParameter/{id}", route => route.ToAction<HomeController>(a => a.Index(With.Any<int>())));
+                    .Get("WithParameter/{id}", route => route.ToAction<HomeController>(a => a.Index(With.Any<int>())))
+                    .Get("Async", route => route.ToAction<AccountController>(a => a.LogOff()))
+                    .Get("Named", route => route
+                        .ToAction<AccountController>(a => a.Register(With.Any<string>()))
+                        .WithName("CustomName"))
+                    .Add("Constraint", route => route
+                        .ToAction<AccountController>(c => c.Login(With.Any<string>()))
+                        .WithActionConstraints(new HttpMethodActionConstraint(new[] { "PUT" })))
+                    .Add("MultipleMethods", route => route
+                        .ToAction<HomeController>(a => a.About())
+                        .ForHttpMethods("GET", "POST"));
             });
 
             // Add application services.
