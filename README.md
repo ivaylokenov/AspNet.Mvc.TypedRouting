@@ -15,6 +15,8 @@ routes.Add("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index(
 Html.ActionLink<HomeController>("Index", c => c.Index())
 ```
 
+[![Build status](https://ci.appveyor.com/api/projects/status/mvoobyf3s99pkpkf?svg=true)](https://ci.appveyor.com/project/ivaylokenov/aspnet-mvc-typedrouting) [![NuGet Version](http://img.shields.io/nuget/v/AspNet.Mvc.TypedRouting.svg?style=flat)](https://www.nuget.org/packages/AspNet.Mvc.TypedRouting/) [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/ivaylokenov/AspNet.Mvc.TypedRouting/blob/master/LICENSE)
+
 ## Installation
 
 You can install this library using NuGet into your web project. There is no need to add any namespace usings since the package uses the default ones to add extension methods.
