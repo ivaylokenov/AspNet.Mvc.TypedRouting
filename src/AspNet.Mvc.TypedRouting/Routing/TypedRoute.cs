@@ -54,10 +54,20 @@
             return this;
         }
 
+        public ITypedRouteDetails ForHttpMethod(string method)
+        {
+            return this.ForHttpMethods(method);
+        }
+
         public ITypedRouteDetails ForHttpMethods(params string[] methods)
         {
             Constraints.Add(new HttpMethodActionConstraint(methods));
             return this;
+        }
+
+        public ITypedRouteDetails WithActionConstraint(IActionConstraintMetadata constraint)
+        {
+            return this.WithActionConstraints(constraint);
         }
 
         public ITypedRouteDetails WithActionConstraints(params IActionConstraintMetadata[] constraints)

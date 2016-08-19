@@ -60,10 +60,19 @@ routes.Add("MyRoute/MyAction", route => route.ToAction<HomeController>(a => a.In
 routes.Add("MyRoute/MyAction/{id}", route => route.ToAction<HomeController>(a => a.Index(With.Any<int>())));
 
 // adding route with specific name
-routes.Add("MyRoute/MyAction", route => route.ToAction<HomeController>(a => a.Index()).WithName("RouteName"));
+routes.Add("MyRoute/MyAction", route => route
+	.ToAction<HomeController>(a => a.Index())
+	.WithName("RouteName"));
 
+// adding route with custom action constraint
+routes.Add("MyRoute/MyAction", route => route
+	.ToAction<HomeController>(a => a.Index())
+	.WithActionConstraint(new MyCustomConstraint()));
+	
 // adding route to specific HTTP methods
-routes.Add("MyRoute/MyAction", route => route.ToAction<HomeController>(a => a.Index()).ForHttpMethods("GET", "POST"));
+routes.Add("MyRoute/MyAction", route => route
+	.ToAction<HomeController>(a => a.Index())
+	.ForHttpMethods("GET", "POST"));
 
 // you can also specify methods without magic strings
 routes.Get("MyRoute/MyAction", route => route.ToAction<HomeController>(a => a.Index()));
