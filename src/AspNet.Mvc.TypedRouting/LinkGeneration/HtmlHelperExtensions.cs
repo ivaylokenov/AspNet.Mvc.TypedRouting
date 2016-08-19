@@ -6,7 +6,6 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using Html;
-    using Rendering;
 
     public static class HtmlHelperExtensions
     {

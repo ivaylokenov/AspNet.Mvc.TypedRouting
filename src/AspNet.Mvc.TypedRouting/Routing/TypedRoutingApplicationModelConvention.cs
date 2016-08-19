@@ -4,7 +4,6 @@
     using System.Linq;
     using System.Reflection;
     using Microsoft.AspNetCore.Mvc.ApplicationModels;
-    using Microsoft.AspNetCore.Mvc.Internal;
 
     // http://www.strathweb.com/2015/03/strongly-typed-routing-asp-net-mvc-6-iapplicationmodelconvention/
     public class TypedRoutingApplicationModelConvention : IApplicationModelConvention
@@ -20,29 +19,26 @@
                     var typedRoutes = Routes[controller.ControllerType];
                     foreach (var route in typedRoutes)
                     {
+                        var selectorModel = new SelectorModel
+                        {
+                            AttributeRouteModel = route
+                        };
+
+                        var selectors = controller.Selectors;
+
                         var action = controller.Actions.FirstOrDefault(x => x.ActionMethod == route.ActionMember);
                         if (action != null)
                         {
-                            action.Selectors.Clear();
-
-                            action.Selectors.Add(new SelectorModel
+                            foreach (var constraint in route.Constraints)
                             {
-                                AttributeRouteModel = route,
-                                ActionConstraints =
-                                {
-                                    new HttpMethodActionConstraint(route.HttpMethods)
-                                }
-                            });
-                        }
-                        else
-                        {
-                            controller.Selectors.Clear();
+                                selectorModel.ActionConstraints.Add(constraint);
+                            }
 
-                            controller.Selectors.Add(new SelectorModel
-                            {
-                                AttributeRouteModel = route
-                            });
+                            selectors = action.Selectors;
                         }
+
+                        selectors.Clear();
+                        selectors.Add(selectorModel);
                     }
                 }
             }

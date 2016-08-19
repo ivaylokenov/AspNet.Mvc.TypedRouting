@@ -21,7 +21,7 @@ Html.ActionLink<HomeController>("Index", c => c.Index())
 
 You can install this library using NuGet into your web project. There is no need to add any namespace usings since the package uses the default ones to add extension methods.
 
-    Install-Package AspNet.Mvc.TypedRouting -Pre
+    Install-Package AspNet.Mvc.TypedRouting
 
 For other interesting packages check out:
 

@@ -51,9 +51,10 @@ namespace TypedRoutingWebSite
 
             services.AddMvc().AddTypedRouting(routes =>
             {
-                routes.Get("CustomController/{action}", route => route.ToController<ExpressionsController>());
-                routes.Get("CustomContact", route => route.ToAction<HomeController>(a => a.Contact()));
-                routes.Get("WithParameter/{id}", route => route.ToAction<HomeController>(a => a.Index(With.Any<int>())));
+                routes
+                    .Get("CustomController/{action}", route => route.ToController<ExpressionsController>())
+                    .Get("CustomContact", route => route.ToAction<HomeController>(a => a.Contact()))
+                    .Get("WithParameter/{id}", route => route.ToAction<HomeController>(a => a.Index(With.Any<int>())));
             });
 
             // Add application services.

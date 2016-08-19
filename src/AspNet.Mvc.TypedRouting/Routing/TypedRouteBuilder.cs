@@ -5,35 +5,35 @@
 
     public class TypedRouteBuilder : ITypedRouteBuilder
     {
-        public TypedRoute Get(string template, Action<TypedRoute> configuration)
+        public ITypedRouteBuilder Get(string template, Action<ITypedRoute> configuration)
         {
-            return AddRoute(template, configuration).ForHttpMethods("GET");
+            return AddRoute(template, configuration, "GET");
         }
 
-        public TypedRoute Post(string template, Action<TypedRoute> configuration)
+        public ITypedRouteBuilder Post(string template, Action<ITypedRoute> configuration)
         {
-            return AddRoute(template, configuration).ForHttpMethods("POST");
+            return AddRoute(template, configuration, "POST");
         }
 
-        public TypedRoute Put(string template, Action<TypedRoute> configuration)
+        public ITypedRouteBuilder Put(string template, Action<ITypedRoute> configuration)
         {
-            return AddRoute(template, configuration).ForHttpMethods("PUT");
+            return AddRoute(template, configuration, "PUT");
         }
 
-        public TypedRoute Delete(string template, Action<TypedRoute> configuration)
+        public ITypedRouteBuilder Delete(string template, Action<ITypedRoute> configuration)
         {
-            return AddRoute(template, configuration).ForHttpMethods("DELETE");
+            return AddRoute(template, configuration, "DELETE");
         }
 
-        public TypedRoute Add(string template, Action<TypedRoute> configuration)
+        public ITypedRouteBuilder Add(string template, Action<ITypedRoute> configuration)
         {
             return AddRoute(template, configuration);
         }
 
-        private TypedRoute AddRoute(string template, Action<TypedRoute> configuration)
+        private ITypedRouteBuilder AddRoute(string template, Action<ITypedRoute> configuration, params string[] httpMethods)
         {
             // Action template should be replaced because we are actually using attribute route models.
-            var route = new TypedRoute(template.Replace("{action}", "[action]"));
+            var route = new TypedRoute(template.Replace("{action}", "[action]"), httpMethods);
             configuration(route);
 
             if (TypedRoutingApplicationModelConvention.Routes.ContainsKey(route.ControllerType))
@@ -47,7 +47,7 @@
                 TypedRoutingApplicationModelConvention.Routes.Add(route.ControllerType, controllerActions);
             }
 
-            return route;
+            return this;
         }
     }
 }
