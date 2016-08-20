@@ -4,6 +4,7 @@
     using Microsoft.AspNetCore.TestHost;
     using System.IO;
     using System.Net.Http;
+    using System.Reflection;
     using System.Threading.Tasks;
     using Xunit;
 
@@ -16,7 +17,9 @@
         {
             var webHost = new WebHostBuilder()
                 .UseStartup<Startup>()
-                .UseContentRoot(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "samples", "TypedRoutingWebSite"));
+                .UseContentRoot(SolutionPathUtility.GetProjectPath(
+                    "samples", 
+                    typeof(Startup).GetTypeInfo().Assembly));
 
             this.server = new TestServer(webHost);
             this.client = this.server.CreateClient();
