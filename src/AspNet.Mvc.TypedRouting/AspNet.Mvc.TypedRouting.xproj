@@ -21,4 +21,7 @@
     <ProduceOutputsOnBuild>True</ProduceOutputsOnBuild>
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Target Name="AfterBuild">
+    <Exec Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'" Command="dotnet pack --configuration Release --output ../../artifacts --no-build"/>
+  </Target>
 </Project>
