@@ -10,6 +10,7 @@
     using Microsoft.Extensions.WebEncoders.Testing;
     using Moq;
     using Xunit;
+    using Microsoft.AspNetCore.Http;
 
     // Since the original MVC helper is living hell to test, these unit tests just test whether
     // the typed extensions pass correct values.
@@ -111,6 +112,15 @@
         private static IHtmlHelper GetHtmlHelper()
         {
             var htmlHelperMock = new Mock<IHtmlHelper>();
+
+            htmlHelperMock.Setup(h => h.ViewContext)
+                .Returns(new ViewContext
+                {
+                    HttpContext = new DefaultHttpContext
+                    {
+                        RequestServices = TestServices.Global
+                    }
+                });
 
             htmlHelperMock.Setup(h => h.ActionLink(
                 It.IsAny<string>(),

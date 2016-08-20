@@ -1,4 +1,4 @@
-﻿namespace AspNet.Mvc.TypedRouting.Internals
+﻿namespace AspNet.Mvc.TypedRouting.LinkGeneration
 {
     using System;
     using System.Collections.Concurrent;
@@ -10,43 +10,27 @@
     using Microsoft.AspNetCore.Mvc.Controllers;
     using Microsoft.AspNetCore.Mvc.Infrastructure;
     using Microsoft.AspNetCore.Routing;
-    using Microsoft.Extensions.DependencyInjection;
 
-    public static class ExpressionRouteHelper
+    public class ExpressionRouteHelper : IExpressionRouteHelper
     {
         // This key should be ignored as it is used internally for route attribute matching.
-        private static readonly string RouteGroupKey = "!__route_group";
+        private const string RouteGroupKey = "!__route_group";
 
-        private static readonly HashSet<string> UniqueRouteKeysSet = new HashSet<string>();
+        private readonly ConcurrentDictionary<MethodInfo, ControllerActionDescriptor> controllerActionDescriptorCache;
+        private readonly IActionDescriptorCollectionProvider actionDescriptorsCollection;
+        private readonly ISet<string> uniqueRouteKeys;
 
-        private static readonly ConcurrentDictionary<MethodInfo, ControllerActionDescriptor> ControllerActionDescriptorCache =
-            new ConcurrentDictionary<MethodInfo, ControllerActionDescriptor>();
+        public ExpressionRouteHelper(
+            IActionDescriptorCollectionProvider actionDescriptorsCollectionProvider,
+            IUniqueRouteKeysProvider uniqueRouteKeysProvider)
+        {
+            controllerActionDescriptorCache = new ConcurrentDictionary<MethodInfo, ControllerActionDescriptor>();
+
+            uniqueRouteKeys = uniqueRouteKeysProvider.GetUniqueKeys();
+            actionDescriptorsCollection = actionDescriptorsCollectionProvider;
+        }
         
-        private static IActionDescriptorCollectionProvider actionDescriptorsCollectionProvider;
-        private static bool initialized = false;
-
-        internal static ISet<string> UniqueRouteKeys => UniqueRouteKeysSet;
-
-        public static void Initialize(IServiceProvider serviceProvider)
-        {
-            ClearActionCache();
-
-            actionDescriptorsCollectionProvider = serviceProvider.GetService<IActionDescriptorCollectionProvider>();
-
-            if (actionDescriptorsCollectionProvider == null)
-            {
-                throw new ArgumentNullException(nameof(actionDescriptorsCollectionProvider));
-            }
-
-            initialized = true;
-        }
-
-        public static void ClearActionCache()
-        {
-            ControllerActionDescriptorCache.Clear();
-        }
-
-        public static ExpressionRouteValues Resolve<TController>(
+        public ExpressionRouteValues Resolve<TController>(
             Expression<Action<TController>> expression,
             object additionalRouteValues = null,
             bool addControllerAndActionToRouteValues = false)
@@ -57,7 +41,7 @@
                 addControllerAndActionToRouteValues);
         }
 
-        public static ExpressionRouteValues Resolve<TController>(
+        public ExpressionRouteValues Resolve<TController>(
             Expression<Func<TController, Task>> expression,
             object additionalRouteValues = null,
             bool addControllerAndActionToRouteValues = false)
@@ -68,7 +52,12 @@
                 addControllerAndActionToRouteValues);
         }
 
-        private static ExpressionRouteValues ResolveLambdaExpression(
+        public void ClearActionCache()
+        {
+            controllerActionDescriptorCache.Clear();
+        }
+
+        private ExpressionRouteValues ResolveLambdaExpression(
             LambdaExpression expression,
             object additionalRouteValues,
             bool addControllerAndActionToRouteValues)
@@ -135,7 +124,7 @@
                     AddControllerAndActionToRouteValues(controllerName, actionName, routeValues);
                 }
 
-                foreach (var uniqueRouteKey in UniqueRouteKeys)
+                foreach (var uniqueRouteKey in uniqueRouteKeys)
                 {
                     if (!routeValues.ContainsKey(uniqueRouteKey))
                     {
@@ -155,18 +144,13 @@
             throw new InvalidOperationException("Expression is not valid - expected instance method call but instead received other type of expression.");
         }
 
-        private static ControllerActionDescriptor GetActionDescriptorFromCache(MethodInfo methodInfo)
+        private ControllerActionDescriptor GetActionDescriptorFromCache(MethodInfo methodInfo)
         {
-            return ControllerActionDescriptorCache.GetOrAdd(methodInfo, _ =>
+            return controllerActionDescriptorCache.GetOrAdd(methodInfo, _ =>
             {
-                if (!initialized)
-                {
-                    throw new InvalidOperationException("Before using typed link generation, 'UseTypedRouting' must be called in the 'UseMvc' routes configuration.");
-                }
-
                 // we are only interested in controller actions
                 ControllerActionDescriptor foundControllerActionDescriptor = null;
-                var actionDescriptors = actionDescriptorsCollectionProvider.ActionDescriptors.Items;
+                var actionDescriptors = actionDescriptorsCollection.ActionDescriptors.Items;
                 for (int i = 0; i < actionDescriptors.Count; i++)
                 {
                     var actionDescriptor = actionDescriptors[i];
@@ -187,7 +171,7 @@
             });
         }
 
-        private static IDictionary<string, object> GetRouteValues(
+        private IDictionary<string, object> GetRouteValues(
             MethodInfo methodInfo,
             MethodCallExpression methodCallExpression,
             ControllerActionDescriptor controllerActionDescriptor)

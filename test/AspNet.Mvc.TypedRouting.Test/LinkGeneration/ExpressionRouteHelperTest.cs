@@ -1,26 +1,43 @@
-﻿namespace AspNet.Mvc.TypedRouting.Test.Internals
+﻿namespace AspNet.Mvc.TypedRouting.Test.LinkGeneration
 {
+    using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.ApplicationModels;
     using Microsoft.AspNetCore.Mvc.ModelBinding;
     using Microsoft.AspNetCore.Mvc.Routing;
+    using Microsoft.Extensions.DependencyInjection;
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-    using TypedRouting.Internals;
+    using TypedRouting.LinkGeneration;
     using Xunit;
+
+    using With = Microsoft.AspNetCore.Mvc.With;
 
     [Collection("TypedRoutingTests")]
     public class ExpressionRouteHelperTest
     {
+        [Fact]
+        public void Resolve_AddTypedRoutingShouldAddExpressionRouteHelper()
+        {
+            var serviceCollection = new ServiceCollection();
+
+            serviceCollection.AddMvc().AddTypedRouting();
+
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+
+            var expressionRouteHelper = serviceProvider.GetRequiredService<IExpressionRouteHelper>();
+            Assert.IsAssignableFrom<ExpressionRouteHelper>(expressionRouteHelper);
+        }
+
         [Theory]
-        [MemberData(nameof(NormalActionsWithNoParametersData))]
+        [MemberData(nameof(UsualActionsWithNoParametersData))]
         public void Resolve_ControllerAndActionWithoutParameters_ControllerAndActionNameAreResolved(
-            Expression<Action<NormalController>> action, string controllerName, string actionName)
+            Expression<Action<UsualController>> action, string controllerName, string actionName)
         {
             // Act
-            var result = ExpressionRouteHelper.Resolve(action);
+            var result = TestServices.Global.GetService<IExpressionRouteHelper>().Resolve(action);
 
             // Assert
             Assert.Equal(controllerName, result.Controller);
@@ -29,12 +46,12 @@
         }
 
         [Theory]
-        [MemberData(nameof(NormalActionssWithParametersData))]
+        [MemberData(nameof(UsualActionssWithParametersData))]
         public void Resolve_ControllerAndActionWithPrimitiveParameters_ControllerActionNameAndParametersAreResolved(
-            Expression<Action<NormalController>> action, string controllerName, string actionName, IDictionary<string, object> routeValues)
+            Expression<Action<UsualController>> action, string controllerName, string actionName, IDictionary<string, object> routeValues)
         {
             // Act
-            var result = ExpressionRouteHelper.Resolve(action);
+            var result = TestServices.Global.GetService<IExpressionRouteHelper>().Resolve(action);
 
             // Assert
             Assert.Equal(controllerName, result.Controller);
@@ -52,10 +69,10 @@
         public void Resolve_ControllerAndActionWithObjectParameters_ControllerActionNameAndParametersAreResolved()
         {
             // Act
-            var result = ExpressionRouteHelper.Resolve<NormalController>(c => c.ActionWithMultipleParameters(1, "string", new RequestModel { Integer = 1, String = "Text" }));
+            var result = TestServices.Global.GetService<IExpressionRouteHelper>().Resolve<UsualController>(c => c.ActionWithMultipleParameters(1, "string", new RequestModel { Integer = 1, String = "Text" }));
 
             // Assert
-            Assert.Equal("Normal", result.Controller);
+            Assert.Equal("Usual", result.Controller);
             Assert.Equal("ActionWithMultipleParameters", result.Action);
             Assert.Equal(3, result.RouteValues.Count);
             Assert.Equal(1, result.RouteValues["id"]);
@@ -71,7 +88,7 @@
         public void Resolve_PocoController_ControllerActionNameAndParametersAreResolved()
         {
             // Act
-            var result = ExpressionRouteHelper.Resolve<PocoController>(c => c.Action(1));
+            var result = TestServices.Global.GetService<IExpressionRouteHelper>().Resolve<PocoController>(c => c.Action(1));
 
             // Assert
             Assert.Equal("Poco", result.Controller);
@@ -85,7 +102,7 @@
         public void Resolve_PocoController_ControllerAsyncActionNameAndParametersAreResolved()
         {
             // Act
-            var result = ExpressionRouteHelper.Resolve<PocoController>(c => c.ActionAsync(1));
+            var result = TestServices.Global.GetService<IExpressionRouteHelper>().Resolve<PocoController>(c => c.ActionAsync(1));
 
             // Assert
             Assert.Equal("Poco", result.Controller);
@@ -99,7 +116,7 @@
         public void Resolve_InAreaController_ControllerActionNameAndAreaAreResolved()
         {
             // Act
-            var result = ExpressionRouteHelper.Resolve<InAreaController>(c => c.Action(1));
+            var result = TestServices.Global.GetService<IExpressionRouteHelper>().Resolve<InAreaController>(c => c.Action(1));
 
             // Assert
             Assert.Equal("InArea", result.Controller);
@@ -115,7 +132,7 @@
         public void Resolve_ActionWithCustomRouteConstraints_RouteConstraintsAreResolved()
         {
             // Act
-            var result = ExpressionRouteHelper.Resolve<RouteConstraintController>(c => c.Action(1, 2));
+            var result = TestServices.Global.GetService<IExpressionRouteHelper>().Resolve<RouteConstraintController>(c => c.Action(1, 2));
 
             // Assert
             Assert.Equal("CustomController", result.Controller);
@@ -133,7 +150,7 @@
         public void Resolve_CustomConventions_CustomConventionsAreResolved()
         {
             // Act
-            var result = ExpressionRouteHelper.Resolve<ConventionsController>(c => c.ConventionsAction(1));
+            var result = TestServices.Global.GetService<IExpressionRouteHelper>().Resolve<ConventionsController>(c => c.ConventionsAction(1));
 
             // Assert
             Assert.Equal("ChangedController", result.Controller);
@@ -149,7 +166,7 @@
             // Act
             var exception = Assert.Throws<InvalidOperationException>(() =>
             {
-                ExpressionRouteHelper.Resolve<NormalController>(c => NormalController.StaticCall());
+                TestServices.Global.GetService<IExpressionRouteHelper>().Resolve<UsualController>(c => UsualController.StaticCall());
             });
 
             // Assert
@@ -162,7 +179,7 @@
             // Act
             var exception = Assert.Throws<InvalidOperationException>(() =>
             {
-                ExpressionRouteHelper.Resolve<NormalController>(c => new object());
+                TestServices.Global.GetService<IExpressionRouteHelper>().Resolve<UsualController>(c => new object());
             });
 
             // Assert
@@ -175,20 +192,20 @@
             // Act
             var exception = Assert.Throws<InvalidOperationException>(() =>
             {
-                ExpressionRouteHelper.Resolve<RequestModel>(c => c.SomeMethod());
+                TestServices.Global.GetService<IExpressionRouteHelper>().Resolve<RequestModel>(c => c.SomeMethod());
             });
 
             // Assert
             Assert.Equal("Method SomeMethod in class RequestModel is not a valid controller action.", exception.Message);
         }
-        
-        public static TheoryData<Expression<Action<NormalController>>, string, string> NormalActionsWithNoParametersData
+
+        public static TheoryData<Expression<Action<UsualController>>, string, string> UsualActionsWithNoParametersData
         {
             get
             {
-                var data = new TheoryData<Expression<Action<NormalController>>, string, string>();
+                var data = new TheoryData<Expression<Action<UsualController>>, string, string>();
 
-                const string controllerName = "Normal";
+                const string controllerName = "Usual";
                 data.Add(c => c.ActionWithoutParameters(), controllerName, "ActionWithoutParameters");
                 data.Add(c => c.ActionWithOverloads(), controllerName, "ActionWithOverloads");
                 data.Add(c => c.VoidAction(), controllerName, "VoidAction");
@@ -199,21 +216,21 @@
         }
 
         public static TheoryData<
-            Expression<Action<NormalController>>,
+            Expression<Action<UsualController>>,
             string,
             string,
-            IDictionary<string, object>> NormalActionssWithParametersData
+            IDictionary<string, object>> UsualActionssWithParametersData
         {
             get
             {
-                var data = new TheoryData<Expression<Action<NormalController>>, string, string, IDictionary<string, object>>();
+                var data = new TheoryData<Expression<Action<UsualController>>, string, string, IDictionary<string, object>>();
 
-                const string controllerName = "Normal";
+                const string controllerName = "Usual";
                 data.Add(
                     c => c.ActionWithOverloads(1),
                     controllerName,
                     "ActionWithOverloads",
-                    new Dictionary<string, object> {["id"] = 1 });
+                    new Dictionary<string, object> { ["id"] = 1 });
 
                 data.Add(
                     c => c.ActionWithOverloads(With.No<int>()),
@@ -225,18 +242,18 @@
                     c => c.ActionWithOverloads(GetInt()),
                     controllerName,
                     "ActionWithOverloads",
-                    new Dictionary<string, object> {["id"] = 1 });
+                    new Dictionary<string, object> { ["id"] = 1 });
 
                 data.Add(
                     c => c.ActionWithMultipleParameters(1, "string", null),
                     controllerName,
                     "ActionWithMultipleParameters",
-                    new Dictionary<string, object> {["id"] = 1,["text"] = "string" });
+                    new Dictionary<string, object> { ["id"] = 1, ["text"] = "string" });
 
                 return data;
             }
         }
-        
+
         private static int GetInt()
         {
             return 1;
@@ -254,7 +271,7 @@
         }
     }
 
-    public class NormalController : Controller
+    public class UsualController : Controller
     {
         public static void StaticCall()
         {

@@ -1,7 +1,7 @@
-﻿using AspNet.Mvc.TypedRouting.Internals;
-
-namespace Microsoft.AspNetCore.Mvc
+﻿namespace Microsoft.AspNetCore.Mvc
 {
+    using AspNet.Mvc.TypedRouting.LinkGeneration;
+    using Extensions.DependencyInjection;
     using System;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
@@ -67,7 +67,7 @@ namespace Microsoft.AspNetCore.Mvc
             object value)
             where TController : Controller
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues);
             return controller.CreatedAtAction(
                 expressionRouteValues.Action,
                 expressionRouteValues.RouteValues,
@@ -93,7 +93,7 @@ namespace Microsoft.AspNetCore.Mvc
             object value)
             where TController : Controller
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues);
             return controller.CreatedAtAction(
                 expressionRouteValues.Action,
                 expressionRouteValues.RouteValues,
@@ -159,7 +159,7 @@ namespace Microsoft.AspNetCore.Mvc
             object value)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues);
             return controller.CreatedAtAction(
                 expressionRouteValues.Action,
                 expressionRouteValues.Controller,
@@ -186,7 +186,7 @@ namespace Microsoft.AspNetCore.Mvc
             object value)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues);
             return controller.CreatedAtAction(
                 expressionRouteValues.Action,
                 expressionRouteValues.Controller,
@@ -256,7 +256,7 @@ namespace Microsoft.AspNetCore.Mvc
             object value)
             where TController : Controller
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues : true);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues, addControllerAndActionToRouteValues : true);
             return controller.CreatedAtRoute(
                 routeName,
                 expressionRouteValues.RouteValues,
@@ -283,7 +283,7 @@ namespace Microsoft.AspNetCore.Mvc
             object value)
             where TController : Controller
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return controller.CreatedAtRoute(
                 routeName,
                 expressionRouteValues.RouteValues,
@@ -352,7 +352,7 @@ namespace Microsoft.AspNetCore.Mvc
             object value)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return controller.CreatedAtRoute(
                 routeName,
                 expressionRouteValues.RouteValues,
@@ -379,7 +379,7 @@ namespace Microsoft.AspNetCore.Mvc
             object value)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return controller.CreatedAtRoute(
                 routeName,
                 expressionRouteValues.RouteValues,
@@ -443,7 +443,7 @@ namespace Microsoft.AspNetCore.Mvc
             object routeValues)
             where TController : Controller
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues);
             return controller.RedirectToAction(
                 expressionRouteValues.Action,
                 expressionRouteValues.RouteValues);
@@ -468,7 +468,7 @@ namespace Microsoft.AspNetCore.Mvc
             object routeValues)
             where TController : Controller
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues);
             return controller.RedirectToAction(
                 expressionRouteValues.Action,
                 expressionRouteValues.RouteValues);
@@ -531,7 +531,7 @@ namespace Microsoft.AspNetCore.Mvc
             object routeValues)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues);
             return controller.RedirectToAction(
                 expressionRouteValues.Action,
                 expressionRouteValues.Controller,
@@ -557,7 +557,7 @@ namespace Microsoft.AspNetCore.Mvc
             object routeValues)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues);
             return controller.RedirectToAction(
                 expressionRouteValues.Action,
                 expressionRouteValues.Controller,
@@ -621,7 +621,7 @@ namespace Microsoft.AspNetCore.Mvc
             object routeValues)
             where TController : Controller
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues);
             return controller.RedirectToActionPermanent(
                 expressionRouteValues.Action,
                 expressionRouteValues.RouteValues);
@@ -646,7 +646,7 @@ namespace Microsoft.AspNetCore.Mvc
             object routeValues)
             where TController : Controller
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues);
             return controller.RedirectToActionPermanent(
                 expressionRouteValues.Action,
                 expressionRouteValues.RouteValues);
@@ -709,7 +709,7 @@ namespace Microsoft.AspNetCore.Mvc
             object routeValues)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues);
             return controller.RedirectToActionPermanent(
                 expressionRouteValues.Action,
                 expressionRouteValues.Controller,
@@ -735,7 +735,7 @@ namespace Microsoft.AspNetCore.Mvc
             object routeValues)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues);
             return controller.RedirectToActionPermanent(
                 expressionRouteValues.Action,
                 expressionRouteValues.Controller,
@@ -805,7 +805,7 @@ namespace Microsoft.AspNetCore.Mvc
             object routeValues)
             where TController : Controller
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return controller.RedirectToRoute(
                 routeName,
                 expressionRouteValues.RouteValues);
@@ -832,7 +832,7 @@ namespace Microsoft.AspNetCore.Mvc
             object routeValues)
             where TController : Controller
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return controller.RedirectToRoute(
                 routeName,
                 expressionRouteValues.RouteValues);
@@ -901,7 +901,7 @@ namespace Microsoft.AspNetCore.Mvc
             object routeValues)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return controller.RedirectToRoute(
                 routeName,
                 expressionRouteValues.RouteValues);
@@ -928,7 +928,7 @@ namespace Microsoft.AspNetCore.Mvc
             object routeValues)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return controller.RedirectToRoute(
                 routeName,
                 expressionRouteValues.RouteValues);
@@ -997,7 +997,7 @@ namespace Microsoft.AspNetCore.Mvc
             object routeValues)
             where TController : Controller
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return controller.RedirectToRoutePermanent(
                 routeName,
                 expressionRouteValues.RouteValues);
@@ -1024,7 +1024,7 @@ namespace Microsoft.AspNetCore.Mvc
             object routeValues)
             where TController : Controller
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return controller.RedirectToRoutePermanent(
                 routeName,
                 expressionRouteValues.RouteValues);
@@ -1093,7 +1093,7 @@ namespace Microsoft.AspNetCore.Mvc
             object routeValues)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return controller.RedirectToRoutePermanent(
                 routeName,
                 expressionRouteValues.RouteValues);
@@ -1120,10 +1120,13 @@ namespace Microsoft.AspNetCore.Mvc
             object routeValues)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
+            var expressionRouteValues = GetExpresionRouteHelper(controller).Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return controller.RedirectToRoutePermanent(
                 routeName,
                 expressionRouteValues.RouteValues);
         }
+
+        private static IExpressionRouteHelper GetExpresionRouteHelper(Controller controller)
+            => controller.HttpContext.RequestServices.GetExpressionRouteHelper();
     }
 }

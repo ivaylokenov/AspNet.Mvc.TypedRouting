@@ -20,6 +20,7 @@
     using Xunit;
 
     using With = Microsoft.AspNetCore.Mvc.With;
+    using TypedRouting.LinkGeneration;
 
     [Collection("TypedRoutingTests")]
     public class UrlHelperExtensionsTest
@@ -234,9 +235,11 @@
                     },
                 });
 
+            var actionDescriptorCollectionProvider = new ActionDescriptorCollectionProvider(services.Object);
+
             services
                 .Setup(s => s.GetService(typeof(IActionDescriptorCollectionProvider)))
-                .Returns(new ActionDescriptorCollectionProvider(services.Object));
+                .Returns(actionDescriptorCollectionProvider);
 
             services
                 .Setup(s => s.GetService(typeof(IEnumerable<IActionDescriptorProvider>)))
@@ -249,6 +252,10 @@
             services
                 .Setup(s => s.GetService(typeof(UrlEncoder)))
                 .Returns(UrlEncoder.Default);
+
+            services
+                .Setup(s => s.GetService(typeof(IExpressionRouteHelper)))
+                .Returns(new ExpressionRouteHelper(actionDescriptorCollectionProvider, new UniqueRouteKeysProvider()));
 
             var objectPoolProvider = new DefaultObjectPoolProvider();
             var objectPolicy = new UriBuilderContextPooledObjectPolicy(UrlEncoder.Default);

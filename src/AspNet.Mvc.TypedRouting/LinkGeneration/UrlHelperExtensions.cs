@@ -1,11 +1,10 @@
-﻿using AspNet.Mvc.TypedRouting.Internals;
-
-namespace Microsoft.AspNetCore.Mvc
+﻿namespace Microsoft.AspNetCore.Mvc
 {
     using System;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
     using Routing;
+    using AspNet.Mvc.TypedRouting.LinkGeneration;
 
     public static class UrlHelperExtensions
     {
@@ -314,7 +313,7 @@ namespace Microsoft.AspNetCore.Mvc
             object values)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, values, addControllerAndActionToRouteValues: true);
+            var expressionRouteValues = GetExpresionRouteHelper(helper).Resolve(action, values, addControllerAndActionToRouteValues: true);
             return helper.Link(routeName, expressionRouteValues.RouteValues);
         }
 
@@ -337,7 +336,7 @@ namespace Microsoft.AspNetCore.Mvc
             object values)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, values, addControllerAndActionToRouteValues: true);
+            var expressionRouteValues = GetExpresionRouteHelper(helper).Resolve(action, values, addControllerAndActionToRouteValues: true);
             return helper.Link(routeName, expressionRouteValues.RouteValues);
         }
 
@@ -347,7 +346,7 @@ namespace Microsoft.AspNetCore.Mvc
             UrlActionContext actionContext)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, actionContext.Values);
+            var expressionRouteValues = GetExpresionRouteHelper(helper).Resolve(action, actionContext.Values);
             ApplyRouteValues(actionContext, expressionRouteValues);
             return helper.Action(actionContext);
         }
@@ -358,7 +357,7 @@ namespace Microsoft.AspNetCore.Mvc
             UrlActionContext actionContext)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, actionContext.Values);
+            var expressionRouteValues = GetExpresionRouteHelper(helper).Resolve(action, actionContext.Values);
             ApplyRouteValues(actionContext, expressionRouteValues);
             return helper.Action(actionContext);
         }
@@ -369,5 +368,8 @@ namespace Microsoft.AspNetCore.Mvc
             actionContext.Action = expressionRouteValues.Action;
             actionContext.Values = expressionRouteValues.RouteValues;
         }
+
+        private static IExpressionRouteHelper GetExpresionRouteHelper(IUrlHelper helper)
+            => helper.ActionContext.HttpContext.RequestServices.GetExpressionRouteHelper();
     }
 }

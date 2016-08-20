@@ -7,7 +7,7 @@
     public class TypedRoutingTest
     {
         [Fact]
-        public void RegularRoutesShouldWorkCorrectly()
+        public void RegularRoutes_ShouldWorkCorrectly()
         {
             MyMvc
                 .Routes()
@@ -16,7 +16,7 @@
         }
 
         [Fact]
-        public void ToControllerShouldWorkCorrectly()
+        public void ToController_ShouldWorkCorrectly()
         {
             MyMvc
                 .Routes()
@@ -25,7 +25,7 @@
         }
         
         [Fact]
-        public void ToActionShouldWorkCorrectly()
+        public void ToAction_ShouldWorkCorrectly()
         {
             MyMvc
                 .Routes()
@@ -34,7 +34,7 @@
         }
 
         [Fact]
-        public void WithAnyShouldWorkCorrectly()
+        public void WithAny_ShouldWorkCorrectly()
         {
             MyMvc
                 .Routes()
@@ -43,7 +43,7 @@
         }
 
         [Fact]
-        public void HttpConstrainsShouldWorkCorrectly()
+        public void HttpConstrains_ShouldWorkCorrectly()
         {
             MyMvc
                 .Routes()

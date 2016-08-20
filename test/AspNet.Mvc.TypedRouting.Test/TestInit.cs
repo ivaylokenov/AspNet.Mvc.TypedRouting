@@ -1,19 +1,20 @@
 ﻿namespace AspNet.Mvc.TypedRouting.Test
 {
-    using AspNet.Mvc.TypedRouting.Internals;
-    using System.Collections.Generic;
-    using System.Reflection;
+    using LinkGeneration;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Abstractions;
     using Microsoft.AspNetCore.Mvc.ApplicationParts;
     using Microsoft.AspNetCore.Mvc.Controllers;
     using Microsoft.AspNetCore.Mvc.Infrastructure;
     using Microsoft.AspNetCore.Mvc.Internal;
+    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Extensions.DependencyInjection;
-    using LinkGeneration;
     using Setups;
-    using Xunit;
     using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using TypedRouting.LinkGeneration;
+    using Xunit;
 
     public class TestInit
     {
@@ -23,6 +24,9 @@
 
             serviceCollection.AddSingleton(typeof(IEnumerable<IActionDescriptorProvider>), GetActionDescriptorProviders());
             serviceCollection.AddSingleton(typeof(IActionDescriptorCollectionProvider), typeof(ActionDescriptorCollectionProvider));
+            serviceCollection.AddSingleton(typeof(IUniqueRouteKeysProvider), typeof(UniqueRouteKeysProvider));
+            serviceCollection.AddSingleton(typeof(IExpressionRouteHelper), typeof(ExpressionRouteHelper));
+            serviceCollection.AddSingleton(typeof(IUrlHelperFactory), typeof(UrlHelperFactory));
 
             // test exception, if ExpressionRouteHelper is not initialized
             var exceptionMessage = Assert.Throws<InvalidOperationException>(() =>
@@ -30,9 +34,9 @@
                 new MyTestController().CreatedAtActionSameController();
             });
 
-            Assert.Equal("Before using typed link generation, 'UseTypedRouting' must be called in the 'UseMvc' routes configuration.", exceptionMessage.Message);
+            Assert.Equal("'AddTypedRouting' must be called after 'AddMvc' in order to use typed routing and link generation.", exceptionMessage.Message);
 
-            ExpressionRouteHelper.Initialize(serviceCollection.BuildServiceProvider());
+            TestServices.Global = serviceCollection.BuildServiceProvider();
         }
 
         public static List<IActionDescriptorProvider> GetActionDescriptorProviders()

@@ -1,4 +1,4 @@
-﻿namespace AspNet.Mvc.TypedRouting.Internals
+﻿namespace AspNet.Mvc.TypedRouting.LinkGeneration
 {
     using System.Collections.Generic;
 

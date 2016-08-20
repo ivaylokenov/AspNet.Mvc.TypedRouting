@@ -1,12 +1,11 @@
-﻿using AspNet.Mvc.TypedRouting.Internals;
-
-namespace Microsoft.AspNetCore.Mvc.Rendering
+﻿namespace Microsoft.AspNetCore.Mvc.Rendering
 {
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
     using Html;
+    using AspNet.Mvc.TypedRouting.LinkGeneration;
 
     public static class HtmlHelperExtensions
     {
@@ -260,7 +259,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             object htmlAttributes)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
+            var expressionRouteValues = GetExpresionRouteHelper(helper).Resolve(action, routeValues);
             return helper.ActionLink(
                 linkText,
                 expressionRouteValues.Action,
@@ -310,7 +309,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             object htmlAttributes)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
+            var expressionRouteValues = GetExpresionRouteHelper(helper).Resolve(action, routeValues);
             return helper.ActionLink(
                 linkText,
                 expressionRouteValues.Action,
@@ -592,7 +591,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             object htmlAttributes)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
+            var expressionRouteValues = GetExpresionRouteHelper(helper).Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return helper.RouteLink(
                 linkText,
                 routeName,
@@ -643,7 +642,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             object htmlAttributes)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
+            var expressionRouteValues = GetExpresionRouteHelper(helper).Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return helper.RouteLink(
                 linkText,
                 routeName,
@@ -1418,7 +1417,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             object htmlAttributes)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
+            var expressionRouteValues = GetExpresionRouteHelper(helper).Resolve(action, routeValues);
             return helper.BeginForm(
                 expressionRouteValues.Action,
                 expressionRouteValues.Controller,
@@ -1464,7 +1463,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             object htmlAttributes)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
+            var expressionRouteValues = GetExpresionRouteHelper(helper).Resolve(action, routeValues);
             return helper.BeginForm(
                 expressionRouteValues.Action,
                 expressionRouteValues.Controller,
@@ -1516,7 +1515,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             object htmlAttributes)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
+            var expressionRouteValues = GetExpresionRouteHelper(helper).Resolve(action, routeValues);
             return helper.BeginForm(
                 expressionRouteValues.Action,
                 expressionRouteValues.Controller,
@@ -1568,7 +1567,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             object htmlAttributes)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
+            var expressionRouteValues = GetExpresionRouteHelper(helper).Resolve(action, routeValues);
             return helper.BeginForm(
                 expressionRouteValues.Action,
                 expressionRouteValues.Controller,
@@ -2328,7 +2327,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             object htmlAttributes)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(
+            var expressionRouteValues = GetExpresionRouteHelper(helper).Resolve(
                 action,
                 routeValues,
                 addControllerAndActionToRouteValues: true);
@@ -2374,7 +2373,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             object htmlAttributes)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(
+            var expressionRouteValues = GetExpresionRouteHelper(helper).Resolve(
                 action,
                 routeValues,
                 addControllerAndActionToRouteValues: true);
@@ -2426,7 +2425,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             object htmlAttributes)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(
+            var expressionRouteValues = GetExpresionRouteHelper(helper).Resolve(
                 action,
                 routeValues,
                 addControllerAndActionToRouteValues: true);
@@ -2478,12 +2477,15 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             object htmlAttributes)
             where TController : class
         {
-            var expressionRouteValues = ExpressionRouteHelper.Resolve(
+            var expressionRouteValues = GetExpresionRouteHelper(helper).Resolve(
                 action,
                 routeValues,
                 addControllerAndActionToRouteValues: true);
 
             return helper.BeginRouteForm(routeName, expressionRouteValues.RouteValues, method, antiforgery: antiforgery, htmlAttributes: htmlAttributes);
         }
+        
+        private static IExpressionRouteHelper GetExpresionRouteHelper(IHtmlHelper helper)
+            => helper.ViewContext.HttpContext.RequestServices.GetExpressionRouteHelper();
     }
 }

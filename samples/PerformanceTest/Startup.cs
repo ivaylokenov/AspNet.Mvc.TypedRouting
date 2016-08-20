@@ -1,6 +1,5 @@
 ﻿namespace PerformanceTest
-{ 
-    using AspNet.Mvc.TypedRouting.Internals;
+{
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -20,6 +19,7 @@
     using Microsoft.AspNetCore.Mvc.Internal;
     using Microsoft.Extensions.DependencyInjection;
     using Moq;
+    using AspNet.Mvc.TypedRouting.LinkGeneration;
 
     public class Startup
     {
@@ -168,8 +168,8 @@
 
             serviceCollection.AddSingleton(typeof(IEnumerable<IActionDescriptorProvider>), list);
             serviceCollection.AddSingleton(typeof(IActionDescriptorCollectionProvider), typeof(ActionDescriptorCollectionProvider));
-
-            ExpressionRouteHelper.Initialize(serviceCollection.BuildServiceProvider());
+            serviceCollection.AddSingleton(typeof(IUniqueRouteKeysProvider), typeof(UniqueRouteKeysProvider));
+            serviceCollection.AddSingleton(typeof(IExpressionRouteHelper), typeof(ExpressionRouteHelper));
         }
 
         #endregion

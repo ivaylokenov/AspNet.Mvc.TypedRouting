@@ -1,5 +1,6 @@
 ﻿namespace AspNet.Mvc.TypedRouting.Test.LinkGeneration
 {
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Xunit;
 
@@ -439,7 +440,21 @@
         }
     }
 
-    public class MyTestController : Controller
+    public abstract class BaseController : Controller
+    {
+        protected BaseController()
+        {
+            this.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    RequestServices = TestServices.Global
+                }
+            };
+        }
+    }
+
+    public class MyTestController : BaseController
     {
         public IActionResult CreatedAtActionSameController()
         {
@@ -562,7 +577,7 @@
         }
     }
 
-    public class OtherController : Controller
+    public class OtherController : BaseController
     {
         public IActionResult Action()
         {

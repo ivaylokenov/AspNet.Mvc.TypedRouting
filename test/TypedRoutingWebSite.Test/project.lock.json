@@ -4327,7 +4327,7 @@
           "lib/dotnet/xunit.runner.utility.dotnet.dll": {}
         }
       },
-      "AspNet.Mvc.TypedRouting/1.1.0": {
+      "AspNet.Mvc.TypedRouting/1.2.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.6",
         "dependencies": {
@@ -4344,7 +4344,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v1.0",
         "dependencies": {
-          "AspNet.Mvc.TypedRouting": "1.1.0",
+          "AspNet.Mvc.TypedRouting": "1.2.0",
           "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0",
           "Microsoft.AspNetCore.Diagnostics": "1.0.0",
           "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "1.0.0",
@@ -10974,7 +10974,7 @@
         "xunit.runner.utility.nuspec"
       ]
     },
-    "AspNet.Mvc.TypedRouting/1.1.0": {
+    "AspNet.Mvc.TypedRouting/1.2.0": {
       "type": "project",
       "path": "../../src/AspNet.Mvc.TypedRouting/project.json",
       "msbuildProject": "../../src/AspNet.Mvc.TypedRouting/AspNet.Mvc.TypedRouting.xproj"

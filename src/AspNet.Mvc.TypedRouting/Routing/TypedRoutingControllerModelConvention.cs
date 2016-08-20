@@ -3,7 +3,7 @@
     using System.Linq;
     using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
-    public class TypedRoutingControllerModelConvention : IControllerModelConvention
+    internal class TypedRoutingControllerModelConvention : IControllerModelConvention
     {
         private TypedRouteBuilder routeBuilder;
 

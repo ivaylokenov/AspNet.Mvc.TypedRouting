@@ -2,7 +2,6 @@
 {
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.TestHost;
-    using System.IO;
     using System.Net.Http;
     using System.Reflection;
     using System.Threading.Tasks;
@@ -26,7 +25,7 @@
         }
 
         [Fact]
-        public async Task NonAreaToAreaLinkGenerationShouldWorkCorrectly()
+        public async Task NonAreaToAreaLinkGeneration_ShouldWorkCorrectly()
         {
             var response = await this.client.GetAsync("/Home/ToArea");
 
@@ -36,7 +35,7 @@
         }
         
         [Fact]
-        public async Task AreaToAreaLinkGenerationShouldWorkCorrectly()
+        public async Task AreaToAreaLinkGeneration_ShouldWorkCorrectly()
         {
             var response = await this.client.GetAsync("/Admin/Area/ToOther");
 
@@ -46,13 +45,23 @@
         }
         
         [Fact]
-        public async Task AreaToNonAreaLinkGenerationShouldWorkCorrectly()
+        public async Task AreaToNonAreaLinkGeneration_ShouldWorkCorrectly()
         {
             var response = await this.client.GetAsync("/Admin/Area");
 
             var result = await response.Content.ReadAsStringAsync();
 
             Assert.Equal("/Manage/AddPhoneNumber", result.Trim());
+        }
+
+        [Fact]
+        public async Task RazorLinkGeneration_ShouldWorkCorrectly()
+        {
+            var response = await this.client.GetAsync("/Home/Razor");
+
+            var result = await response.Content.ReadAsStringAsync();
+
+            Assert.Equal("<a href=\"/WithParameter/1\">Test</a>", result.Trim());
         }
     }
 }

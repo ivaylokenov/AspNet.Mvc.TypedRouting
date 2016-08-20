@@ -47,5 +47,10 @@
         {
             return PartialView();
         }
+
+        public IActionResult Razor()
+        {
+            return PartialView();
+        }
     }
 }

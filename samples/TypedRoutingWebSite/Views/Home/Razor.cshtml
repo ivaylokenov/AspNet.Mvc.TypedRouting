@@ -1,0 +1,4 @@
+﻿@using TypedRoutingWebSite.Controllers
+
+@{ var list = Enumerable.Range(1, 10).ToList(); }
+@(Html.ActionLink<HomeController>("Test", c => c.Index(list[0])))
