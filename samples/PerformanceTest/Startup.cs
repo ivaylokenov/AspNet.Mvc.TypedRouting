@@ -25,6 +25,8 @@
     {
         private const int NumberOfIterations = 5000;
 
+        public static IServiceProvider Services { get; private set; }
+
         // as described in http://www.codeproject.com/Articles/61964/Performance-Tests-Precise-Run-Time-Measurements-wi
         public static void Main()
         {
@@ -170,48 +172,13 @@
             serviceCollection.AddSingleton(typeof(IActionDescriptorCollectionProvider), typeof(ActionDescriptorCollectionProvider));
             serviceCollection.AddSingleton(typeof(IUniqueRouteKeysProvider), typeof(UniqueRouteKeysProvider));
             serviceCollection.AddSingleton(typeof(IExpressionRouteHelper), typeof(ExpressionRouteHelper));
+
+            Services = serviceCollection.BuildServiceProvider();
         }
 
         #endregion
 
         #region Mocked Objects
-        private static IServiceProvider GetServices()
-        {
-            var services = new Mock<IServiceProvider>();
-
-            var optionsAccessor = new Mock<IOptions<RouteOptions>>();
-            optionsAccessor
-                .SetupGet(o => o.Value)
-                .Returns(new RouteOptions());
-            services
-                .Setup(s => s.GetService(typeof(IOptions<RouteOptions>)))
-                .Returns(optionsAccessor.Object);
-
-            services
-                .Setup(s => s.GetService(typeof(IInlineConstraintResolver)))
-                .Returns(new DefaultInlineConstraintResolver(optionsAccessor.Object));
-
-            services
-                .Setup(s => s.GetService(typeof(ILoggerFactory)))
-                .Returns(Mock.Of<ILoggerFactory>());
-
-            services
-                .Setup(s => s.GetService(typeof(IActionContextAccessor)))
-                .Returns(new ActionContextAccessor()
-                {
-                    ActionContext = new ActionContext()
-                    {
-                        HttpContext = new DefaultHttpContext()
-                        {
-                            RequestServices = services.Object,
-                        },
-                        RouteData = new RouteData(),
-                    },
-                });
-
-            return services.Object;
-        }
-
         private static ActionContext CreateActionContext(HttpContext context)
         {
             return CreateActionContext(context, (new Mock<IRouter>()).Object);
@@ -240,8 +207,7 @@
 
         private static IUrlHelper CreateUrlHelper()
         {
-            var services = GetServices();
-            var context = CreateHttpContext(services, string.Empty);
+            var context = CreateHttpContext(Services, string.Empty);
             var actionContext = CreateActionContext(context);
 
             var actionSelector = new Mock<IActionSelector>();
@@ -261,6 +227,17 @@
 
     public class MyController : Controller
     {
+        public MyController()
+        {
+            this.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    RequestServices = Startup.Services
+                }
+            };
+        }
+
         public IActionResult Action()
         {
             return null;
