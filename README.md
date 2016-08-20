@@ -32,9 +32,18 @@ For other interesting packages check out:
 	
 ## How to use
 
+Just add `AddTypedRouting()` after `AddMvc` into your `Startup` class:
+
+```c#
+public void ConfigureServices(IServiceCollection services)
+{
+	services.AddMvc().AddTypedRouting();
+}
+```
+
 You can check the provided [sample](https://github.com/ivaylokenov/AspNet.Mvc.TypedRouting/tree/master/samples/TypedRoutingWebSite) to see a working web application with this library. 
 
-To register typed route into your application, you need to do the following into your `Startup` class:
+To register a typed route into your application, add the following line:
 
 ```c#
 public void ConfigureServices(IServiceCollection services)
@@ -81,21 +90,7 @@ routes.Put("MyRoute/MyAction", route => route.ToAction<HomeController>(a => a.In
 routes.Delete("MyRoute/MyAction", route => route.ToAction<HomeController>(a => a.Index()));
 ```
 
-To use expression based link generation, you need to do the following into your `Startup` class:
-
-```c#
-public void Configure(IApplicationBuilder app)
-{
-   // other configuration code
-   
-   app.UseMvc(routes =>
-   {
-   	    routes.UseTypedRouting();
-   });
-}
-```
-
-Basically, you can do the following:
+Additionally, you can use typed link generation:
 
 ```c#
 // generating link without parameters - /Home/Index
@@ -281,7 +276,7 @@ urlHelper.Link<HomeController>("Route name", c => c.Index());
 urlHelper.Link<HomeController>("Route name", c => c.Index(), new { key = "value" });
 ```
 
-All these methods are well documented, tested and resolve route values successfully.
+Overloads for asynchronous actions are also available. All methods are well documented, tested and resolve route values successfully.
 
 ## Licence
 

@@ -25,7 +25,6 @@ namespace TypedRoutingWebSite
 
             if (env.IsDevelopment())
             {
-                // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
                 builder.AddUserSecrets();
             }
 
@@ -34,21 +33,21 @@ namespace TypedRoutingWebSite
         }
 
         public IConfigurationRoot Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
+        
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services
+                .AddDbContext<ApplicationDbContext>(options => options
+                    .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services
+                .AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddMvc().AddTypedRouting(routes =>
-            {
-                routes
+            services
+                .AddMvc()
+                .AddTypedRouting(routes => routes
                     .Get("CustomController/{action}", route => route.ToController<ExpressionsController>())
                     .Get("CustomContact", route => route.ToAction<HomeController>(a => a.Contact()))
                     .Get("WithParameter/{id}", route => route.ToAction<HomeController>(a => a.Index(With.Any<int>())))
@@ -61,15 +60,12 @@ namespace TypedRoutingWebSite
                         .WithActionConstraints(new HttpMethodActionConstraint(new[] { "PUT" })))
                     .Add("MultipleMethods", route => route
                         .ToAction<HomeController>(a => a.About())
-                        .ForHttpMethods("GET", "POST"));
-            });
-
-            // Add application services.
+                        .ForHttpMethods("GET", "POST")));
+            
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
         }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
