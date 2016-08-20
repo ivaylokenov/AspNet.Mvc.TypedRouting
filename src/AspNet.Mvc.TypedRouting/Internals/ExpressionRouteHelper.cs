@@ -16,12 +16,16 @@
     {
         // This key should be ignored as it is used internally for route attribute matching.
         private static readonly string RouteGroupKey = "!__route_group";
-        
+
+        private static readonly HashSet<string> UniqueRouteKeysSet = new HashSet<string>();
+
         private static readonly ConcurrentDictionary<MethodInfo, ControllerActionDescriptor> ControllerActionDescriptorCache =
             new ConcurrentDictionary<MethodInfo, ControllerActionDescriptor>();
         
         private static IActionDescriptorCollectionProvider actionDescriptorsCollectionProvider;
         private static bool initialized = false;
+
+        internal static ISet<string> UniqueRouteKeys => UniqueRouteKeysSet;
 
         public static void Initialize(IServiceProvider serviceProvider)
         {
@@ -94,7 +98,7 @@
                 var actionName = controllerActionDescriptor.ActionName;
                 
                 var routeValues = GetRouteValues(methodInfo, methodCallExpression, controllerActionDescriptor);
-
+                
                 // If there is a required route value, add it to the result.
                 foreach (var requiredRouteValue in controllerActionDescriptor.RouteValues)
                 {
@@ -129,6 +133,14 @@
                 if (addControllerAndActionToRouteValues)
                 {
                     AddControllerAndActionToRouteValues(controllerName, actionName, routeValues);
+                }
+
+                foreach (var uniqueRouteKey in UniqueRouteKeys)
+                {
+                    if (!routeValues.ContainsKey(uniqueRouteKey))
+                    {
+                        routeValues.Add(uniqueRouteKey, string.Empty);
+                    }
                 }
 
                 return new ExpressionRouteValues
@@ -170,7 +182,7 @@
                 {
                     throw new InvalidOperationException($"Method {methodInfo.Name} in class {methodInfo.DeclaringType.Name} is not a valid controller action.");
                 }
-
+                
                 return foundControllerActionDescriptor;
             });
         }

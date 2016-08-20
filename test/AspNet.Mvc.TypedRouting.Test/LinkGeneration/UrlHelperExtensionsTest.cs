@@ -6,19 +6,20 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Abstractions;
     using Microsoft.AspNetCore.Mvc.Infrastructure;
+    using Microsoft.AspNetCore.Mvc.Internal;
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.AspNetCore.Routing.Internal;
     using Microsoft.AspNetCore.Routing;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.ObjectPool;
     using Microsoft.Extensions.Options;
-    using Microsoft.Extensions.WebEncoders.Testing;
     using Moq;
     using System;
+    using System.Collections.Generic;
     using System.Text.Encodings.Web;
     using Xunit;
 
     using With = Microsoft.AspNetCore.Mvc.With;
-    using Microsoft.Extensions.ObjectPool;
 
     [Collection("TypedRoutingTests")]
     public class UrlHelperExtensionsTest
@@ -125,6 +126,51 @@
             Assert.Equal("http://localhost/app/Normal/ActionWithParameters/1?text=othertext", url);
         }
 
+        [Fact]
+        public void NormalControllerToAreaController_GeneratesCorrectLink()
+        {
+            // Arrange
+            var services = GetServices();
+            var urlHelper = CreateUrlHelperWithRouteCollection(services, "/app");
+            var controller = new NormalController { Url = urlHelper };
+
+            // Act
+            var result = controller.ToAreaAction() as ContentResult;
+
+            // Assert
+            Assert.Equal("/app/Admin/Area/ToEmptyAreaAction", result.Content);
+        }
+        
+        [Fact]
+        public void AreaControllerToNormalController_GeneratesCorrectLink()
+        {
+            // Arrange
+            var services = GetServices();
+            var urlHelper = CreateUrlHelperWithRouteCollection(services, "/app");
+            var controller = new AreaController { Url = urlHelper };
+
+            // Act
+            var result = controller.ToEmptyAreaAction() as ContentResult;
+
+            // Assert
+            Assert.Equal("/app/Normal/ActionWithoutParameters", result.Content);
+        }
+
+        [Fact]
+        public void AreaControllerToAreaController_GeneratesCorrectLink()
+        {
+            // Arrange
+            var services = GetServices();
+            var urlHelper = CreateUrlHelperWithRouteCollection(services, "/app");
+            var controller = new AreaController { Url = urlHelper };
+
+            // Act
+            var result = controller.ToOtherAreaAction() as ContentResult;
+
+            // Assert
+            Assert.Equal("/app/Support/AnotherArea", result.Content);
+        }
+
         private static HttpContext CreateHttpContext(
             IServiceProvider services,
             string appRoot)
@@ -155,10 +201,13 @@
         {
             var services = new Mock<IServiceProvider>();
 
+            var routeOptions = new RouteOptions();
+            routeOptions.ConstraintMap.Add("exists", typeof(KnownRouteValueConstraint));
+
             var optionsAccessor = new Mock<IOptions<RouteOptions>>();
             optionsAccessor
                 .SetupGet(o => o.Value)
-                .Returns(new RouteOptions());
+                .Returns(routeOptions);
             services
                 .Setup(s => s.GetService(typeof(IOptions<RouteOptions>)))
                 .Returns(optionsAccessor.Object);
@@ -184,6 +233,14 @@
                         RouteData = new RouteData(),
                     },
                 });
+
+            services
+                .Setup(s => s.GetService(typeof(IActionDescriptorCollectionProvider)))
+                .Returns(new ActionDescriptorCollectionProvider(services.Object));
+
+            services
+                .Setup(s => s.GetService(typeof(IEnumerable<IActionDescriptorProvider>)))
+                .Returns(TestInit.GetActionDescriptorProviders());
 
             services
                 .Setup(s => s.GetService(typeof(RoutingMarkerService)))
@@ -229,6 +286,9 @@
                 .Returns<VirtualPathContext>(context => null);
             routeBuilder.DefaultHandler = target.Object;
 
+            routeBuilder.MapRoute("areaRoute",
+                        "{area:exists}/{controller=Home}/{action=Index}");
+
             routeBuilder.MapRoute(string.Empty,
                         "{controller}/{action}/{id}",
                         new RouteValueDictionary(new { id = "defaultid" }));
@@ -273,6 +333,34 @@
         }
 
         public IActionResult ActionWithParameters(int id, string text)
+        {
+            return null;
+        }
+
+        public IActionResult ToAreaAction()
+        {
+            return Content(Url.Action<AreaController>(c => c.ToEmptyAreaAction()));
+        }
+    }
+
+    [Area("Admin")]
+    public class AreaController : Controller
+    {
+        public IActionResult ToEmptyAreaAction()
+        {
+            return Content(Url.Action<NormalController>(c => c.ActionWithoutParameters()));
+        }
+
+        public IActionResult ToOtherAreaAction()
+        {
+            return Content(Url.Action<AnotherAreaController>(c => c.Index()));
+        }
+    }
+
+    [Area("Support")]
+    public class AnotherAreaController : Controller
+    {
+        public IActionResult Index()
         {
             return null;
         }

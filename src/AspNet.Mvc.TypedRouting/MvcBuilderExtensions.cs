@@ -1,4 +1,5 @@
-﻿using AspNet.Mvc.TypedRouting.Routing;
+﻿using AspNet.Mvc.TypedRouting.LinkGeneration;
+using AspNet.Mvc.TypedRouting.Routing;
 
 namespace Microsoft.AspNetCore.Builder
 {
@@ -14,12 +15,15 @@ namespace Microsoft.AspNetCore.Builder
         /// <param name="routesConfiguration">Typed routes configuration.</param>
         public static IMvcBuilder AddTypedRouting(this IMvcBuilder mvcBuilder, Action<ITypedRouteBuilder> routesConfiguration)
         {
-            mvcBuilder.Services.Configure<MvcOptions>(opts =>
+            var typedRouteBuilder = new TypedRouteBuilder();
+
+            mvcBuilder.Services.Configure<MvcOptions>(options =>
             {
-                opts.Conventions.Add(new TypedRoutingApplicationModelConvention());
+                options.Conventions.Add(new TypedRoutingControllerModelConvention(typedRouteBuilder));
+                options.Conventions.Add(new LinkGenerationApplicationModelConvention());
             });
 
-            routesConfiguration(new TypedRouteBuilder());
+            routesConfiguration(typedRouteBuilder);
 
             return mvcBuilder;
         }

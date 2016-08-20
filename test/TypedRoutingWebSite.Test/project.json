@@ -6,8 +6,9 @@
   "testRunner": "xunit",
 
   "dependencies": {
-    "TypedRoutingWebSite": "*",
     "MyTested.AspNetCore.Mvc": "1.0.0-preview-final",
+    "Microsoft.AspNetCore.TestHost": "1.0.0-*",
+    "TypedRoutingWebSite": "*",
     "dotnet-test-xunit": "1.0.0-*",
     "xunit": "2.1.0"
   },

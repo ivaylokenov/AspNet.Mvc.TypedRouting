@@ -42,5 +42,10 @@
         {
             return Content(Url.Action<HomeController>(c => c.Contact()));
         }
+
+        public IActionResult ToArea()
+        {
+            return PartialView();
+        }
     }
 }

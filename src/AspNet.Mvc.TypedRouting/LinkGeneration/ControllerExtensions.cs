@@ -104,17 +104,18 @@ namespace Microsoft.AspNetCore.Mvc
         /// Creates a <see cref="CreatedAtActionResult"/> object that produces a Created (201) response
         /// by using <see cref="Expression{TDelegate}"/> for selecting the action.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
         /// </param>
         /// <param name="value">The content value to format in the entity body.</param>
         /// <returns>The created <see cref="CreatedAtActionResult"/> for the response.</returns>
-        public static CreatedAtActionResult CreatedAtAction<TRedirectController>(
+        public static CreatedAtActionResult CreatedAtAction<TController>(
             this Controller controller,
-            Expression<Action<TRedirectController>> action,
+            Expression<Action<TController>> action,
             object value)
+            where TController : class
         {
             return controller.CreatedAtAction(action, routeValues: null, value: value);
         }
@@ -123,17 +124,18 @@ namespace Microsoft.AspNetCore.Mvc
         /// Creates a <see cref="CreatedAtActionResult"/> object that produces a Created (201) response
         /// by using <see cref="Expression{TDelegate}"/> for selecting the action.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
         /// </param>
         /// <param name="value">The content value to format in the entity body.</param>
         /// <returns>The created <see cref="CreatedAtActionResult"/> for the response.</returns>
-        public static CreatedAtActionResult CreatedAtAction<TRedirectController>(
+        public static CreatedAtActionResult CreatedAtAction<TController>(
             this Controller controller,
-            Expression<Func<TRedirectController, Task>> action,
+            Expression<Func<TController, Task>> action,
             object value)
+            where TController : class
         {
             return controller.CreatedAtAction(action, routeValues: null, value: value);
         }
@@ -142,7 +144,7 @@ namespace Microsoft.AspNetCore.Mvc
         /// Creates a <see cref="CreatedAtActionResult"/> object that produces a Created (201) response
         /// by using <see cref="Expression{TDelegate}"/> for selecting the action.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
@@ -150,11 +152,12 @@ namespace Microsoft.AspNetCore.Mvc
         /// <param name="routeValues">Additional route data to use for generating the URL.</param>
         /// <param name="value">The content value to format in the entity body.</param>
         /// <returns>The created <see cref="CreatedAtActionResult"/> for the response.</returns>
-        public static CreatedAtActionResult CreatedAtAction<TRedirectController>(
+        public static CreatedAtActionResult CreatedAtAction<TController>(
             this Controller controller,
-            Expression<Action<TRedirectController>> action,
+            Expression<Action<TController>> action,
             object routeValues,
             object value)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
             return controller.CreatedAtAction(
@@ -168,7 +171,7 @@ namespace Microsoft.AspNetCore.Mvc
         /// Creates a <see cref="CreatedAtActionResult"/> object that produces a Created (201) response
         /// by using <see cref="Expression{TDelegate}"/> for selecting the action.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
@@ -176,11 +179,12 @@ namespace Microsoft.AspNetCore.Mvc
         /// <param name="routeValues">Additional route data to use for generating the URL.</param>
         /// <param name="value">The content value to format in the entity body.</param>
         /// <returns>The created <see cref="CreatedAtActionResult"/> for the response.</returns>
-        public static CreatedAtActionResult CreatedAtAction<TRedirectController>(
+        public static CreatedAtActionResult CreatedAtAction<TController>(
             this Controller controller,
-            Expression<Func<TRedirectController, Task>> action,
+            Expression<Func<TController, Task>> action,
             object routeValues,
             object value)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
             return controller.CreatedAtAction(
@@ -289,7 +293,7 @@ namespace Microsoft.AspNetCore.Mvc
         /// <summary>
         /// Creates a <see cref="CreatedAtRouteResult"/> object that produces a Created (201) response.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="routeName">The name of the route to use for generating the URL.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
@@ -297,11 +301,12 @@ namespace Microsoft.AspNetCore.Mvc
         /// </param>
         /// <param name="value">The content value to format in the entity body.</param>
         /// <returns>The created <see cref="CreatedAtRouteResult"/> for the response</returns>
-        public static CreatedAtRouteResult CreatedAtRoute<TRedirectController>(
+        public static CreatedAtRouteResult CreatedAtRoute<TController>(
             this Controller controller,
             string routeName,
-            Expression<Action<TRedirectController>> action,
+            Expression<Action<TController>> action,
             object value)
+            where TController : class
         {
             return controller.CreatedAtRoute(routeName, action, routeValues: null, value: value);
         }
@@ -309,7 +314,7 @@ namespace Microsoft.AspNetCore.Mvc
         /// <summary>
         /// Creates a <see cref="CreatedAtRouteResult"/> object that produces a Created (201) response.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="routeName">The name of the route to use for generating the URL.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
@@ -317,11 +322,12 @@ namespace Microsoft.AspNetCore.Mvc
         /// </param>
         /// <param name="value">The content value to format in the entity body.</param>
         /// <returns>The created <see cref="CreatedAtRouteResult"/> for the response</returns>
-        public static CreatedAtRouteResult CreatedAtRoute<TRedirectController>(
+        public static CreatedAtRouteResult CreatedAtRoute<TController>(
             this Controller controller,
             string routeName,
-            Expression<Func<TRedirectController, Task>> action,
+            Expression<Func<TController, Task>> action,
             object value)
+            where TController : class
         {
             return controller.CreatedAtRoute(routeName, action, routeValues: null, value: value);
         }
@@ -329,7 +335,7 @@ namespace Microsoft.AspNetCore.Mvc
         /// <summary>
         /// Creates a <see cref="CreatedAtRouteResult"/> object that produces a Created (201) response.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="routeName">The name of the route to use for generating the URL.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
@@ -338,12 +344,13 @@ namespace Microsoft.AspNetCore.Mvc
         /// <param name="routeValues">Additional route data to use for generating the URL.</param>
         /// <param name="value">The content value to format in the entity body.</param>
         /// <returns>The created <see cref="CreatedAtRouteResult"/> for the response</returns>
-        public static CreatedAtRouteResult CreatedAtRoute<TRedirectController>(
+        public static CreatedAtRouteResult CreatedAtRoute<TController>(
             this Controller controller,
             string routeName,
-            Expression<Action<TRedirectController>> action,
+            Expression<Action<TController>> action,
             object routeValues,
             object value)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return controller.CreatedAtRoute(
@@ -355,7 +362,7 @@ namespace Microsoft.AspNetCore.Mvc
         /// <summary>
         /// Creates a <see cref="CreatedAtRouteResult"/> object that produces a Created (201) response.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="routeName">The name of the route to use for generating the URL.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
@@ -364,12 +371,13 @@ namespace Microsoft.AspNetCore.Mvc
         /// <param name="routeValues">Additional route data to use for generating the URL.</param>
         /// <param name="value">The content value to format in the entity body.</param>
         /// <returns>The created <see cref="CreatedAtRouteResult"/> for the response</returns>
-        public static CreatedAtRouteResult CreatedAtRoute<TRedirectController>(
+        public static CreatedAtRouteResult CreatedAtRoute<TController>(
             this Controller controller,
             string routeName,
-            Expression<Func<TRedirectController, Task>> action,
+            Expression<Func<TController, Task>> action,
             object routeValues,
             object value)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return controller.CreatedAtRoute(
@@ -471,15 +479,16 @@ namespace Microsoft.AspNetCore.Mvc
         /// using <see cref="Expression{TDelegate}"/> for an action method,
         /// from which action name, controller name and route values are resolved.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
         /// </param>
         /// <returns>The created <see cref="RedirectToActionResult"/> for the response.</returns>
-        public static RedirectToActionResult RedirectToAction<TRedirectController>(
+        public static RedirectToActionResult RedirectToAction<TController>(
             this Controller controller,
-            Expression<Action<TRedirectController>> action)
+            Expression<Action<TController>> action)
+            where TController : class
         {
             return controller.RedirectToAction(action, routeValues: null);
         }
@@ -489,15 +498,16 @@ namespace Microsoft.AspNetCore.Mvc
         /// using <see cref="Expression{TDelegate}"/> for an action method,
         /// from which action name, controller name and route values are resolved.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
         /// </param>
         /// <returns>The created <see cref="RedirectToActionResult"/> for the response.</returns>
-        public static RedirectToActionResult RedirectToAction<TRedirectController>(
+        public static RedirectToActionResult RedirectToAction<TController>(
             this Controller controller,
-            Expression<Func<TRedirectController, Task>> action)
+            Expression<Func<TController, Task>> action)
+            where TController : class
         {
             return controller.RedirectToAction(action, routeValues: null);
         }
@@ -508,17 +518,18 @@ namespace Microsoft.AspNetCore.Mvc
         /// from which action name, controller name and route values are resolved,
         /// and the specified additional route values.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
         /// </param>
         /// <param name="routeValues">Additional route data to use for generating the URL.</param>
         /// <returns>The created <see cref="RedirectToActionResult"/> for the response.</returns>
-        public static RedirectToActionResult RedirectToAction<TRedirectController>(
+        public static RedirectToActionResult RedirectToAction<TController>(
             this Controller controller,
-            Expression<Action<TRedirectController>> action,
+            Expression<Action<TController>> action,
             object routeValues)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
             return controller.RedirectToAction(
@@ -533,17 +544,18 @@ namespace Microsoft.AspNetCore.Mvc
         /// from which action name, controller name and route values are resolved,
         /// and the specified additional route values.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
         /// </param>
         /// <param name="routeValues">Additional route data to use for generating the URL.</param>
         /// <returns>The created <see cref="RedirectToActionResult"/> for the response.</returns>
-        public static RedirectToActionResult RedirectToAction<TRedirectController>(
+        public static RedirectToActionResult RedirectToAction<TController>(
             this Controller controller,
-            Expression<Func<TRedirectController, Task>> action,
+            Expression<Func<TController, Task>> action,
             object routeValues)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
             return controller.RedirectToAction(
@@ -645,15 +657,16 @@ namespace Microsoft.AspNetCore.Mvc
         /// using <see cref="Expression{TDelegate}"/> for an action method,
         /// from which action name, controller name and route values are resolved.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
         /// </param>
         /// <returns>The created <see cref="RedirectToActionResult"/> for the response.</returns>
-        public static RedirectToActionResult RedirectToActionPermanent<TRedirectController>(
+        public static RedirectToActionResult RedirectToActionPermanent<TController>(
             this Controller controller,
-            Expression<Action<TRedirectController>> action)
+            Expression<Action<TController>> action)
+            where TController : class
         {
             return controller.RedirectToActionPermanent(action, routeValues: null);
         }
@@ -663,15 +676,16 @@ namespace Microsoft.AspNetCore.Mvc
         /// using <see cref="Expression{TDelegate}"/> for an action method,
         /// from which action name, controller name and route values are resolved.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
         /// </param>
         /// <returns>The created <see cref="RedirectToActionResult"/> for the response.</returns>
-        public static RedirectToActionResult RedirectToActionPermanent<TRedirectController>(
+        public static RedirectToActionResult RedirectToActionPermanent<TController>(
             this Controller controller,
-            Expression<Func<TRedirectController, Task>> action)
+            Expression<Func<TController, Task>> action)
+            where TController : class
         {
             return controller.RedirectToActionPermanent(action, routeValues: null);
         }
@@ -682,17 +696,18 @@ namespace Microsoft.AspNetCore.Mvc
         /// from which action name, controller name and route values are resolved,
         /// and the specified additional route values.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
         /// </param>
         /// <param name="routeValues">Additional route data to use for generating the URL.</param>
         /// <returns>The created <see cref="RedirectToActionResult"/> for the response.</returns>
-        public static RedirectToActionResult RedirectToActionPermanent<TRedirectController>(
+        public static RedirectToActionResult RedirectToActionPermanent<TController>(
             this Controller controller,
-            Expression<Action<TRedirectController>> action,
+            Expression<Action<TController>> action,
             object routeValues)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
             return controller.RedirectToActionPermanent(
@@ -707,17 +722,18 @@ namespace Microsoft.AspNetCore.Mvc
         /// from which action name, controller name and route values are resolved,
         /// and the specified additional route values.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
         /// </param>
         /// <param name="routeValues">Additional route data to use for generating the URL.</param>
         /// <returns>The created <see cref="RedirectToActionResult"/> for the response.</returns>
-        public static RedirectToActionResult RedirectToActionPermanent<TRedirectController>(
+        public static RedirectToActionResult RedirectToActionPermanent<TController>(
             this Controller controller,
-            Expression<Func<TRedirectController, Task>> action,
+            Expression<Func<TController, Task>> action,
             object routeValues)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
             return controller.RedirectToActionPermanent(
@@ -827,17 +843,18 @@ namespace Microsoft.AspNetCore.Mvc
         /// using <see cref="Expression{TDelegate}"/> for an action method,
         /// from which action name, controller name and route values are resolved.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="routeName">The name of the route to use for generating the URL.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
         /// </param>
         /// <returns>The created <see cref="RedirectToRouteResult"/> for the response.</returns>
-        public static RedirectToRouteResult RedirectToRoute<TRedirectController>(
+        public static RedirectToRouteResult RedirectToRoute<TController>(
             this Controller controller,
             string routeName,
-            Expression<Action<TRedirectController>> action)
+            Expression<Action<TController>> action)
+            where TController : class
         {
             return controller.RedirectToRoute(routeName, action, routeValues: null);
         }
@@ -847,17 +864,18 @@ namespace Microsoft.AspNetCore.Mvc
         /// using <see cref="Expression{TDelegate}"/> for an action method,
         /// from which action name, controller name and route values are resolved.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="routeName">The name of the route to use for generating the URL.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
         /// </param>
         /// <returns>The created <see cref="RedirectToRouteResult"/> for the response.</returns>
-        public static RedirectToRouteResult RedirectToRoute<TRedirectController>(
+        public static RedirectToRouteResult RedirectToRoute<TController>(
             this Controller controller,
             string routeName,
-            Expression<Func<TRedirectController, Task>> action)
+            Expression<Func<TController, Task>> action)
+            where TController : class
         {
             return controller.RedirectToRoute(routeName, action, routeValues: null);
         }
@@ -868,7 +886,7 @@ namespace Microsoft.AspNetCore.Mvc
         /// from which action name, controller name and route values are resolved,
         /// and the specified additional route values.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="routeName">The name of the route to use for generating the URL.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
@@ -876,11 +894,12 @@ namespace Microsoft.AspNetCore.Mvc
         /// </param>
         /// <param name="routeValues">Additional route data to use for generating the URL.</param>
         /// <returns>The created <see cref="RedirectToRouteResult"/> for the response.</returns>
-        public static RedirectToRouteResult RedirectToRoute<TRedirectController>(
+        public static RedirectToRouteResult RedirectToRoute<TController>(
             this Controller controller,
             string routeName,
-            Expression<Action<TRedirectController>> action,
+            Expression<Action<TController>> action,
             object routeValues)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return controller.RedirectToRoute(
@@ -894,7 +913,7 @@ namespace Microsoft.AspNetCore.Mvc
         /// from which action name, controller name and route values are resolved,
         /// and the specified additional route values.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="routeName">The name of the route to use for generating the URL.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
@@ -902,11 +921,12 @@ namespace Microsoft.AspNetCore.Mvc
         /// </param>
         /// <param name="routeValues">Additional route data to use for generating the URL.</param>
         /// <returns>The created <see cref="RedirectToRouteResult"/> for the response.</returns>
-        public static RedirectToRouteResult RedirectToRoute<TRedirectController>(
+        public static RedirectToRouteResult RedirectToRoute<TController>(
             this Controller controller,
             string routeName,
-            Expression<Func<TRedirectController, Task>> action,
+            Expression<Func<TController, Task>> action,
             object routeValues)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return controller.RedirectToRoute(
@@ -1015,17 +1035,18 @@ namespace Microsoft.AspNetCore.Mvc
         /// using <see cref="Expression{TDelegate}"/> for an action method,
         /// from which action name, controller name and route values are resolved.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="routeName">The name of the route to use for generating the URL.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
         /// </param>
         /// <returns>The created <see cref="RedirectToRouteResult"/> for the response.</returns>
-        public static RedirectToRouteResult RedirectToRoutePermanent<TRedirectController>(
+        public static RedirectToRouteResult RedirectToRoutePermanent<TController>(
             this Controller controller,
             string routeName,
-            Expression<Action<TRedirectController>> action)
+            Expression<Action<TController>> action)
+            where TController : class
         {
             return controller.RedirectToRoutePermanent(routeName, action, routeValues: null);
         }
@@ -1035,17 +1056,18 @@ namespace Microsoft.AspNetCore.Mvc
         /// using <see cref="Expression{TDelegate}"/> for an action method,
         /// from which action name, controller name and route values are resolved.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="routeName">The name of the route to use for generating the URL.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
         /// controller name and route values are resolved.
         /// </param>
         /// <returns>The created <see cref="RedirectToRouteResult"/> for the response.</returns>
-        public static RedirectToRouteResult RedirectToRoutePermanent<TRedirectController>(
+        public static RedirectToRouteResult RedirectToRoutePermanent<TController>(
             this Controller controller,
             string routeName,
-            Expression<Func<TRedirectController, Task>> action)
+            Expression<Func<TController, Task>> action)
+            where TController : class
         {
             return controller.RedirectToRoutePermanent(routeName, action, routeValues: null);
         }
@@ -1056,7 +1078,7 @@ namespace Microsoft.AspNetCore.Mvc
         /// from which action name, controller name and route values are resolved,
         /// and the specified additional route values.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="routeName">The name of the route to use for generating the URL.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
@@ -1064,11 +1086,12 @@ namespace Microsoft.AspNetCore.Mvc
         /// </param>
         /// <param name="routeValues">Additional route data to use for generating the URL.</param>
         /// <returns>The created <see cref="RedirectToRouteResult"/> for the response.</returns>
-        public static RedirectToRouteResult RedirectToRoutePermanent<TRedirectController>(
+        public static RedirectToRouteResult RedirectToRoutePermanent<TController>(
             this Controller controller,
             string routeName,
-            Expression<Action<TRedirectController>> action,
+            Expression<Action<TController>> action,
             object routeValues)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return controller.RedirectToRoutePermanent(
@@ -1082,7 +1105,7 @@ namespace Microsoft.AspNetCore.Mvc
         /// from which action name, controller name and route values are resolved,
         /// and the specified additional route values.
         /// </summary>
-        /// <typeparam name="TRedirectController">Controller, from which the action is specified.</typeparam>
+        /// <typeparam name="TController">Controller, from which the action is specified.</typeparam>
         /// <param name="routeName">The name of the route to use for generating the URL.</param>
         /// <param name="action">
         /// The <see cref="Expression{TDelegate}"/>, from which action name, 
@@ -1090,11 +1113,12 @@ namespace Microsoft.AspNetCore.Mvc
         /// </param>
         /// <param name="routeValues">Additional route data to use for generating the URL.</param>
         /// <returns>The created <see cref="RedirectToRouteResult"/> for the response.</returns>
-        public static RedirectToRouteResult RedirectToRoutePermanent<TRedirectController>(
+        public static RedirectToRouteResult RedirectToRoutePermanent<TController>(
             this Controller controller,
             string routeName,
-            Expression<Func<TRedirectController, Task>> action,
+            Expression<Func<TController, Task>> action,
             object routeValues)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return controller.RedirectToRoutePermanent(

@@ -8,8 +8,7 @@
     using System.Linq.Expressions;
     using System.Reflection;
     using System.Threading.Tasks;
-
-    // http://www.strathweb.com/2015/03/strongly-typed-routing-asp-net-mvc-6-iapplicationmodelconvention/
+    
     public class TypedRoute : AttributeRouteModel, ITypedRoute, ITypedRouteDetails
     {
         internal TypedRoute(string template, string[] httpMethods)

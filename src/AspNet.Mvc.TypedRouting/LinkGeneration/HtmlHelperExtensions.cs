@@ -26,6 +26,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             this IHtmlHelper helper,
             string linkText,
             Expression<Action<TController>> action)
+            where TController : class
         {
             return helper.ActionLink(
                 linkText,
@@ -53,6 +54,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             this IHtmlHelper helper,
             string linkText,
             Expression<Func<TController, Task>> action)
+            where TController : class
         {
             return helper.ActionLink(
                 linkText,
@@ -88,6 +90,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             string linkText,
             Expression<Action<TController>> action,
             object routeValues)
+            where TController : class
         {
             return helper.ActionLink(
                 linkText,
@@ -123,6 +126,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             string linkText,
             Expression<Func<TController, Task>> action,
             object routeValues)
+            where TController : class
         {
             return helper.ActionLink(
                 linkText,
@@ -164,6 +168,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             Expression<Action<TController>> action,
             object routeValues,
             object htmlAttributes)
+            where TController : class
         {
             return helper.ActionLink(
                 linkText,
@@ -205,6 +210,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             Expression<Func<TController, Task>> action,
             object routeValues,
             object htmlAttributes)
+            where TController : class
         {
             return helper.ActionLink(
                 linkText,
@@ -252,6 +258,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             string fragment,
             object routeValues,
             object htmlAttributes)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
             return helper.ActionLink(
@@ -301,6 +308,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             string fragment,
             object routeValues,
             object htmlAttributes)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
             return helper.ActionLink(
@@ -332,6 +340,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             string linkText,
             string routeName,
             Expression<Action<TController>> action)
+            where TController : class
         {
             return helper.RouteLink(
                 linkText,
@@ -362,6 +371,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             string linkText,
             string routeName,
             Expression<Func<TController, Task>> action)
+            where TController : class
         {
             return helper.RouteLink(
                 linkText,
@@ -400,6 +410,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             string routeName,
             Expression<Action<TController>> action,
             object routeValues)
+            where TController : class
         {
             return helper.RouteLink(
                 linkText,
@@ -438,6 +449,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             string routeName,
             Expression<Func<TController, Task>> action,
             object routeValues)
+            where TController : class
         {
             return helper.RouteLink(
                 linkText,
@@ -482,6 +494,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             Expression<Action<TController>> action,
             object routeValues,
             object htmlAttributes)
+            where TController : class
         {
             return helper.RouteLink(
                 linkText,
@@ -526,6 +539,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             Expression<Func<TController, Task>> action,
             object routeValues,
             object htmlAttributes)
+            where TController : class
         {
             return helper.RouteLink(
                 linkText,
@@ -576,6 +590,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             string fragment,
             object routeValues,
             object htmlAttributes)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return helper.RouteLink(
@@ -626,6 +641,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             string fragment,
             object routeValues,
             object htmlAttributes)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues, addControllerAndActionToRouteValues: true);
             return helper.RouteLink(
@@ -656,6 +672,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
         public static MvcForm BeginForm<TController>(
             this IHtmlHelper helper,
             Expression<Action<TController>> action)
+            where TController : class
         {
             return helper.BeginForm(
                 action,
@@ -683,6 +700,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
         public static MvcForm BeginForm<TController>(
             this IHtmlHelper helper,
             Expression<Func<TController, Task>> action)
+            where TController : class
         {
             return helper.BeginForm(
                 action,
@@ -716,6 +734,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             this IHtmlHelper helper,
             Expression<Action<TController>> action,
             bool? antiforgery)
+            where TController : class
         {
             return helper.BeginForm(
                 action,
@@ -749,6 +768,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             this IHtmlHelper helper,
             Expression<Func<TController, Task>> action,
             bool? antiforgery)
+            where TController : class
         {
             return helper.BeginForm(
                 action,
@@ -784,6 +804,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             this IHtmlHelper helper,
             Expression<Action<TController>> action,
             object routeValues)
+            where TController : class
         {
             return helper.BeginForm(
                 action,
@@ -819,6 +840,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             this IHtmlHelper helper,
             Expression<Func<TController, Task>> action,
             object routeValues)
+            where TController : class
         {
             return helper.BeginForm(
                 action,
@@ -860,6 +882,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             Expression<Action<TController>> action,
             object routeValues,
             bool? antiforgery)
+            where TController : class
         {
             return helper.BeginForm(
                 action,
@@ -901,6 +924,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             Expression<Func<TController, Task>> action,
             object routeValues,
             bool? antiforgery)
+            where TController : class
         {
             return helper.BeginForm(
                 action,
@@ -930,6 +954,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             this IHtmlHelper helper,
             Expression<Action<TController>> action,
             FormMethod method)
+            where TController : class
         {
             return helper.BeginForm(
                 action,
@@ -959,6 +984,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             this IHtmlHelper helper,
             Expression<Func<TController, Task>> action,
             FormMethod method)
+            where TController : class
         {
             return helper.BeginForm(
                 action,
@@ -994,6 +1020,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             Expression<Action<TController>> action,
             FormMethod method,
             bool? antiforgery)
+            where TController : class
         {
             return helper.BeginForm(
                 action,
@@ -1029,6 +1056,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             Expression<Func<TController, Task>> action,
             FormMethod method,
             bool? antiforgery)
+            where TController : class
         {
             return helper.BeginForm(
                 action,
@@ -1065,6 +1093,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             Expression<Action<TController>> action,
             object routeValues,
             FormMethod method)
+            where TController : class
         {
             return helper.BeginForm(
                 action,
@@ -1101,6 +1130,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             Expression<Func<TController, Task>> action,
             object routeValues,
             FormMethod method)
+            where TController : class
         {
             return helper.BeginForm(
                 action,
@@ -1143,6 +1173,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             object routeValues,
             FormMethod method,
             bool? antiforgery)
+            where TController : class
         {
             return helper.BeginForm(
                 action,
@@ -1185,6 +1216,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             object routeValues,
             FormMethod method,
             bool? antiforgery)
+            where TController : class
         {
             return helper.BeginForm(
                 action,
@@ -1220,6 +1252,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             Expression<Action<TController>> action,
             FormMethod method,
             object htmlAttributes)
+            where TController : class
         {
             return helper.BeginForm(
                 action,
@@ -1255,6 +1288,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             Expression<Func<TController, Task>> action,
             FormMethod method,
             object htmlAttributes)
+            where TController : class
         {
             return helper.BeginForm(
                 action,
@@ -1296,6 +1330,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             FormMethod method,
             bool? antiforgery,
             object htmlAttributes)
+            where TController : class
         {
             return helper.BeginForm(
                 action,
@@ -1337,6 +1372,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             FormMethod method,
             bool? antiforgery,
             object htmlAttributes)
+            where TController : class
         {
             return helper.BeginForm(
                 action,
@@ -1380,6 +1416,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             object routeValues,
             FormMethod method,
             object htmlAttributes)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
             return helper.BeginForm(
@@ -1425,6 +1462,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             object routeValues,
             FormMethod method,
             object htmlAttributes)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
             return helper.BeginForm(
@@ -1476,6 +1514,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             FormMethod method,
             bool? antiforgery,
             object htmlAttributes)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
             return helper.BeginForm(
@@ -1527,6 +1566,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             FormMethod method,
             bool? antiforgery,
             object htmlAttributes)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, routeValues);
             return helper.BeginForm(
@@ -1558,6 +1598,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             this IHtmlHelper helper,
             string routeName,
             Expression<Action<TController>> action)
+            where TController : class
         {
             return helper.BeginRouteForm(
                 routeName,
@@ -1587,6 +1628,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             this IHtmlHelper helper,
             string routeName,
             Expression<Func<TController, Task>> action)
+            where TController : class
         {
             return helper.BeginRouteForm(
                 routeName,
@@ -1622,6 +1664,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             string routeName,
             Expression<Action<TController>> action,
             bool? antiforgery)
+            where TController : class
         {
             return helper.BeginRouteForm(
                 routeName,
@@ -1657,6 +1700,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             string routeName,
             Expression<Func<TController, Task>> action,
             bool? antiforgery)
+            where TController : class
         {
             return helper.BeginRouteForm(
                 routeName,
@@ -1688,6 +1732,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             string routeName,
             Expression<Action<TController>> action,
             FormMethod method)
+            where TController : class
         {
             return helper.BeginRouteForm(
                 routeName,
@@ -1719,6 +1764,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             string routeName,
             Expression<Func<TController, Task>> action,
             FormMethod method)
+            where TController : class
         {
             return helper.BeginRouteForm(
                 routeName,
@@ -1756,6 +1802,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             Expression<Action<TController>> action,
             FormMethod method,
             bool? antiforgery)
+            where TController : class
         {
             return helper.BeginRouteForm(
                 routeName,
@@ -1793,6 +1840,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             Expression<Func<TController, Task>> action,
             FormMethod method,
             bool? antiforgery)
+            where TController : class
         {
             return helper.BeginRouteForm(
                 routeName,
@@ -1830,6 +1878,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             string routeName,
             Expression<Action<TController>> action,
             object routeValues)
+            where TController : class
         {
             return helper.BeginRouteForm(routeName, routeValues, FormMethod.Post, antiforgery: null, htmlAttributes: null);
         }
@@ -1862,6 +1911,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             string routeName,
             Expression<Func<TController, Task>> action,
             object routeValues)
+            where TController : class
         {
             return helper.BeginRouteForm(routeName, routeValues, FormMethod.Post, antiforgery: null, htmlAttributes: null);
         }
@@ -1900,6 +1950,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             Expression<Action<TController>> action,
             object routeValues,
             bool? antiforgery)
+            where TController : class
         {
             return helper.BeginRouteForm(routeName, routeValues, FormMethod.Post, antiforgery: antiforgery, htmlAttributes: null);
         }
@@ -1938,6 +1989,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             Expression<Func<TController, Task>> action,
             object routeValues,
             bool? antiforgery)
+            where TController : class
         {
             return helper.BeginRouteForm(routeName, routeValues, FormMethod.Post, antiforgery: antiforgery, htmlAttributes: null);
         }
@@ -1972,6 +2024,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             Expression<Action<TController>> action,
             object routeValues,
             FormMethod method)
+            where TController : class
         {
             return helper.BeginRouteForm(routeName, routeValues, method, antiforgery: null, htmlAttributes: null);
         }
@@ -2006,6 +2059,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             Expression<Func<TController, Task>> action,
             object routeValues,
             FormMethod method)
+            where TController : class
         {
             return helper.BeginRouteForm(routeName, routeValues, method, antiforgery: null, htmlAttributes: null);
         }
@@ -2046,6 +2100,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             object routeValues,
             FormMethod method,
             bool? antiforgery)
+            where TController : class
         {
             return helper.BeginRouteForm(routeName, routeValues, method, antiforgery: antiforgery, htmlAttributes: null);
         }
@@ -2086,6 +2141,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             object routeValues,
             FormMethod method,
             bool? antiforgery)
+            where TController : class
         {
             return helper.BeginRouteForm(routeName, routeValues, method, antiforgery: antiforgery, htmlAttributes: null);
         }
@@ -2118,6 +2174,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             Expression<Action<TController>> action,
             FormMethod method,
             object htmlAttributes)
+            where TController : class
         {
             return helper.BeginRouteForm(routeName, routeValues: null, method: method, antiforgery: null, htmlAttributes: htmlAttributes);
         }
@@ -2150,6 +2207,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             Expression<Func<TController, Task>> action,
             FormMethod method,
             object htmlAttributes)
+            where TController : class
         {
             return helper.BeginRouteForm(routeName, routeValues: null, method: method, antiforgery: null, htmlAttributes: htmlAttributes);
         }
@@ -2188,6 +2246,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             FormMethod method,
             bool? antiforgery,
             object htmlAttributes)
+            where TController : class
         {
             return helper.BeginRouteForm(routeName, routeValues: null, method: method, antiforgery: antiforgery, htmlAttributes: htmlAttributes);
         }
@@ -2226,6 +2285,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             FormMethod method,
             bool? antiforgery,
             object htmlAttributes)
+            where TController : class
         {
             return helper.BeginRouteForm(routeName, routeValues: null, method: method, antiforgery: antiforgery, htmlAttributes: htmlAttributes);
         }
@@ -2266,6 +2326,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             object routeValues,
             FormMethod method,
             object htmlAttributes)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(
                 action,
@@ -2311,6 +2372,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             object routeValues,
             FormMethod method,
             object htmlAttributes)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(
                 action,
@@ -2362,6 +2424,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             FormMethod method,
             bool? antiforgery,
             object htmlAttributes)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(
                 action,
@@ -2413,6 +2476,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             FormMethod method,
             bool? antiforgery,
             object htmlAttributes)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(
                 action,

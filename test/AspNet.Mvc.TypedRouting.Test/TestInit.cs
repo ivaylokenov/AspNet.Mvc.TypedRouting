@@ -19,6 +19,24 @@
     {
         public TestInit()
         {
+            var serviceCollection = new ServiceCollection();
+
+            serviceCollection.AddSingleton(typeof(IEnumerable<IActionDescriptorProvider>), GetActionDescriptorProviders());
+            serviceCollection.AddSingleton(typeof(IActionDescriptorCollectionProvider), typeof(ActionDescriptorCollectionProvider));
+
+            // test exception, if ExpressionRouteHelper is not initialized
+            var exceptionMessage = Assert.Throws<InvalidOperationException>(() =>
+            {
+                new MyTestController().CreatedAtActionSameController();
+            });
+
+            Assert.Equal("Before using typed link generation, 'UseTypedRouting' must be called in the 'UseMvc' routes configuration.", exceptionMessage.Message);
+
+            ExpressionRouteHelper.Initialize(serviceCollection.BuildServiceProvider());
+        }
+
+        public static List<IActionDescriptorProvider> GetActionDescriptorProviders()
+        {
             var testAssembly = Assembly.Load(new AssemblyName("AspNet.Mvc.TypedRouting.Test"));
 
             // Run the full controller and action model building 
@@ -37,23 +55,10 @@
                 options);
 
             var serviceCollection = new ServiceCollection();
-            var list = new List<IActionDescriptorProvider>()
+            return new List<IActionDescriptorProvider>()
             {
                 provider,
             };
-
-            serviceCollection.AddSingleton(typeof(IEnumerable<IActionDescriptorProvider>), list);
-            serviceCollection.AddSingleton(typeof(IActionDescriptorCollectionProvider), typeof(ActionDescriptorCollectionProvider));
-
-            // test exception, if ExpressionRouteHelper is not initialized
-            var exceptionMessage = Assert.Throws<InvalidOperationException>(() =>
-            {
-                new MyTestController().CreatedAtActionSameController();
-            });
-
-            Assert.Equal("Before using typed link generation, 'UseTypedRouting' must be called in the 'UseMvc' routes configuration.", exceptionMessage.Message);
-
-            ExpressionRouteHelper.Initialize(serviceCollection.BuildServiceProvider());
         }
         
         [CollectionDefinition("TypedRoutingTests")]

@@ -21,6 +21,7 @@ namespace Microsoft.AspNetCore.Mvc
         /// </param>
         /// <returns>The fully qualified or absolute URL to an action method.</returns>
         public static string Action<TController>(this IUrlHelper helper, Expression<Action<TController>> action)
+            where TController : class
         {
             return helper.Action(action, values: null, protocol: null, host: null, fragment: null);
         }
@@ -37,6 +38,7 @@ namespace Microsoft.AspNetCore.Mvc
         /// </param>
         /// <returns>The fully qualified or absolute URL to an action method.</returns>
         public static string Action<TController>(this IUrlHelper helper, Expression<Func<TController, Task>> action)
+            where TController : class
         {
             return helper.Action(action, values: null, protocol: null, host: null, fragment: null);
         }
@@ -54,7 +56,11 @@ namespace Microsoft.AspNetCore.Mvc
         /// </param>
         /// <param name="values">An object that contains additional route values.</param>
         /// <returns>The fully qualified or absolute URL to an action method.</returns>
-        public static string Action<TController>(this IUrlHelper helper, Expression<Action<TController>> action, object values)
+        public static string Action<TController>(
+            this IUrlHelper helper,
+            Expression<Action<TController>> action,
+            object values)
+            where TController : class
         {
             return helper.Action(action, values, protocol: null, host: null, fragment: null);
         }
@@ -72,7 +78,11 @@ namespace Microsoft.AspNetCore.Mvc
         /// </param>
         /// <param name="values">An object that contains additional route values.</param>
         /// <returns>The fully qualified or absolute URL to an action method.</returns>
-        public static string Action<TController>(this IUrlHelper helper, Expression<Func<TController, Task>> action, object values)
+        public static string Action<TController>(
+            this IUrlHelper helper,
+            Expression<Func<TController, Task>> action,
+            object values)
+            where TController : class
         {
             return helper.Action(action, values, protocol: null, host: null, fragment: null);
         }
@@ -96,6 +106,7 @@ namespace Microsoft.AspNetCore.Mvc
             Expression<Action<TController>> action,
             object values,
             string protocol)
+            where TController : class
         {
             return helper.Action(action, values, protocol, host: null, fragment: null);
         }
@@ -119,6 +130,7 @@ namespace Microsoft.AspNetCore.Mvc
             Expression<Func<TController, Task>> action,
             object values,
             string protocol)
+            where TController : class
         {
             return helper.Action(action, values, protocol, host: null, fragment: null);
         }
@@ -144,6 +156,7 @@ namespace Microsoft.AspNetCore.Mvc
             object values,
             string protocol,
             string host)
+            where TController : class
         {
             return helper.Action(action, values, protocol, host, fragment: null);
         }
@@ -169,6 +182,7 @@ namespace Microsoft.AspNetCore.Mvc
             object values,
             string protocol,
             string host)
+            where TController : class
         {
             return helper.Action(action, values, protocol, host, fragment: null);
         }
@@ -196,6 +210,7 @@ namespace Microsoft.AspNetCore.Mvc
             string protocol,
             string host,
             string fragment)
+            where TController : class
         {
             return helper.Action(action, new UrlActionContext
             {
@@ -229,6 +244,7 @@ namespace Microsoft.AspNetCore.Mvc
             string protocol,
             string host,
             string fragment)
+            where TController : class
         {
             return helper.Action(action, new UrlActionContext
             {
@@ -254,6 +270,7 @@ namespace Microsoft.AspNetCore.Mvc
             this IUrlHelper helper,
             string routeName,
             Expression<Action<TController>> action)
+            where TController : class
         {
             return helper.Link(routeName, action, values: null);
         }
@@ -273,6 +290,7 @@ namespace Microsoft.AspNetCore.Mvc
             this IUrlHelper helper,
             string routeName,
             Expression<Func<TController, Task>> action)
+            where TController : class
         {
             return helper.Link(routeName, action, values: null);
         }
@@ -294,6 +312,7 @@ namespace Microsoft.AspNetCore.Mvc
             string routeName,
             Expression<Action<TController>> action,
             object values)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, values, addControllerAndActionToRouteValues: true);
             return helper.Link(routeName, expressionRouteValues.RouteValues);
@@ -316,6 +335,7 @@ namespace Microsoft.AspNetCore.Mvc
             string routeName,
             Expression<Func<TController, Task>> action,
             object values)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, values, addControllerAndActionToRouteValues: true);
             return helper.Link(routeName, expressionRouteValues.RouteValues);
@@ -325,6 +345,7 @@ namespace Microsoft.AspNetCore.Mvc
             this IUrlHelper helper,
             Expression<Action<TController>> action,
             UrlActionContext actionContext)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, actionContext.Values);
             ApplyRouteValues(actionContext, expressionRouteValues);
@@ -335,6 +356,7 @@ namespace Microsoft.AspNetCore.Mvc
             this IUrlHelper helper,
             Expression<Func<TController, Task>> action,
             UrlActionContext actionContext)
+            where TController : class
         {
             var expressionRouteValues = ExpressionRouteHelper.Resolve(action, actionContext.Values);
             ApplyRouteValues(actionContext, expressionRouteValues);
