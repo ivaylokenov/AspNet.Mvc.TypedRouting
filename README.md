@@ -3,7 +3,7 @@
 
 Resolving controller and action names for various purposes in ASP.NET MVC was always unreliable because the framework uses magic strings in its methods (for example `Url.Action("Action", "Controller")`). With the C# 6.0 `nameof` operator, the problem was partially solved. However, `nameof` cannot be used with various MVC Core features like `ActionNameAttribute`, `AreaAttribute`, `RouteValueAttribute`, `IControllerModelConvention`, `IActionModelConvention`, `IParameterModelConvention` and more. Here comes `AspNet.Mvc.TypedRouting` to the rescue!
 
-This package gives you typed expression based routing and link generation in a [ASP.NET Core MVC](https://github.com/aspnet/Mvc) web application. Currently working with version 1.0.0.
+This package gives you typed expression based routing and link generation in a [ASP.NET Core MVC](https://github.com/aspnet/Mvc) web application. Currently working with version 1.1.0.
 
 For example:
 
@@ -15,7 +15,7 @@ routes.Add("MyRoute/{id}", route => route.ToAction<HomeController>(a => a.Index(
 Html.ActionLink<HomeController>("Index", c => c.Index())
 ```
 
-[![Build status](https://ci.appveyor.com/api/projects/status/mvoobyf3s99pkpkf?svg=true)](https://ci.appveyor.com/project/ivaylokenov/aspnet-mvc-typedrouting) [![NuGet Version](http://img.shields.io/nuget/v/AspNet.Mvc.TypedRouting.svg?style=flat)](https://www.nuget.org/packages/AspNet.Mvc.TypedRouting/) [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/ivaylokenov/AspNet.Mvc.TypedRouting/blob/master/LICENSE)
+[![Build status](https://ci.appveyor.com/api/projects/status/mvoobyf3s99pkpkf?svg=true)](https://ci.appveyor.com/project/ivaylokenov/aspnet-mvc-typedrouting) [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/ivaylokenov/AspNet.Mvc.TypedRouting/blob/master/LICENSE) [![NuGet Badge](https://buildstats.info/nuget/AspNet.Mvc.TypedRouting)](https://www.nuget.org/packages/AspNet.Mvc.TypedRouting/)
 
 ## Installation
 
