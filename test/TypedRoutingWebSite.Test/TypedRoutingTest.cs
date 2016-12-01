@@ -10,7 +10,7 @@
         public void RegularRoutes_ShouldWorkCorrectly()
         {
             MyMvc
-                .Routes()
+                .Routing()
                 .ShouldMap("/")
                 .To<HomeController>(c => c.Index());
         }
@@ -19,7 +19,7 @@
         public void ToController_ShouldWorkCorrectly()
         {
             MyMvc
-                .Routes()
+                .Routing()
                 .ShouldMap("/CustomController/Redirect")
                 .To<ExpressionsController>(c => c.Redirect());
         }
@@ -28,7 +28,7 @@
         public void ToAction_ShouldWorkCorrectly()
         {
             MyMvc
-                .Routes()
+                .Routing()
                 .ShouldMap("/CustomContact")
                 .To<HomeController>(c => c.Contact());
         }
@@ -37,7 +37,7 @@
         public void WithAny_ShouldWorkCorrectly()
         {
             MyMvc
-                .Routes()
+                .Routing()
                 .ShouldMap("/WithParameter/1")
                 .To<HomeController>(c => c.Index(1));
         }
@@ -46,7 +46,7 @@
         public void HttpConstrains_ShouldWorkCorrectly()
         {
             MyMvc
-                .Routes()
+                .Routing()
                 .ShouldMap(request => request
                     .WithMethod(HttpMethod.Post)
                     .WithLocation("/CustomContact"))
@@ -57,21 +57,21 @@
         public void MultipleHttpConstrainsShouldWorkCorrectly()
         {
             MyMvc
-                .Routes()
+                .Routing()
                 .ShouldMap(request => request
                     .WithMethod(HttpMethod.Post)
                     .WithLocation("/MultipleMethods"))
                 .To<HomeController>(c => c.About());
             
             MyMvc
-                .Routes()
+                .Routing()
                 .ShouldMap(request => request
                     .WithMethod(HttpMethod.Get)
                     .WithLocation("/MultipleMethods"))
                 .To<HomeController>(c => c.About());
 
             MyMvc
-                .Routes()
+                .Routing()
                 .ShouldMap(request => request
                     .WithMethod(HttpMethod.Put)
                     .WithLocation("/MultipleMethods"))
@@ -82,14 +82,14 @@
         public void WithActionConstraintsShouldWorkCorrectly()
         {
             MyMvc
-                .Routes()
+                .Routing()
                 .ShouldMap(request => request
                     .WithMethod(HttpMethod.Put)
                     .WithLocation("/Constraint"))
                 .To<AccountController>(c => c.Login(With.Any<string>()));
 
             MyMvc
-                .Routes()
+                .Routing()
                 .ShouldMap(request => request
                     .WithMethod(HttpMethod.Get)
                     .WithLocation("/Constraint"))
@@ -100,7 +100,7 @@
         public void AsyncActionShouldWorkCorrectly()
         {
             MyMvc
-                .Routes()
+                .Routing()
                 .ShouldMap("/Async")
                 .To<AccountController>(c => c.LogOff());
         }
