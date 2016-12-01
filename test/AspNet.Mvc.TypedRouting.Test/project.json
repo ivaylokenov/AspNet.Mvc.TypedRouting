@@ -6,6 +6,7 @@
   "testRunner": "xunit",
 
   "dependencies": {
+    "Microsoft.DotNet.InternalAbstractions": "1.0.0", // remove when not needed
     "AspNet.Mvc.TypedRouting": "1.3.0-*",
     "Microsoft.AspNetCore.Mvc": "1.1.0",
     "dotnet-test-xunit": "2.2.0-*",
