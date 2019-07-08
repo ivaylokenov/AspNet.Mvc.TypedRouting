@@ -117,7 +117,7 @@
                     }
                 }
                 
-                ApplyAdditionaRouteValues(additionalRouteValues, routeValues);
+                ApplyAdditionalRouteValues(additionalRouteValues, routeValues);
 
                 if (addControllerAndActionToRouteValues)
                 {
@@ -231,27 +231,12 @@
                     // Expression of type c => c.Action({const}) - value can be extracted without compiling.
                     value = ((ConstantExpression)expressionArgument).Value;
                 }
-                else if (expressionArgument.NodeType == ExpressionType.MemberAccess
-                    && ((MemberExpression)expressionArgument).Member is FieldInfo)
-                {
-                    // Expression of type c => c.Action(id)
-                    // Value can be extracted without compiling.
-                    var memberAccessExpr = (MemberExpression)expressionArgument;
-                    var constantExpression = (ConstantExpression)memberAccessExpr.Expression;
-                    if (constantExpression != null)
-                    {
-                        var innerMemberName = memberAccessExpr.Member.Name;
-                        var compiledLambdaScopeField = constantExpression.Value.GetType().GetField(innerMemberName);
-                        value = compiledLambdaScopeField.GetValue(constantExpression.Value);
-                    }
-                }
                 else
                 {
-                    // Expresion needs compiling because it is not of constant type.
+                    // Expression needs compiling because it is not of constant type.
                     var convertExpression = Expression.Convert(expressionArgument, typeof(object));
                     value = Expression.Lambda<Func<object>>(convertExpression).Compile().Invoke();
                 }
-
                 // We are interested only in not null route values.
                 if (value != null)
                 {
@@ -262,7 +247,7 @@
             return result;
         }
 
-        private static void ApplyAdditionaRouteValues(object routeValues, IDictionary<string, object> result)
+        private static void ApplyAdditionalRouteValues(object routeValues, IDictionary<string, object> result)
         {
             if (routeValues != null)
             {
