@@ -231,12 +231,6 @@
                     // Expression of type c => c.Action({const}) - value can be extracted without compiling.
                     value = ((ConstantExpression)expressionArgument).Value;
                 }
-                else if (expressionArgument is MemberExpression argument)
-                {
-                    var objectMember = Expression.Convert(argument, typeof(object));
-                    var getterLambda = Expression.Lambda<Func<object>>(objectMember);
-                    value = getterLambda.Compile()();
-                }
                 else
                 {
                     // Expression needs compiling because it is not of constant type.
